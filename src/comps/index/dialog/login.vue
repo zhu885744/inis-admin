@@ -2,7 +2,7 @@
     <el-dialog v-model="state.item.dialog" class="custom sm" :close-on-click-modal="false">
         <template #header>
             <div class="flex-center">
-                <el-image src="/assets/imgs/logo-white.png" style="height: 52px" class="my-1 py-1"></el-image>
+                <el-text class="mx-1" size="large">登录</el-text>
             </div>
         </template>
         <template #default>
@@ -60,18 +60,18 @@
                     <span v-if="parseInt(store.config.getAllowRegister?.value) === 1" class="mx-2">|</span>
                     <span v-if="parseInt(store.config.getAllowRegister?.value) === 1" v-on:click="method.register()" class="pointer">注册帐号</span>
                 </div>
-<!--                <div class="d-flex justify-content-center mt-3">-->
-<!--                    <span class="flex-center mx-1">-->
-<!--                        <el-button v-on:click="method.oauth('qq')" round>-->
-<!--                            <i-svg name="qq" size="24px"></i-svg>-->
-<!--                        </el-button>-->
-<!--                    </span>-->
-<!--                    <span class="flex-center mx-1">-->
-<!--                        <el-button round>-->
-<!--                            <i-svg name="github" size="26px"></i-svg>-->
-<!--                        </el-button>-->
-<!--                    </span>-->
-<!--                </div>-->
+                <div class="d-flex justify-content-center mt-3">
+                    <span class="flex-center mx-1">
+                        <el-button v-on:click="method.oauth('qq')" round>
+                            <i-svg name="qq" size="24px"></i-svg>
+                        </el-button>
+                    </span>
+                    <span class="flex-center mx-1">
+                        <el-button round>
+                            <i-svg name="github" size="26px"></i-svg>
+                        </el-button>
+                    </span>
+                </div>
             </div>
         </template>
         <template #footer>

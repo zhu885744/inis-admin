@@ -41,17 +41,17 @@ body {
     font-family: -apple-system,system-ui,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
 }
 body[inis-theme] ::selection{
-    color: #ffffff;
+    color: #000000;
     background: rgba(var(--theme-color), var(--theme-opacity));
 }
 body[inis-theme] ::-moz-selection{
-    color: #ffffff;
+    color: #000000;
     background: rgba(var(--theme-color), var(--theme-opacity));
 }
 
 body[inis-theme] {
-    background: #f2f3f5;
-    background-image: linear-gradient(90deg,rgba(159,219,252,.15) 3%,transparent 0),linear-gradient(1turn,rgba(159,219,252,.15) 3%,transparent 0);
+    background: #e4e4e4;
+    /*background-image: linear-gradient(90deg,rgba(159,219,252,.15) 3%,transparent 0),linear-gradient(1turn,rgba(159,219,252,.15) 3%,transparent 0);*/
     background-size: 20px 20px;
     background-position: 50%;
     width: auto !important;
@@ -240,13 +240,10 @@ body[inis-theme] .separator{
     width: 200px;
 }
 
-
-
-
-
 body[inis-theme].el-popup-parent--hidden{
     overflow: auto;
 }
+
 /* ==================== 自定义 el-table - 开始 ==================== */
 body[inis-theme] .custom.simple.el-table {
     -webkit-box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
@@ -361,7 +358,7 @@ body[inis-theme] .el-tabs .el-tabs__header .is-scrollable{
     align-items: center;
 }
 body[inis-theme] .el-tabs.circle .el-tabs__header{
-    border-radius: 200px;
+    border-radius: 6px;
 }
 body[inis-theme] .el-tabs__item:hover, body[inis-theme] .el-tabs__item.is-active{
     color: rgb(var(--theme-font-color));
@@ -433,7 +430,6 @@ body[inis-theme] .el-tabs.custom .el-tabs__active-bar{
     background-color: rgba(233, 233, 233, 60%);
 }
 /* ==================== 自定义 el-tabs - 结束 ==================== */
-
 /* ================== 自定义 el-pagination - 结束 ================== */
 body[inis-theme] .el-pager li, body[inis-theme] .el-pagination button{
     --el-pagination-button-height: 30px;
@@ -844,7 +840,6 @@ body[inis-theme] .el-input-number__increase:hover~.el-input:not(.is-disabled) .e
 body[inis-theme] .el-dialog{
     background: #f2f3f5;
     border-radius: 10px;
-    background-image: linear-gradient(90deg,rgba(159,219,252,.15) 3%,transparent 0),linear-gradient(1turn,rgba(159,219,252,.15) 3%,transparent 0);
     background-size: 20px 20px;
     background-position: 50%;
 }
@@ -1225,223 +1220,6 @@ body[inis-theme] .alert-primary{
 }
 /* ==================== 自定义 bootstrap btn - 结束 ==================== */
 
-
-
-/* ==================== 自定义 Tinymce 编辑器 - 开始 ==================== */
-body[inis-theme] .tox .tox-mbtn, body[inis-theme] .tox .tox-tbtn svg,
-body[inis-theme] .tox .tox-tbtn{
-    color: rgba(var(--theme-font-color), 1);
-    fill: rgba(var(--theme-font-color), 1);
-}
-body[inis-theme] .tox .tox-pop__dialog{
-    background: rgba(var(--theme-color), var(--theme-opacity)) !important;
-    backdrop-filter: var(--theme-blur);
-    -webkit-backdrop-filter: var(--theme-blur);
-    border: unset;
-    box-shadow: 0px 5px 40px 0px rgb(17 58 93 / 10%);
-    -webkit-box-shadow: 0px 5px 40px 0px rgb(17 58 93 / 10%);
-}
-body[inis-theme] .tox .tox-edit-area__iframe, body[inis-theme] .tox .tox-menubar,
-body[inis-theme] .tox:not(.tox-tinymce-inline) .tox-editor-header, body[inis-theme] .tox .tox-toolbar-overlord,
-body[inis-theme] .tox .tox-toolbar, body[inis-theme] .tox .tox-toolbar__overflow, body[inis-theme] .tox .tox-toolbar__primary{
-    background: unset;
-}
-body[inis-theme] .tox .tox-tbtn--bespoke{
-    background: unset;
-}
-body[inis-theme] .tox .tox-tbtn:hover{
-    background: unset;
-}
-body[inis-theme] .tox-tinymce{
-    border: unset;
-}
-body[inis-theme] .tox .tox-menu{
-    background: rgba(var(--theme-color), var(--theme-opacity)) !important;
-    backdrop-filter: var(--theme-blur);
-    -webkit-backdrop-filter: var(--theme-blur);
-    border: unset;
-    box-shadow: 0px 5px 40px 0px rgb(17 58 93 / 10%);
-    -webkit-box-shadow: 0px 5px 40px 0px rgb(17 58 93 / 10%);
-}
-body[inis-theme] .tox .tox-collection--list .tox-collection__item--active{
-    background: rgba(var(--theme-color), calc(var(--theme-opacity) * 0.8)) !important;
-    border-color: rgba(var(--theme-color), calc(var(--theme-opacity) * 0.8)) !important;
-}
-body[inis-theme] .tox .tox-mbtn--active, body[inis-theme] .tox .tox-mbtn:hover:not(:disabled):not(.tox-mbtn--active){
-    background: rgba(var(--theme-color), var(--theme-opacity)) !important;
-    margin-bottom: 2px;
-    color: var(--theme-font-color);
-    font-weight: bolder;
-}
-body[inis-theme] .tox .tox-tbtn--enabled, body[inis-theme] .tox .tox-tbtn--enabled:hover{
-    background: unset;
-    border-radius: unset;
-    border-bottom: 3px solid rgba(var(--theme-color), var(--theme-opacity));
-}
-body[inis-theme] .tox .tox-menu.tox-collection.tox-collection--list{
-    margin-top: 4px;
-}
-body[inis-theme] .tox .tox-dialog{
-    max-width: 70%;
-    background-color: unset;
-}
-body[inis-theme] .tox .tox-dialog__header, body[inis-theme] .tox .tox-dialog__footer,
-body[inis-theme] .tox .tox-dropzone, body[inis-theme] .tox .tox-dialog__body-nav-item:focus{
-    background-color: unset;
-}
-body[inis-theme] .tox .tox-dialog__table tbody tr{
-    border-bottom: unset;
-}
-body[inis-theme] .tox .tox-dialog-wrap__backdrop{
-    background-color: rgb(0 0 0 / 22%);
-    filter: blur(10px);
-    z-index: 1;
-    backdrop-filter: var(--theme-blur);
-    -webkit-backdrop-filter: var(--theme-blur);
-}
-body[inis-theme] .tox input {
-    border: unset;
-    background: unset;
-    border-bottom: 1px solid #ccc!important;
-    border-radius: 0;
-    padding-left: 0!important;
-}
-body[inis-theme] .tox input:focus{
-    cursor: pointer;
-    background: unset;
-    border-bottom: 2px solid #ccc!important;
-    transition: all .4s ease;
-    -moz-transition: all .4s ease;
-    -webkit-transition: all .4s ease;
-    -o-transition: all .4s ease;
-    box-shadow: unset;
-}
-body[inis-theme] .tox .tox-textarea{
-    height: 100%;
-    border: unset;
-    background: unset;
-    border-bottom: 1px solid #ccc!important;
-    border-radius: 0;
-    padding-left: 0!important;
-}
-body[inis-theme] .tox-textarea-wrap{height: 100% !important}
-body[inis-theme] .tox .tox-textarea:focus{
-    cursor: pointer;
-    background: unset;
-    border-bottom: 2px solid #ccc!important;
-    transition: all .4s ease;
-    -moz-transition: all .4s ease;
-    -webkit-transition: all .4s ease;
-    -o-transition: all .4s ease;
-    box-shadow: unset;
-    border: unset;
-    border-radius: unset;
-}
-body[inis-theme] .tox .tox-listboxfield .tox-listbox--select{
-    border: unset;
-    background: unset;
-    border-radius: unset;
-    box-shadow: unset;
-    border-bottom: 1px solid #ccc!important;
-}
-body[inis-theme] .tox .tox-listboxfield .tox-listbox--select:focus{
-    border-bottom: 2px solid #ccc!important;
-}
-body[inis-theme] .tox .tox-dialog__body-content, body[inis-theme] .tox .tox-textarea{
-    scrollbar-width: thin;
-    scrollbar-color: rgba(0,0,0,.2) transparent;
-}
-body[inis-theme] .tox .tox-dialog__body-content::-webkit-scrollbar, body[inis-theme] .tox .tox-textarea::-webkit-scrollbar{
-    width:4px;height:10px;
-    background-color:rgba(0,0,0,0);
-}
-body[inis-theme] .tox .tox-dialog__body-content::-webkit-scrollbar-thumb, body[inis-theme] .tox .tox-textarea::-webkit-scrollbar{
-    border-radius:6px;
-    background-color:rgba(0,0,0,.2);
-    transition:all .4s ease;
-    -moz-transition:all .4s ease;
-    -webkit-transition:all .4s ease;
-    -o-transition:all .4s ease
-}
-body[inis-theme] .tox .tox-dialog__body-content::-webkit-scrollbar-track, body[inis-theme] .tox .tox-textarea::-webkit-scrollbar{
-    background-color:rgba(0,0,0,.1)
-}
-body[inis-theme] .tox .tox-dialog--width-lg {
-    max-width: 1200px !important;
-}
-body[inis-theme] .tox .tox-collection--list .tox-collection__item--enabled{
-    background: unset;
-}
-/* ==================== 自定义 Tinymce 编辑器 - 结束 ==================== */
-
-/* ==================== 自定义 Vditor 编辑器 - 开始 ==================== */
-body[inis-theme] .vditor{
-    border: unset;
-}
-body[inis-theme] .vditor-toolbar{
-    background-color: unset;
-    border-bottom: unset;
-    box-shadow: 0 2px 2px -2px rgba(34,47,62,.1), 0 8px 8px -4px rgba(34,47,62,.07);
-    padding-bottom: 10px;
-}
-body[inis-theme] .vditor-ir pre.vditor-reset, body[inis-theme] .vditor-wysiwyg pre.vditor-reset{
-    background-color: unset;
-}
-body[inis-theme] .vditor-reset{
-    padding: 12px 0 0 12px !important;
-}
-body[inis-theme] .vditor--fullscreen{
-    background: #fff;
-}
-body[inis-theme] .vditor-hint, body[inis-theme] .vditor-panel{
-    background: rgba(var(--theme-color), var(--theme-opacity)) !important;
-    backdrop-filter: var(--theme-blur);
-    -webkit-backdrop-filter: var(--theme-blur);
-    border: unset;
-    box-shadow: 0px 5px 40px 0px rgb(17 58 93 / 10%);
-    -webkit-box-shadow: 0px 5px 40px 0px rgb(17 58 93 / 10%);
-}
-body[inis-theme] .vditor-panel--arrow:before{
-    border-bottom-color: rgba(var(--theme-color), var(--theme-opacity)) !important;
-    backdrop-filter: var(--theme-blur);
-    -webkit-backdrop-filter: var(--theme-blur);
-}
-body[inis-theme] .vditor-hint--current, body[inis-theme] .vditor-hint button:not(.vditor-menu--disabled):hover{
-    background: rgba(var(--theme-color), calc(var(--theme-opacity) * 0.8)) !important;
-    border-color: rgba(var(--theme-color), calc(var(--theme-opacity) * 0.8)) !important;
-}
-body[inis-theme] .vditor-reset table tr, body[inis-theme] .vditor-reset table tbody tr:nth-child(2n){
-    background-color: unset;
-}
-body[inis-theme] .hljs{
-    background: rgba(var(--vice-color), 0.7) !important;
-    backdrop-filter: var(--theme-blur);
-    -webkit-backdrop-filter: var(--theme-blur);
-}
-body[inis-theme] .vditor-input, body[inis-theme] .vditor-sv, body[inis-theme] .vditor-preview,
-body[inis-theme] .vditor-preview__action, body[inis-theme] .vditor-preview__action button.vditor-preview__action--current,
-body[inis-theme] .vditor-preview__action button:hover, body[inis-theme] .vditor-preview__action button{
-    background-color: unset;
-}
-body[inis-theme] .vditor-input::placeholder {
-    color: rgb(var(--theme-font-color));
-}
-body[inis-theme] .vditor-resize > div{
-    background-color: #f6f8fa38;
-}
-body[inis-theme] .comment .vditor .vditor-toolbar{
-    display: none;
-}
-body[inis-theme] .comment .vditor .vditor-reset img{
-    width: 24px;
-}
-body[inis-theme] .comment .vditor .vditor-content{
-    min-height: unset;
-}
-body[inis-theme] .comment .vditor .vditor-reset {
-    padding: 4px 0 0 12px !important;
-}
-/* ==================== 自定义 Vditor 编辑器 - 结束 ==================== */
 /* ==================== 自定义 markdown - 开始 ==================== */
 body[inis-theme] .markdown blockquote{
     font-size: 14px;
@@ -1560,16 +1338,16 @@ body[inis-theme] .markdown pre .head > p{display:flex;justify-content:center;mar
 body[inis-theme] .markdown pre .head .code-language{opacity:0;font-weight:bold;font-size:.9em;font-family:Ubuntu,sans-serif;transition:all .3s ease}
 body[inis-theme] .markdown pre .head .copy{display: flex;opacity:0;position:absolute;right:10px;border:1px solid white;padding:0 10px;border-radius:4px;margin-top:-2px;cursor:pointer;transition:all .3s ease}
 body[inis-theme] .markdown pre code.hljs {
-	display:block;
-	overflow-x:auto;
-	padding:0 1em;
+    display:block;
+    overflow-x:auto;
+    padding:0 1em;
     max-height: 300px;
 }
 body[inis-theme] .markdown code.hljs {
-	padding:3px 5px
+    padding:3px 5px
 }
 body[inis-theme] .markdown .hljs {
-	color: #ddd;
+    color: #ddd;
     margin: unset;
     border: unset;
 }
@@ -1579,16 +1357,16 @@ body[inis-theme] .markdown .hljs-name,
 body[inis-theme] .markdown .hljs-selector-tag,
 body[inis-theme] .markdown .hljs-strong,
 body[inis-theme] .markdown .hljs-tag {
-	color:#f92672
+    color:#f92672
 }
 body[inis-theme] .markdown .hljs-code {
-	color:#66d9ef
+    color:#66d9ef
 }
 body[inis-theme] .markdown .hljs-attribute,
 body[inis-theme] .markdown .hljs-link,
 body[inis-theme] .markdown .hljs-regexp,
 body[inis-theme] .markdown .hljs-symbol {
-	color:#bf79db
+    color:#bf79db
 }
 body[inis-theme] .markdown .hljs-addition,
 body[inis-theme] .markdown .hljs-built_in,
@@ -1604,17 +1382,17 @@ body[inis-theme] .markdown .hljs-template-variable,
 body[inis-theme] .markdown .hljs-title,
 body[inis-theme] .markdown .hljs-type,
 body[inis-theme] .markdown .hljs-variable {
-	color:#a6e22e
+    color:#a6e22e
 }
 body[inis-theme] .markdown .hljs-class .hljs-title,
 body[inis-theme] .markdown .hljs-title.class_ {
-	color:#fff
+    color:#fff
 }
 body[inis-theme] .markdown .hljs-comment,
 body[inis-theme] .markdown .hljs-deletion,
 body[inis-theme] .markdown .hljs-meta,
 body[inis-theme] .markdown .hljs-quote {
-	color:#75715e
+    color:#75715e
 }
 body[inis-theme] .markdown .hljs-doctag,
 body[inis-theme] .markdown .hljs-keyword,
@@ -1624,7 +1402,7 @@ body[inis-theme] .markdown .hljs-selector-id,
 body[inis-theme] .markdown .hljs-selector-tag,
 body[inis-theme] .markdown .hljs-title,
 body[inis-theme] .markdown .hljs-type {
-	font-weight:700
+    font-weight:700
 }
 /* ==================== 代码框功能美化 - 结束 ==================== */
 

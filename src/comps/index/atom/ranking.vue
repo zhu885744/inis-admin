@@ -1,7 +1,7 @@
 <template>
     <div v-if="state.active.show" v-loading="state.active.load" class="card mb-0 mt-2 mt-lg-3">
         <div class="card-header d-flex justify-content-between py-3 ps-3 bg-image">
-            <span class="font-16 line-height-20 text-dark">{{ state.month }}月社区贡献榜</span>
+            <span class="font-16 line-height-20 text-dark">{{ state.month }}月贡献榜</span>
             <span v-on:click="state.item.dialog = true" class="font-13 text-info fw-medium pointer">如何上榜</span>
         </div>
         <div class="card-body p-2">

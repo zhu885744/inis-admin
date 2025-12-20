@@ -2,7 +2,7 @@
     <el-dialog v-model="state.item.dialog" class="custom" :close-on-click-modal="false">
         <template #header>
             <div class="flex-center">
-                <el-image src="/assets/imgs/logo-white.png" style="height: 52px" class="my-1 py-1"></el-image>
+                <el-text class="mx-1" size="large">注册账号</el-text>
             </div>
         </template>
         <template #default>

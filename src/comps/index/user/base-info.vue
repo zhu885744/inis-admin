@@ -6,10 +6,9 @@
                     <i-svg name="avatar" size="40px"></i-svg>
                     <div class="d-flex flex-column ms-2">
                         <span class="font-18 text-dark">您好！</span>
-                        <small class="text-muted">登录做任务领算粒</small>
                     </div>
                 </div>
-                <el-button v-on:click="method.login.show" type="primary" size="small">签到 +5</el-button>
+                <el-button v-on:click="method.login.show" type="primary" size="small">签到</el-button>
             </div>
             <div v-else class="d-flex justify-content-between">
                 <div class="d-flex align-items-center">
@@ -31,22 +30,12 @@
             <div class="d-flex justify-content-between mt-4 px-3">
                 <div v-on:click="method.compute()" class="d-flex flex-column align-items-center pointer">
                     <i-svg name="integral" size="30px" color="rgb(var(--assist-color))"></i-svg>
-                    <span class="mt-2">个人中心</span>
-                </div>
-                 <div class="d-flex flex-column align-items-center">
-                    <i-svg name="work" size="30px" color="rgb(var(--assist-color))"></i-svg>
-                    <span style="margin-top: 0.74rem!important;">我的喜欢</span>
+                    <span class="mt-2">用户中心</span>
                 </div>
                  <div v-on:click="method.signIn()" class="d-flex flex-column align-items-center pointer">
                     <i-svg name="sign-in" size="33px" color="rgb(var(--assist-color))"></i-svg>
                     <span style="margin-top: 0.46rem!important;">每日签到</span>
                 </div>
-            </div>
-            <div class="h-1px bg-light my-3"></div>
-            <div class="d-flex justify-content-around px-3 font-16 position-relative">
-                <div>BUG反馈</div>
-                <span class="line position-absolute"></span>
-                <div>我的建议</div>
             </div>
         </div>
     </div>

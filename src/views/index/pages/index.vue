@@ -18,7 +18,6 @@ import AtomPost from '{src}/comps/index/atom/post.vue'
 import BaseInfo from '{src}/comps/index/user/base-info.vue'
 import AtomRanking from '{src}/comps/index/atom/ranking.vue'
 import AtomHitokoto from '{src}/comps/index/atom/hitokoto.vue'
-import AtomBannerColorThief from '{src}/comps/index/atom/banner/color-thief.vue'
 
 const router = useRouter()
 const state  = reactive({

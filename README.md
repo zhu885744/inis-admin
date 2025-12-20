@@ -1,8 +1,8 @@
-# inis-admin 项目文档
+# inis-admin
 
-## 一、项目介绍
+## 一、介绍
 
-inis-admin 是一个基于 Vue 3 + Vite 构建的前端项目，采用 `<script setup>` 单文件组件语法进行开发，包含前台展示和后台管理功能。项目结构清晰，功能模块完善，支持了安装引导、首页展示、文章管理、用户管理、系统配置等核心功能，适用于内容管理类应用场景。
+inis-admin 是一个基于 Vue 3 + Vite 构建的后台管理项目，采用 `<script setup>` 单文件组件语法进行开发，包含前台展示和后台管理功能。项目结构清晰，功能模块完善，支持安装引导、首页文章列表展示、文章管理、用户管理、系统配置等核心功能，适用于内容管理类应用场景。
 
 ### 核心功能模块
 - **前台模块**：首页展示、文章详情、三方登录、图标展示等
@@ -12,7 +12,7 @@ inis-admin 是一个基于 Vue 3 + Vite 构建的前端项目，采用 `<script 
 ## 二、部署方法
 
 ### 1. 环境准备
-- 确保已安装 Node.js（推荐 v14+）及包管理工具（npm/yarn/pnpm）
+- 确保已安装 Node.js（推荐 v16+）及包管理工具（npm/yarn/pnpm）
 - 生产环境需准备部署载体（静态托管平台/Nginx服务器/后端项目）
 
 ### 2. 部署步骤
@@ -23,7 +23,7 @@ inis-admin 是一个基于 Vue 3 + Vite 构建的前端项目，采用 `<script 
 #### 步骤2：安装依赖
 ```bash
 cd inis-admin
-npm install  # 或 yarn install / pnpm install
+npm install
 ```
 
 #### 步骤3：打包生产环境代码
@@ -120,5 +120,3 @@ export const externals = () => {
 - **@howdyjs/mouse-menu**：自定义右键菜单指令
 - **animejs**：动画库
 - **colorthief**：提取图片主色调工具
-
-以上技术栈共同构成了项目的完整开发环境和运行时依赖，覆盖了从 UI 展示、状态管理、网络请求到功能扩展的全方面需求。# inis-admin
