@@ -30,15 +30,10 @@ const index = {
         meta: { title: '首页' },
         component: () => import('{src}/views/index/pages/index.vue'),
     },{
-        path: '/article/:id(\\d+)?',
-        name: 'index-article-detail',
-        meta: { title: '文章详情' },
-        component: () => import('{src}/views/index/pages/article[id].vue'),
-    },{
-        path: '/test',
-        name: 'index-test',
-        meta: { title: '测试' },
-        component: () => import('{src}/views/index/pages/test.vue'),
+        path: '/account/home',
+        name: 'index-account-home',
+        meta: { title: '用户中心' },
+        component: () => import('{src}/views/index/pages/account-home.vue'),
     },{
         // token 是 jwt token
         path: '/oauth/:token',
@@ -63,11 +58,6 @@ const admin = {
         name: 'admin-home',
         meta: { title: '首页', auth: false },
         component: () => import('{src}/views/admin/pages/index.vue'),
-    },{
-        path: '/admin/account/home',
-        name: 'admin-account-home',
-        meta: { title: '用户中心' },
-        component: () => import('{src}/views/admin/pages/account-home.vue'),
     },{
         path: '/admin/users',
         name: 'admin-users',

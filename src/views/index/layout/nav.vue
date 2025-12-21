@@ -7,23 +7,11 @@
                         <el-menu-item index="/">
                             <el-image v-on:click="method.push('/')" :src="`/assets/imgs/logo-${state.theme || 'white'}.png`" style="width: 100px;" class="d-flex flex-center"></el-image>
                         </el-menu-item>
-                        <el-menu-item route="/articles">
-                            <span v-on:click="push({ name: 'index-articles-list' })"
-                                :class="'d-flex align-items-center' + (state.nav.name === 'articles' ? ' active' : '')">
-                                <i-svg name="article" size="15px"></i-svg>
-                                <span class="ms-1">开发中</span>
-                            </span>
-                        </el-menu-item>
-                        <el-menu-item route="/pages">
-                            <span
-                                :class="'d-flex align-items-center' + (state.nav.name === 'pages' ? ' active' : '')">
-                                <i-svg name="issues" size="15px"></i-svg>
-                                <span class="ms-1">开发中</span>
-                            </span>
+                        <el-menu-item index="home" v-on:click="push('/')">
+                            <span class="ms-1">首页</span>
                         </el-menu-item>
                     </el-menu>
-                    <el-menu :router="true" :unique-opened="true" mode="horizontal" background-color="transparent"
-                             class="navbar-nav d-flex align-items-center justify-content-end w-100">
+                    <el-menu :router="true" :unique-opened="true" mode="horizontal" background-color="transparent" class="navbar-nav d-flex align-items-center justify-content-end w-100">
                         <template v-if="store.comm.getLogin.finish">
                             <el-sub-menu index="login-user" class="icon-none">
                                 <template #title>
@@ -47,7 +35,7 @@
                                     <i-svg name="console" size="16px" class="me-1"></i-svg>
                                     后台管理
                                 </el-menu-item>
-                                <el-menu-item index="/admin/account/home">
+                                <el-menu-item index="/account/home">
                                     <i-svg name="personal" size="15px" class="me-1"></i-svg>
                                     用户中心
                                 </el-menu-item>

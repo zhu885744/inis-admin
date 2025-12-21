@@ -1,48 +1,5 @@
 <template>
     <div class="container-fluid container-box">
-        <div class="row">
-            <div class="col-md-8 px-2">
-                <el-carousel trigger="click" height="350px" class="color-thief" arrow="always">
-                    <el-carousel-item v-for="(item, index) in 6" :key="item">
-                        <el-image :src="'https://inis.cn/api/file/rand?name=imgs.txt&id=' + item" crossorigin="anonymous"
-                            v-on:load="method.load($event.target, index)" fit="cover" class="w-100" style="height: 310px">
-                        </el-image>
-                        <div class="carousel-footer mb-2" ref="carousel-footer">
-                            <p class="title mb-3 ms-3">
-                                <span class="font-white font-17">这是测试的内容</span>
-                            </p>
-                        </div>
-                    </el-carousel-item>
-                </el-carousel>
-            </div>
-            <div class="col-md-4 px-2">
-                <div class="card mb-3">
-                    <div class="card-body py-2">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <span class="font-16 text-dark">热门主题</span>
-                            <span>更多</span>
-                        </div>
-                        <ul class="i-ul mb-0">
-                            <li class="mt-2 d-flex align-items-center justify-content-between">
-                                <span class="font-13">
-                                    <span class="point-circle bg-secondary me-2"></span>
-                                    inis 默认主题
-                                </span>
-                                <span>使用人数 50W+</span>
-                            </li>
-                            <li class="mt-2 d-flex align-items-center justify-content-between">
-                                <span class="font-13">
-                                    <span class="point-circle bg-secondary me-2"></span>
-                                    其它主题
-                                </span>
-                                <span>使用人数 100K+</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <el-image src="/1.png" style="height: 113px" class="w-100" fit="cover"></el-image>
-            </div>
-        </div>
         <div class="card mt-2">
             <div class="card-body p-0">
                 <el-tabs v-model="state.item.tabs">
@@ -66,6 +23,11 @@
                         </template>
                     </el-tab-pane>
                 </el-tabs>
+            </div>
+        </div>
+        <div class="card mt-2">
+            <div class="card-body p-0">
+                系统信息
             </div>
         </div>
     </div>

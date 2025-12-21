@@ -7,6 +7,9 @@
                         <el-menu-item index="/">
                             <el-image v-on:click="push('/')" :src="`/assets/imgs/logo-${state.theme}.png`" style="width: 100px;" class="d-flex flex-center"></el-image>
                         </el-menu-item>
+                        <el-menu-item index="home" v-on:click="push('/admin')">
+                            <span class="ms-1">控制台</span>
+                        </el-menu-item>
                         <el-sub-menu v-for="(item, index) in state.menu" :key="index" :index="index.toString()" show-timeout="50" hide-timeout="50">
                             <template #title>
                                 <span class="d-flex align-items-center">
@@ -44,11 +47,11 @@
                             </template>
                             <el-menu-item v-on:click="method.push({ path: '/admin' })" index="/admin">
                                 <i-svg name="console" size="16px" class="me-1"></i-svg>
-                                控制台
+                                后台管理
                             </el-menu-item>
-                            <el-menu-item v-on:click="method.push({ path: '/admin/account/home' })" index="/admin/account/home">
+                            <el-menu-item v-on:click="method.push({ path: '/account/home' })" index="/account/home">
                                 <i-svg name="personal" size="15px" class="me-1"></i-svg>
-                                个人中心
+                                用户中心
                             </el-menu-item>
                             <el-menu-item>
                                 <i-svg name="logout" size="16px" class="me-1"></i-svg>
