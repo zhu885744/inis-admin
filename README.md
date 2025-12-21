@@ -106,7 +106,7 @@ export const externals = () => {
 ### 6. 功能扩展库
 - **echarts**：数据可视化图表库
 - **TinyMCE**（`@tinymce/tinymce-vue`）：富文本编辑器
-- **vditor**：Markdown 编辑器
+- **md-editor-v3**：Markdown 编辑器 https://imzbf.github.io/md-editor-v3/zh-CN/about
 - **plyr**：视频播放器
 - **lottie-web**（`vue3-lottie`）：动画渲染库
 - **highlight.js**：代码高亮库

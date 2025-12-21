@@ -5,13 +5,13 @@
             <h6 class="text-muted text-uppercase mt-0">
                 <el-tooltip placement="top">
                     <template #content>
-                        <strong class="text-success">默认主题也就是当前您看到的后台</strong><br>
-                        ● 默认主题一般情况下是自动升级的，在超级管理员权限下检查到新版本会自动升级<br>
+                        <strong class="text-success">inis-admin也就是当前您看到的后台界面</strong><br>
+                        ● inis-admin一般情况下是自动升级的，在超级管理员权限下检查到新版本会自动升级<br>
                         ● 自动升级检查10分钟会检查一次，也可以通过当前卡片的功能手动检查并进行升级
                     </template>
                     <span class="d-inline-flex align-items-center">
                         <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                        <span class="ms-1">默认主题</span>
+                        <span class="ms-1">inis-admin</span>
                     </span>
                 </el-tooltip>
             </h6>

@@ -2,11 +2,7 @@
     <div class="container-fluid container-box">
         <div class="row d-none d-lg-flex">
             <div class="col-lg-6 d-flex">
-                <div class="input-group custom-search me-1">
-                    <i-svg name="search" color="rgb(var(--icon-color))" size="18px"></i-svg>
-                    <input class="form-control custom search mimic" autocomplete="new-password" type="text" placeholder="这是个假搜索">
-                </div>
-                <button v-on:click="method.refresh()" class="btn btn-auto mx-1 mimic" type="button">刷新</button>
+                <button v-on:click="method.refresh()" class="btn btn-auto mimic" type="button">刷新</button>
             </div>
             <div class="col-lg-6 d-flex justify-content-end" style="z-index: -1">
                 <button class="btn btn-auto h-35px mimic" disabled type="button">
@@ -100,7 +96,7 @@
 
                     <el-tab-pane name="other">
                         <template #label>
-                            <span class="fw-bolder font-12">其他</span>
+                            <span class="fw-bolder font-12">配置</span>
                         </template>
                         <div class="row">
                             <div class="col-md-4">
@@ -117,7 +113,7 @@
 
                     <el-tab-pane name="inis">
                         <template #label>
-                            <span class="fw-bolder font-12">inis</span>
+                            <span class="fw-bolder font-12">更新</span>
                         </template>
                         <div class="row">
                             <div class="col-md-4">

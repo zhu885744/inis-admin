@@ -1,68 +1,91 @@
 <template>
-    <el-dialog v-model="state.item.dialog" class="custom sm" :close-on-click-modal="false">
-        <template #header>
-            <div class="flex-center">
-                <el-text class="mx-1" size="large">登录</el-text>
-            </div>
-        </template>
+    <el-dialog v-model="state.item.dialog" class="custom small-dialog" :close-on-click-modal="false"width="500px"max-width="90vw">
         <template #default>
-            <div class="container-xxl">
+            <div class="container">
                 <el-alert type="success" :closable="false" center class="mb-3 box-shadow-light">
                     <template #title>
                         <i-svg name="!" size="15px" color="var(--el-color-success)"></i-svg>
-                        <span class="ms-1">{{ state.item.tabs === 'code' ? '没有账号自动注册' : '推荐验证码登录' }}</span>
+                        <span class="ms-1">{{ state.item.tabs === 'code' ? '没有账号则自动注册' : '推荐验证码登录' }}</span>
                     </template>
                 </el-alert>
+
                 <el-tabs v-model="state.item.tabs" stretch>
+                    <!-- 验证码登录面板 -->
                     <el-tab-pane name="code">
                         <template #label>
                             <span class="fw-bolder font-12">验证码登录</span>
                         </template>
-                        <div class="row mb-3 mt-3">
-                            <label class="col-3 col-form-label">账户：</label>
-                            <div class="col-9">
-                                <el-input v-model="state.struct.account" class="custom" placeholder="手机号 | 邮箱"></el-input>
-                            </div>
+                        <!-- 垂直布局：账户输入框 -->
+                        <div class="form-item mb-3 mt-3">
+                            <label class="form-label block mb-1">账户：</label>
+                            <el-input 
+                                v-model="state.struct.account" 
+                                class="custom" 
+                                placeholder="手机号 | 邮箱"
+                            ></el-input>
                         </div>
-                        <div class="row mb-3">
-                            <label class="col-3 col-form-label">验证码：</label>
-                            <div ref="verify" class="col-9">
-                                <el-input v-model="state.struct.code" v-on:keyup.enter="method.login()" class="custom" placeholder="请输入验证码">
-                                    <template #suffix>
-                                        <el-button v-on:click="method.code()" :loading="state.item.loading">
-                                            获取 <span v-if="state.item.loading">{{ state.item.second }} s</span>
-                                        </el-button>
-                                    </template>
-                                </el-input>
-                            </div>
+                        <!-- 垂直布局：验证码输入框 -->
+                        <div class="form-item mb-3" ref="verify">
+                            <label class="form-label block mb-1">验证码：</label>
+                            <el-input 
+                                v-model="state.struct.code" 
+                                @keyup.enter="method.login()" 
+                                class="custom" 
+                                placeholder="请输入验证码"
+                            >
+                                <template #suffix>
+                                    <el-button @click="method.code()" :loading="state.item.loading">
+                                        获取 <span v-if="state.item.loading">{{ state.item.second }} s</span>
+                                    </el-button>
+                                </template>
+                            </el-input>
                         </div>
                     </el-tab-pane>
+
+                    <!-- 账号密码登录面板 -->
                     <el-tab-pane name="tradition">
                         <template #label>
-                            <span class="fw-bolder font-12">账密登录</span>
+                            <span class="fw-bolder font-12">账号密码登录</span>
                         </template>
-                        <div class="row mb-3 mt-3">
-                            <label class="col-3 col-form-label">帐号：</label>
-                            <div class="col-9">
-                                <el-input v-model="state.struct.account" class="custom" placeholder="帐号 | 邮箱 | 手机号"></el-input>
-                            </div>
+                        <!-- 垂直布局：帐号输入框 -->
+                        <div class="form-item mb-3 mt-3">
+                            <label class="form-label block mb-1">帐号：</label>
+                            <el-input 
+                                v-model="state.struct.account" 
+                                class="custom" 
+                                placeholder="帐号 | 邮箱 | 手机号"
+                            ></el-input>
                         </div>
-                        <div class="row mb-3">
-                            <label class="col-3 col-form-label">密码：</label>
-                            <div ref="password" class="col-9 d-flex">
-                                <el-input v-model="state.struct.password" v-on:keyup.enter="method.login()" show-password class="custom" placeholder="请输入密码"></el-input>
-                            </div>
+                        <!-- 垂直布局：密码输入框 -->
+                        <div class="form-item mb-3" ref="password">
+                            <label class="form-label block mb-1">密码：</label>
+                            <el-input 
+                                v-model="state.struct.password" 
+                                @keyup.enter="method.login()" 
+                                show-password 
+                                class="custom" 
+                                placeholder="请输入密码"
+                            ></el-input>
                         </div>
                     </el-tab-pane>
                 </el-tabs>
-                <div class="d-flex justify-content-center">
-                    <span v-on:click="method.reset()" class="pointer">忘记密码</span>
+
+                <!-- 忘记密码/注册链接 -->
+                <div class="d-flex justify-content-center mt-2">
+                    <span @click="method.reset()" class="pointer">忘记密码</span>
                     <span v-if="parseInt(store.config.getAllowRegister?.value) === 1" class="mx-2">|</span>
-                    <span v-if="parseInt(store.config.getAllowRegister?.value) === 1" v-on:click="method.register()" class="pointer">注册帐号</span>
+                    <span v-if="parseInt(store.config.getAllowRegister?.value) === 1" @click="method.register()" class="pointer">注册帐号</span>
                 </div>
+
+                <div class="modal-footer d-flex justify-content-center">
+                    <el-button @click="method.login()" :loading="state.item.wait">
+                        {{state.item.wait ? '登录中 ...' : '登  录'}}
+                    </el-button>
+                </div>
+                <!-- 第三方登录 -->
                 <div class="d-flex justify-content-center mt-3">
                     <span class="flex-center mx-1">
-                        <el-button v-on:click="method.oauth('qq')" round>
+                        <el-button @click="method.oauth('qq')" round>
                             <i-svg name="qq" size="24px"></i-svg>
                         </el-button>
                     </span>
@@ -72,13 +95,6 @@
                         </el-button>
                     </span>
                 </div>
-            </div>
-        </template>
-        <template #footer>
-            <div class="modal-footer d-flex justify-content-center">
-                <el-button v-on:click="method.login()" :loading="state.item.wait">
-                    {{state.item.wait ? '登录中 ...' : '登  录'}}
-                </el-button>
             </div>
         </template>
     </el-dialog>
@@ -121,7 +137,6 @@ const state = reactive({
 const method = {
     // 登录
     async login() {
-
         const unix = await method.unix()
         const iv   = crypto.token(`iv-${unix}` , 16, 'login')
         const key  = crypto.token(`key-${unix}`, 16, 'login')
@@ -138,7 +153,6 @@ const method = {
         }
 
         try {
-
             const { data, code, msg } = await axios.post('/api/comm/' + state.item.type, params, {
                 headers: {
                     'X-Khronos': unix,
@@ -183,7 +197,6 @@ const method = {
     },
     // 获取验证码
     async code() {
-
         if (utils.is.empty(state.struct.account))  return notyf.warn('帐号不能为空哟？')
         if (!utils.is.email(state.struct.account) && !utils.is.phone(state.struct.account)) return notyf.warn('格式不对哟！')
         state.struct.code = null
@@ -210,10 +223,12 @@ const method = {
     animation: () => {
         const els = [proxy.$refs.verify, proxy.$refs.password]
         els.forEach(el => {
-            el.classList.add('active', 'shake-horizontal')
-            setTimeout(() => {
-                el.classList.remove('active', 'shake-horizontal')
-            }, 1000)
+            if (el) { // 增加空值判断，避免报错
+                el.classList.add('active', 'shake-horizontal')
+                setTimeout(() => {
+                    el.classList.remove('active', 'shake-horizontal')
+                }, 1000)
+            }
         })
     },
     // 清除缓存

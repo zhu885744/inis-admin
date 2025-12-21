@@ -5,13 +5,13 @@
             <h6 class="text-muted text-uppercase mt-0">
                 <el-tooltip placement="top">
                     <template #content>
-                        ● 程序后端许多功能都依赖于 inis 社区<br>
-                        ● 绑定仅限于为您提供更好的服务体验，不涉及您的程序任何敏感信息，请放心使用<br>
+                        ● 程序后端部分功能依赖于官网，如检测更新、主题授权检测等<br>
+                        ● 绑定仅限于为您提供更好的服务体验，不读取您的程序任何敏感信息，请放心使用<br>
                         <span v-if="state.status.bind">● 当前绑定账号：{{ state.struct.account }}</span>
                     </template>
                     <span class="d-inline-flex align-items-center">
                         <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                        <span class="ms-1">绑定 inis 社区账号</span>
+                        <span class="ms-1">绑定官网账号</span>
                     </span>
                 </el-tooltip>
             </h6>
@@ -28,23 +28,16 @@
     </div>
 
     <el-dialog v-model="state.status.dialog" class="custom sm" :close-on-click-modal="false">
-        <template #header>
-            <div class="d-flex flex-column align-items-center">
-                <div class="flex-center">
-                    <el-image src="https://inis.cn/assets/imgs/logo-white.png" style="height: 52px" class="my-1 py-1"></el-image>
-                </div>
-            </div>
-        </template>
         <template #default>
             <div class="container-xxl">
                 <el-tooltip placement="top">
                     <template #content>
-                        程序后端许多功能都依赖于 inis 社区，绑定仅限于为您提供更好的服务体验，不涉及您的程序任何敏感信息，请放心使用。<br>
+                        程序后端部分功能依赖于官网，如检测更新、主题授权检测等，绑定仅限于为您提供更好的服务体验，不读取您的任何敏感信息，请放心使用。<br>
                     </template>
                     <el-alert type="success" :closable="false" center class="mb-3 box-shadow-light d-inline-flex align-items-center pointer">
                         <template #title>
                             <i-svg name="!" size="15px" color="var(--el-color-success)"></i-svg>
-                            <span class="ms-1">绑定 inis 社区账号</span>
+                            <span class="ms-1">绑定官网账号</span>
                         </template>
                     </el-alert>
                 </el-tooltip>
@@ -61,7 +54,7 @@
                     </div>
                 </div>
                 <div class="flex-center">
-                    <a href="https://inis.cc" target="_blank" class="text-dark">没有账号？去注册</a>
+                    <a href="https://inis.zhuxu.asia" target="_blank" class="text-dark">没有账号？去注册</a>
                 </div>
             </div>
         </template>
