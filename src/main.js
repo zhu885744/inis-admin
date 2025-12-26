@@ -10,11 +10,10 @@ import lottie from '{src}/comps/custom/i-lottie.vue'
 
 // 默认的bootstrap样式
 // https://github.com/caroso1222/notyf
-import 'notyf/notyf.min.css'
-import 'bootstrap'
-import 'bootstrap/dist/css/bootstrap.min.css'
-// 覆盖掉bootstrap的样式
-import '{src}/assets/libs/bootstrap.min.css'
+import 'notyf/notyf.min.css'                        // 待删除
+import 'bootstrap'                                  // 待删除
+import 'bootstrap/dist/css/bootstrap.min.css'       // 待删除
+
 import directives from '{src}/utils/directives'
 import socket from '{src}/utils/socket'
 import ElementPlus from 'element-plus'

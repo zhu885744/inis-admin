@@ -1,10 +1,10 @@
 import type { Directive } from 'vue'
-import { DEFAULT_PLUGIN_OPTIONS } from './options'
-import { createContainer } from './utils/create-container-element'
-import { createRippleElement } from './utils/create-ripple-element'
-import { getDistanceToFurthestCorner } from './utils/get-element-position-utils'
-import type { IRippleDirectiveOptions, IRippleDirectiveOptionWithBinding } from './options'
-import { decrementRippleCount, deleteRippleCount, getRippleCount, incrementRippleCount } from './utils/ripple-count'
+import { DEFAULT_PLUGIN_OPTIONS } from './options.ts'
+import { createContainer } from './utils/create-container-element.ts'
+import { createRippleElement } from './utils/create-ripple-element.ts'
+import { getDistanceToFurthestCorner } from './utils/get-element-position-utils.ts'
+import type { IRippleDirectiveOptions, IRippleDirectiveOptionWithBinding } from './options.ts'
+import { decrementRippleCount, deleteRippleCount, getRippleCount, incrementRippleCount } from './utils/ripple-count.ts'
 
 // Ensure that the current element can be completely overwritten
 const MULTIPLE_NUMBER = 1.05

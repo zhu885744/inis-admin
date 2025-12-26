@@ -6,7 +6,6 @@
                 <el-tooltip placement="top">
                     <template #content>
                         ● Markdown编辑器：Vditor支持所见即所得、即时渲染（类似 Typora）和分屏预览模式。<br>
-                        ● 富文本编辑器：TinyMCE是一个基于浏览器的所见即所得富文本编辑器，用于编辑HTML文档。<br>
                     </template>
                     <span class="d-inline-flex align-items-center">
                         <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
@@ -14,11 +13,9 @@
                     </span>
                 </el-tooltip>
             </h6>
-            <h2 class="m-b-20">
-                <el-switch v-model="state.cache.json.editor" v-on:change="method.change" :disabled="!state.status.finish"
-                           active-value="tinymce" inactive-value="vditor" active-text="富文本" inactive-text="Markdown">
-                </el-switch>
-            </h2>
+            <h4 class="m-b-20">
+                <span>Markdown编辑器</span>
+            </h4>
             <span class="badge bg-success font-white"> 更多 </span>
             <span class="text-muted">
                 其它配置信息，<span v-on:click="method.show()" class="text-dark pointer">点我配置</span>
@@ -38,7 +35,6 @@
                             <el-tooltip placement="top">
                                 <template #content>
                                     ● Markdown编辑器：Vditor支持所见即所得、即时渲染（类似 Typora）和分屏预览模式。<br>
-                                    ● 富文本编辑器：TinyMCE是一个基于浏览器的所见即所得富文本编辑器，用于编辑HTML文档。<br>
                                 </template>
                                 <span>
                                     <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
@@ -46,10 +42,10 @@
                                 </span>
                             </el-tooltip>
                         </label>
-                        <el-select v-model="state.cache.json.editor" class="d-block custom font-13" placeholder="请选择">
-                            <el-option v-for="item in state.select.editor" :key="item.value" :label="item.label" :value="item.value">
-                                <span class="font-13">{{ item.label }}</span>
-                                <small class="text-muted float-end">{{ item.value }}</small>
+                        <el-select v-model="state.cache.json.editor" class="d-block custom font-13" placeholder="请选择" disabled>
+                            <el-option value="vditor" label="Markdown">
+                                <span class="font-13">Markdown</span>
+                                <small class="text-muted float-end">vditor</small>
                             </el-option>
                         </el-select>
                     </div>
@@ -127,7 +123,7 @@ const state = reactive({
     cache: {
         name: 'article',
         json: {
-            editor: 'tinymce'
+            editor: 'vditor'  // 固定为vditor
         }
     },
     struct: {
@@ -146,8 +142,7 @@ const state = reactive({
     },
     select: {
         editor: [
-            { value: 'tinymce', label: '富文本'},
-            { value: 'vditor', label: 'Markdown' },
+            { value: 'vditor', label: 'Markdown' }  // 仅保留vditor选项
         ],
         comment: {
             allow: [
@@ -172,7 +167,6 @@ onMounted(async () => {
 
 const method = {
     init: async () => {
-
         method.cache()
 
         state.status.finish  = false
@@ -187,19 +181,22 @@ const method = {
         if (code !== 200) return
         state.struct = data
 
+        // 确保编辑器类型为vditor
+        state.cache.json.editor = 'vditor'
+        state.struct.json.editor = 'vditor'
+        
         state.status.finish  = true
-    },
-    change: async value => {
-        cache.set(state.cache.name, { ...state.cache.json, editor: value })
     },
     show() {
         if (!state.status.finish) return notyf.warn('配置获取失败，无法进行配置！')
         state.status.dialog = true
     },
     save: async () => {
-
         state.status.wait   = true
 
+        // 保存时强制设置为vditor
+        state.struct.json.editor = 'vditor'
+        
         const { code, msg } = await axios.post('/api/config/save', {
             ...state.struct,
             json: JSON.stringify(state.struct.json)
@@ -215,15 +212,15 @@ const method = {
     },
     // 获取缓存
     cache: (json = state.cache.json) => {
-
-        // 缓存存在 - 直接返回
+        // 缓存存在 - 直接返回并确保是vditor
         if (cache.has(state.cache.name)) {
-            state.cache.json = cache.get(state.cache.name)
+            const cached = cache.get(state.cache.name)
+            state.cache.json = { ...cached, editor: 'vditor' }
             return
         }
 
-        // 缓存不存在 - 保存缓存
-        cache.set(state.cache.name, json)
+        // 缓存不存在 - 保存缓存（强制为vditor）
+        cache.set(state.cache.name, { ...json, editor: 'vditor' })
     },
 }
 

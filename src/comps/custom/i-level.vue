@@ -124,10 +124,15 @@ const props = defineProps({
 </script>
 
 <style lang="scss" scoped>
+// 仅导入 color 模块，不再使用 lighten/darken
+@use "sass:color";
+
 $theme-color: #2481FA;
+
 .level-badge-wrapper {
     position: relative;
 }
+
 .level-value {
     top: 50%;
     left: 50%;
@@ -145,30 +150,37 @@ $theme-color: #2481FA;
     transform: translate(-50%, -45.5%);
     font-size: v-bind('`${props.size * 0.25}px`');
 }
+
 .stop-primary {
     stop-color: $theme-color;
 }
+
 .stop-second {
-    // 替代 lighten($theme-color, 5)
-    stop-color: adjust-color($theme-color, $lightness: 5%);
+    // 提亮 5%：使用 color.adjust + 正的 lightness 值
+    stop-color: color.adjust($theme-color, $lightness: 5%);
 }
+
 .stop-muted {
-    // 替代 darken($theme-color, 2)
-    stop-color: adjust-color($theme-color, $lightness: -2%);
+    // 变暗 2%：使用 color.adjust + 负的 lightness 值
+    stop-color: color.adjust($theme-color, $lightness: -2%);
 }
+
 .fill-primary {
     fill: $theme-color;
 }
+
 .fill-muted {
-    // 替代 lighten($theme-color, 20)
-    fill: adjust-color($theme-color, $lightness: 20%);
+    // 提亮 20%：统一用 color.adjust
+    fill: color.adjust($theme-color, $lightness: 20%);
 }
+
 .fill-second {
-    // 替代 darken($theme-color, 5)
-    fill: adjust-color($theme-color, $lightness: -5%);
+    // 变暗 5%：统一用 color.adjust
+    fill: color.adjust($theme-color, $lightness: -5%);
 }
+
 .fill-lighten {
-    // 替代 lighten($theme-color, 30)
-    fill: adjust-color($theme-color, $lightness: 30%);
+    // 提亮 30%：统一用 color.adjust
+    fill: color.adjust($theme-color, $lightness: 30%);
 }
 </style>

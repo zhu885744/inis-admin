@@ -5,10 +5,15 @@
                 <div class="collapse navbar-collapse justify-content-between">
                     <el-menu class="navbar-nav w-100" :router="false" :unique-opened="true" mode="horizontal" background-color="transparent">
                         <el-menu-item index="/">
-                            <el-image v-on:click="method.push('/')" :src="`/assets/imgs/logo-${state.theme || 'white'}.png`" style="width: 100px;" class="d-flex flex-center"></el-image>
+                            <el-image v-on:click="method.push('/')" :src="`/assets/imgs/logo.png`" style="width: 70px;" class="d-flex flex-center"></el-image>
                         </el-menu-item>
                         <el-menu-item index="home" v-on:click="push('/')">
+                            <i-svg name="all" size="14px"></i-svg>
                             <span class="ms-1">首页</span>
+                        </el-menu-item>
+                        <el-menu-item index="home" v-on:click="push('/icons')">
+                            <i-svg name="article" size="14px"></i-svg>
+                            <span class="ms-1">图标</span>
                         </el-menu-item>
                     </el-menu>
                     <el-menu :router="true" :unique-opened="true" mode="horizontal" background-color="transparent" class="navbar-nav d-flex align-items-center justify-content-end w-100">
@@ -76,15 +81,12 @@
     <el-drawer v-model="state.drawer.show" direction="ltr" size="75%" :show-close="false" class="custom side">
         <template #header>
             <div class="d-flex flex-column">
-                <span class="flex-center mb-3">
-                    <el-image v-on:click="method.push('/')" :src="`/assets/imgs/logo-${state.theme || 'white'}.png`" style="width: 100px;" class="d-flex flex-center"></el-image>
-                </span>
                 <div v-if="store.comm.getLogin.finish" class="d-flex flex-column">
                     <p class="mb-2 fw-medium font-14 d-flex align-items-center">
                         <span class="me-1 w-2px h-16px bg-info radius-4"></span>
                         个人信息
                     </p>
-                    <el-image src="https://inis.cn/api/file/rand?name=imgs.txt&size=250x120" style="height: 120px; border-radius: 6px 6px 0 0" fit="cover"></el-image>
+                    <el-image src="https://img1.zhuxu.asia/2025/12/17/694228ed6e402.jpg" style="height: 120px; border-radius: 6px 6px 0 0" fit="cover"></el-image>
                     <div class="card card-body position-relative mb-0 nav-bg">
                         <div class="d-flex">
                             <el-avatar :src="store.comm.getLogin.user?.avatar" :size="50" class="position-absolute avatar-shadow mirror-scan" style="top: -25px" shape="square"></el-avatar>
@@ -106,17 +108,13 @@
                 导航菜单
             </p>
             <el-menu class="nav-bg">
-                <el-menu-item v-on:click="method.push({ name: 'index-articles-list' })" index="articles">
-                    <span class="d-flex align-items-center">
-                        <i-svg name="article" size="14px"></i-svg>
-                        <span class="font-14 fw-medium ms-1">开发中</span>
-                    </span>
+                <el-menu-item index="home" v-on:click="push('/')">
+                    <i-svg name="all" size="14px"></i-svg>
+                    <span class="ms-1">首页</span>
                 </el-menu-item>
-                <el-menu-item index="bug">
-                    <span class="d-flex align-items-center">
-                        <i-svg name="issues" size="14px"></i-svg>
-                        <span class="font-14 fw-medium ms-1">开发中</span>
-                    </span>
+                <el-menu-item index="home" v-on:click="push('/icons')">
+                    <i-svg name="article" size="14px"></i-svg>
+                    <span class="ms-1">图标</span>
                 </el-menu-item>
             </el-menu>
         </template>

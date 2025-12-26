@@ -34,7 +34,7 @@ const method = {
                 })
             }
             await method.refresh()
-        }, inis.lazy_time * 10 * 3)
+        }, inis.lazy_time * 10 * 30)
     },
     // 正则获取页面中的所有script标签
     html: async () => {

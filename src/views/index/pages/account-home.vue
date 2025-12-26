@@ -1,5 +1,8 @@
 <template>
     <div id="account-home" class="container-fluid container-box px-2">
+        <!-- 加载状态 -->
+        <el-loading v-if="state.loading" fullscreen text="加载中..."></el-loading>
+        
         <div class="card mb-3">
             <div class="card-body">
                 <div class="row">
@@ -27,27 +30,46 @@
                 </div>
             </div>
         </div>
-        <el-tabs v-model="state.item.tabs" class="overall tag">
 
+        <el-card class="d-flex justify-content-between mb-3">
+            <div>积分：<span class="font-16 fw-bolder">{{ state.user?.points || 0 }}</span></div>
+            <div>余额：<span class="font-16 fw-bolder">{{ state.user?.currency || 0 }}</span></div>
+            <div>等级：<span class="font-16 fw-bolder">Lv.{{ store.comm.getLogin.user.result.level.current.value }}</span></div>
+            <div>经验：<span class="font-16 fw-bolder">{{ state.user?.exp || 0 }} / {{ state.user?.result?.level?.next?.exp || 0 }}</span></div>
+            <div>距离下一级还需「{{ state.user?.result?.level?.next?.exp - state.user?.exp || 0 }}」经验</div>
+        </el-card>
+
+        <el-card class="mb-3">
+            <div class="mb-3">完成以下每日任务，可以获得对应的经验值</div>
+            <el-table :data="state.item.rules" stripe style="width: 100%" class="custom simple">
+                <el-table-column prop="name" label="名称"></el-table-column>
+                <el-table-column prop="exp" label="经验值">
+                    <template #default="scope">
+                        +{{ scope.row.exp }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="count" label="次/日"></el-table-column>
+            </el-table>
+        </el-card>
+
+        <el-tabs v-model="state.item.tabs" type="border-card">
             <el-tab-pane name="info">
                 <template #label>
                     <span class="fw-bolder font-12">基本信息</span>
                 </template>
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <i-row-text title="昵称" :value="state.user?.nickname"></i-row-text>
-                        <i-row-text title="头衔" :value="state.user?.title"></i-row-text>
-                        <i-row-text title="性别">
-                            <template #value>
-                                <span v-if="utils.is.empty(state.user?.gender)">保密</span>
-                                <span v-else>
-                                    {{ state.user?.gender === 'boy' ? '男' : '女' }}
-                                </span>
-                            </template>
-                        </i-row-text>
-                        <i-row-text title="简介" :value="state.user?.description"></i-row-text>
-                        <i-row-text title="注册" :value="utils.time.nature(state.user?.create_time)"></i-row-text>
-                    </div>
+                <div>
+                    <i-row-text title="昵称" :value="state.user?.nickname"></i-row-text>
+                    <i-row-text title="头衔" :value="state.user?.title"></i-row-text>
+                    <i-row-text title="性别">
+                        <template #value>
+                            <span v-if="utils.is.empty(state.user?.gender)">保密</span>
+                            <span v-else>
+                                {{ state.user?.gender === 'boy' ? '男' : '女' }}
+                            </span>
+                        </template>
+                    </i-row-text>
+                    <i-row-text title="简介" :value="state.user?.description"></i-row-text>
+                    <i-row-text title="注册" :value="utils.time.nature(state.user?.create_time)"></i-row-text>
                 </div>
             </el-tab-pane>
 
@@ -55,32 +77,22 @@
                 <template #label>
                     <span class="fw-bolder font-12">账号设置</span>
                 </template>
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <user-edit-account  v-model="state.item.edit" v-on:finish="method.edit.finish" v-on:edit="method.edit.click"></user-edit-account>
-                        <user-edit-email    v-model="state.item.edit" v-on:finish="method.edit.finish" v-on:edit="method.edit.click"></user-edit-email>
-                        <user-edit-phone    v-model="state.item.edit" v-on:finish="method.edit.finish" v-on:edit="method.edit.click"></user-edit-phone>
-                        <user-edit-password v-model="state.item.edit" v-on:finish="method.edit.finish" v-on:edit="method.edit.click"></user-edit-password>
-                    </div>
+                <div>
+                    <user-edit-account  v-model="state.item.edit" v-on:finish="method.edit.finish" v-on:edit="method.edit.click"></user-edit-account>
+                    <user-edit-email    v-model="state.item.edit" v-on:finish="method.edit.finish" v-on:edit="method.edit.click"></user-edit-email>
+                    <user-edit-phone    v-model="state.item.edit" v-on:finish="method.edit.finish" v-on:edit="method.edit.click"></user-edit-phone>
+                    <user-edit-password v-model="state.item.edit" v-on:finish="method.edit.finish" v-on:edit="method.edit.click"></user-edit-password>
                 </div>
-            </el-tab-pane>
-
-            <el-tab-pane name="collect" v-if="false">
-                <template #label>
-                    <span class="fw-bolder font-12">我的收藏</span>
-                </template>
             </el-tab-pane>
         </el-tabs>
     </div>
 
     <user-edit-info ref="info" v-on:finish="method.edit.finish"></user-edit-info>
-    <mouse-menu ref="mouse" v-bind="state.item.menu"></mouse-menu>
 </template>
 
 <script setup>
 import cache from '{src}/utils/cache'
 import utils from '{src}/utils/utils'
-import MouseMenu from '@howdyjs/mouse-menu'
 import { useCommStore } from '{src}/store/comm'
 import { useWalletStore } from '{src}/store/wallet'
 import iRowText from '{src}/comps/custom/i-row-text.vue'
@@ -89,7 +101,7 @@ import UserEditAccount from '{src}/comps/index/user/edit-account.vue'
 import UserEditEmail from '{src}/comps/index/user/edit-email.vue'
 import UserEditPhone from '{src}/comps/index/user/edit-phone.vue'
 import UserEditPassword from '{src}/comps/index/user/edit-password.vue'
-import { list as MenuList, config as MenuConfig } from '{src}/utils/menu'
+import { ElLoading } from 'element-plus'
 
 const { ctx, proxy } = getCurrentInstance()
 const store  = {
@@ -97,21 +109,41 @@ const store  = {
     wallet: useWalletStore(),
 }
 const state  = reactive({
+    loading: false,
     user: cache.get('user-info') || {},
     item: {
         tabs: 'info',
         edit: null,
-        menu: {
-            ...MenuConfig,
-            menuList: [{
-                label: '刷新',
-                icon: `<svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="14" height="14">
-                    <path fill="rgb(var(--menu-icon-color))" d="M608 928c-229.76 0-416-186.24-416-416h-0.128c0-0.416 0.128-0.768 0.128-1.184a95.904 95.904 0 1 0-191.872-1.184c0 0.384-0.128 0.768-0.128 1.184l0.032 0.384c0 0.288 0.096 0.544 0.096 0.8H0c0 282.784 229.216 512 512 512 282.016 0 510.592-227.968 511.872-509.632C1022.592 743.072 836.928 928 608 928z"></path>
-                    <path fill="rgb(var(--menu-icon-color))" d="M1023.872 512H1024c0-282.784-229.216-512-512-512C230.016 0 1.408 227.968 0.128 509.632 1.408 280.96 187.072 96 416 96c229.76 0 416 186.24 416 416h0.128c0 0.416-0.128 0.768-0.128 1.184a96 96 0 0 0 96 96 95.872 95.872 0 0 0 95.872-94.816c0-0.416 0.128-0.768 0.128-1.184l-0.032-0.384c0-0.288-0.096-0.544-0.096-0.8z"></path>
-                </svg>`,
-                fn: () => method.refresh()
-            }],
-        },
+        month: null,
+        rules: [{
+            name: '签到',
+            exp: 10,
+            count: 1,
+        },{
+            name: '登录',
+            exp: 5,
+            count: 1,
+        },{
+            name: '点赞',
+            exp: 1,
+            count: 10,
+        },{
+            name: '收藏',
+            exp: 1,
+            count: 10,
+        },{
+            name: '访问',
+            exp: 1,
+            count: 10,
+        },{
+            name: '分享',
+            exp: 1,
+            count: 10,
+        },{
+            name: '评论',
+            exp: 1,
+            count: 10,
+        }]
     },
     wallet: {
         show: false,
@@ -130,21 +162,27 @@ const method = {
         finish: params => {
             if (utils.is.empty(params)) return
             state.user = params
+            // 保存到缓存
+            cache.set('user-info', params)
         },
         click: params => (state.item.edit = params),
     },
+    // 刷新页面数据
+    refresh: async () => {
+        state.loading = true
+        try {
+            // 模拟重新获取用户信息
+            await new Promise(resolve => setTimeout(resolve, 800))
+            // 实际项目中这里可以调用接口重新获取用户信息
+            const freshUser = cache.get('user-info') || {}
+            state.user = freshUser
+            ElMessage.success('刷新成功')
+        } catch (error) {
+            ElMessage.error('刷新失败')
+            console.error(error)
+        } finally {
+            state.loading = false
+        }
+    }
 }
-
-onMounted(async () => {
-    // 追加鼠标右键菜单
-    state.item.menu.menuList.push(...[{ line: true }, ...await MenuList()])
-})
-
-// 监听 html 下的鼠标右键事件
-document.addEventListener('contextmenu', (event) => {
-    // 阻止默认事件
-    event.preventDefault()
-    // 判断点击在不在 #tabs-area 区域内，在不显示右键菜单
-    if (!event?.target?.closest('#tabs-area')) proxy.$refs['mouse']?.show(event.x, event.y)
-})
 </script>

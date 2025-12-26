@@ -3,18 +3,16 @@ import utils from '{src}/utils/utils'
 import notyf from '{src}/utils/notyf'
 import axios from '{src}/utils/request'
 import { useCommStore } from '{src}/store/comm'
-import { list as MenuList } from '{src}/utils/menu'
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 
 // 安装引导
 const install = {
     name: 'install',
     path: '/install',
-    component: ()    => import('{src}/views/install/layout/base.vue'),
+    component: () => import('{src}/views/install/layout/base.vue'),
     meta: { title: '安装引导' },
     children: [{
-        // path 匹配 / 或 /index 或 /home
-        path: '/',  // 正则匹配：空 或 / 或 index 或 home
+        path: '/',
         name: 'install-index',
         meta: { title: '安装引导' },
     }],
@@ -23,7 +21,7 @@ const install = {
 // 前台路由
 const index = {
     path: '/',
-    component: ()    => import('{src}/views/index/layout/base.vue'),
+    component: () => import('{src}/views/index/layout/base.vue'),
     children: [{
         path: '/',
         name: 'index-home',
@@ -35,7 +33,6 @@ const index = {
         meta: { title: '用户中心' },
         component: () => import('{src}/views/index/pages/account-home.vue'),
     },{
-        // token 是 jwt token
         path: '/oauth/:token',
         name: 'index-oauth',
         meta: { title: '三方登录' },
@@ -52,51 +49,51 @@ const index = {
 const admin = {
     name: 'admin',
     path: '/admin',
-    component: ()    => import('{src}/views/admin/layout/base.vue'),
+    component: () => import('{src}/views/admin/layout/base.vue'),
     children: [{
-        path: /index|admin/,  // 正则匹配：空 或 / 或 index 或 home
+        path: /index|admin/,
         name: 'admin-home',
-        meta: { title: '首页', auth: false },
+        meta: { title: '控制台', auth: false },
         component: () => import('{src}/views/admin/pages/index.vue'),
     },{
         path: '/admin/users',
         name: 'admin-users',
-        meta: { title: '用户' },
+        meta: { title: '用户管理' },
         component: () => import('{src}/views/admin/pages/users.vue'),
     },{
         path: '/admin/banner',
         name: 'admin-banner',
-        meta: { title: '轮播' },
+        meta: { title: '轮播管理' },
         component: () => import('{src}/views/admin/pages/banner.vue'),
     },{
         path: '/admin/links',
         name: 'admin-links',
-        meta: { title: '友链' },
+        meta: { title: '友链管理' },
         component: () => import('{src}/views/admin/pages/links.vue'),
     },{
         path: '/admin/tags',
         name: 'admin-tags',
-        meta: { title: '标签' },
+        meta: { title: '标签管理' },
         component: () => import('{src}/views/admin/pages/tags.vue'),
     },{
         path: '/admin/placard',
         name: 'admin-placard',
-        meta: { title: '公告' },
+        meta: { title: '公告管理' },
         component: () => import('{src}/views/admin/pages/placard.vue'),
     },{
         path: '/admin/level',
         name: 'admin-level',
-        meta: { title: '等级' },
+        meta: { title: '等级管理' },
         component: () => import('{src}/views/admin/pages/level.vue'),
     },{
         path: '/admin/comment',
         name: 'admin-comment',
-        meta: { title: '评论' },
+        meta: { title: '评论管理' },
         component: () => import('{src}/views/admin/pages/comment.vue'),
     },{
         path: '/admin/article',
         name: 'admin-article',
-        meta: { title: '文章' },
+        meta: { title: '文章列表' },
         component: () => import('{src}/views/admin/pages/article.vue'),
     },{
         path: '/admin/article/write/:id(\\d+)?',
@@ -161,18 +158,12 @@ const admin = {
     },{
         path: '/admin/badge',
         name: 'admin-badge',
-        meta: { title: '徽章' },
+        meta: { title: '徽章管理' },
         component: () => import('{src}/views/admin/pages/badge.vue'),
-    },{
-        path: '/admin/test',
-        name: 'admin-test',
-        meta: { title: '测试' },
-        component: () => import('{src}/views/admin/pages/test.vue'),
     }],
 }
 
 const routes = [ index, install, admin, {
-    // 404 路由
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: () => import('{src}/views/error.vue'),
@@ -181,88 +172,56 @@ const routes = [ index, install, admin, {
 const base = '/'
 const mode = 'hash'
 const route = createRouter({
-    routes, history: mode === 'history' ? createWebHistory(base) : createWebHashHistory(base)
+    routes, 
+    history: mode === 'history' ? createWebHistory(base) : createWebHashHistory(base)
 })
 
 // 路由守卫
 route.beforeEach(async (to, from, next) => {
-
-    // 获取当前页面的 meta 信息
-    const meta = to.meta || {}
     // 设置页面标题
-    if (meta?.title) document.title = meta.title
+    if (to.meta?.title) document.title = to.meta.title
 
-    // 登录状态无效 - 跳转到登录页面
+    // 登录状态无效处理
     const invalid = async (params = { path: '/' }) => {
-
         cache.del('user-info')
         const { code } = await axios.del('/api/comm/logout')
-
-        // 退出登录失败 - 清除登录信息
         if (code !== 200) {
             cache.del('user-info')
             utils.clear.cookie(globalThis?.inis?.token_name || 'INIS_LOGIN_TOKEN')
         }
-
         next(params)
     }
 
-    // 检查是否以 /install 开头
+    // 安装引导路由校验
     if (to.path.indexOf('/install') === 0) {
-
         const { code, msg } = await axios.get('/dev/install/check')
-
         if (code !== 200) {
             next('/')
             return notyf.error(msg)
         }
-
         next()
     }
 
-    // 判断 to.name 是否为 admin-开头的路由
-    if (to.path.indexOf('/admin') === 0) {
-
+    // 后台路由校验
+    else if (to.path.indexOf('/admin') === 0) {
         const cacheName = 'check-token'
 
+        // 校验登录状态
         if (!cache.has(cacheName)) {
-
-            const { data, code } = await axios.post('/api/comm/check-token')
-
+            const { code } = await axios.post('/api/comm/check-token')
             if (code !== 200) return invalid()
-
-            // 设置用户信息
-            cache.set('user-info', data.user, inis.cache)
-            // 缓存10分钟 - 防止频繁请求
+            // 缓存登录状态10分钟
             cache.set(cacheName, true, inis.cache)
         }
 
-        // 获取菜单列表
-        let list = await MenuList()
-        let array = ['/admin/test','/admin/account/home']
-        // 把 list.children 下的 item.path 放到一维数组 array 中
-        list.map(item => {
-            if (item.children) {
-                item.children.map(child=>array.push(child.path))
-            }
-        })
-
-        // 是否需要校验权限
-        if (to.meta.auth !== false) {
-            let check = false
-            for (let item of array) if (to.path.indexOf(item) !== -1) {
-                check = true
-                break
-            }
-            if (!check) return next('/')
-        }
-
-        // 设置页面标题
         useCommStore().nav.title = to.meta.title
-
         next()
+    }
 
-    } else next()
+    // 其他路由直接放行
+    else {
+        next()
+    }
 })
 
 export default route

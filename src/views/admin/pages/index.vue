@@ -1,82 +1,117 @@
 <template>
-    <div class="container-fluid container-box">
-        <div class="card mt-2">
-            <div class="card-body p-0">
-                <el-tabs v-model="state.item.tabs">
-                    <el-tab-pane name="count">
-                        <template #label>
-                            <span class="fw-bolder font-12">数据统计</span>
-                        </template>
-                        <div class="row px-3 pb-3">
-                            <div v-for="item in 8" :key="item" class="col-md-3 py-1">
-                                <div class="card mb-0" style="box-shadow: unset">
-                                    <div class="card-body">
-                                        {{ item }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </el-tab-pane>
-                    <el-tab-pane name="other">
-                        <template #label>
-                            <span class="fw-bolder font-12">其它信息</span>
-                        </template>
-                    </el-tab-pane>
-                </el-tabs>
-            </div>
-        </div>
-        <div class="card mt-2">
-            <div class="card-body p-0">
-                系统信息
-            </div>
-        </div>
+  <div class="container-fluid container-box"> 
+  <div class="dashboard-container">
+    <!-- 页面标题区 -->
+    <div class="dashboard-header">
+      <h1 class="page-title">控制台</h1>
+      <div class="header-actions">
+        <el-button type="primary" @click="refreshData">刷新数据</el-button>
+        <el-button>导出报告</el-button>
+      </div>
     </div>
-    <mouse-menu ref="mouse" v-bind="state.item.menu"></mouse-menu>
+
+    <!-- 核心数据概览 -->
+    <div class="stats-grid">
+      <el-card>
+        <div class="stat-info">
+          <p class="stat-label">总用户数</p>
+          <h3 class="stat-value">{{ totalUsers }}</h3>
+          <p class="stat-change positive">今日新增 4</p>
+        </div>
+      </el-card>
+
+      <el-card>
+        <div class="stat-info">
+          <p class="stat-label">活跃用户</p>
+          <h3 class="stat-value">{{ activeUsers }}</h3>
+          <p class="stat-change positive">昨天活跃 21</p>
+        </div>
+      </el-card>
+
+      <el-card>
+        <div class="stat-info">
+          <p class="stat-label">文章总量</p>
+          <h3 class="stat-value">{{ totalContents }}</h3>
+          <p class="stat-change positive">昨天发布 2篇</p>
+        </div>
+      </el-card>
+
+      <el-card>
+        <div class="stat-info">
+          <p class="stat-label">系统状态</p>
+          <h3 class="stat-value">正常</h3>
+          <p class="stat-change positive">响应时间: 8ms</p>
+        </div>
+      </el-card>
+    </div>
+
+    <!-- 图表与数据区域 -->
+    <div class="charts-section">
+      <el-card>
+        <div class="chart-header">
+          <h2>已注册用户</h2>
+          <el-button text>详情</el-button>
+        </div>
+        <div class="chart-content">
+          <!-- 这里可以放置图表组件 -->
+          <div class="placeholder-chart">开发中</div>
+        </div>
+      </el-card>
+
+      <el-card>
+        <div class="chart-header">
+          <h2>已发布文章</h2>
+          <el-button text>详情</el-button>
+        </div>
+        <div class="chart-content">
+          <!-- 这里可以放置图表组件 -->
+          <div class="placeholder-chart">开发中</div>
+        </div>
+      </el-card>
+    </div>
+
+    <!-- 最近动态 -->
+    <el-card>
+      <h2>最近动态</h2>
+      <el-table :data="activities" border>
+        <el-table-column prop="time" label="时间" width="180"></el-table-column>
+        <el-table-column prop="event" label="事件"></el-table-column>
+        <el-table-column prop="status" label="状态" width="120">
+          <template #default="scope">
+            <el-tag :type="scope.row.status === 'success' ? 'success' : 'warning'">
+              {{ scope.row.status === 'success' ? '完成' : '处理中' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
+  </div>
+  </div> 
 </template>
 
 <script setup>
-import ColorThief from 'colorthief'
-import MouseMenu from '@howdyjs/mouse-menu'
-import { list as MenuList, config as MenuConfig } from '{src}/utils/menu'
+import { ref } from 'vue'
 
-const { ctx, proxy } = getCurrentInstance()
+// 模拟数据
+const totalUsers = ref('51')
+const activeUsers = ref('13')
+const totalContents = ref('29')
+const timeRange = ref('30d')
 
-const router = useRouter()
-const state  = reactive({
-    item: {
-        tabs  : 'count',
-        menu  : {
-            ...MenuConfig,
-            menuList: [{
-                label: '刷新',
-                icon: `<svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="14" height="14">
-                    <path fill="rgb(var(--menu-icon-color))" d="M608 928c-229.76 0-416-186.24-416-416h-0.128c0-0.416 0.128-0.768 0.128-1.184a95.904 95.904 0 1 0-191.872-1.184c0 0.384-0.128 0.768-0.128 1.184l0.032 0.384c0 0.288 0.096 0.544 0.096 0.8H0c0 282.784 229.216 512 512 512 282.016 0 510.592-227.968 511.872-509.632C1022.592 743.072 836.928 928 608 928z"></path>
-                    <path fill="rgb(var(--menu-icon-color))" d="M1023.872 512H1024c0-282.784-229.216-512-512-512C230.016 0 1.408 227.968 0.128 509.632 1.408 280.96 187.072 96 416 96c229.76 0 416 186.24 416 416h0.128c0 0.416-0.128 0.768-0.128 1.184a96 96 0 0 0 96 96 95.872 95.872 0 0 0 95.872-94.816c0-0.416 0.128-0.768 0.128-1.184l-0.032-0.384c0-0.288-0.096-0.544-0.096-0.8z"></path>
-                </svg>`,
-                fn: () => method.refresh()
-            }],
-        },
-    }
-})
+const activities = ref([
+  { time: '2025-12-15 09:23', event: '检测到系统有新版本更新，开始自动更新', status: 'success' },
+  { time: '2025-12-15 08:45', event: '系统自动备份完成', status: 'success' },
+  { time: '2025-12-15 07:12', event: '用户「不语」登录了系统', status: 'success' },
+  { time: '2025-12-14 23:10', event: '内容审核队列处理中', status: 'warning' },
+  { time: '2025-12-14 21:56', event: '服务器负载过高预警', status: 'warning' }
+])
 
-onMounted(async () => {
-    // 追加鼠标右键菜单
-    state.item.menu.menuList.push(...[{line: true}, ...await MenuList()])
-})
-
-const method = {
-    load: async (img, index) => {
-        const color = await (new ColorThief).getColor(img)
-        proxy.$refs['carousel-footer'][index].style.background = `rgb(${color.join(',')})`
-    }
+// 方法
+const refreshData = () => {
+  // 刷新数据逻辑
 }
 
-
-// 监听 html 下的鼠标右键事件
-document.addEventListener('contextmenu', (event) => {
-    // 阻止默认事件
-    event.preventDefault()
-    // 判断点击在不在 #tabs-area 区域内，在不显示右键菜单
-    proxy.$refs['mouse']?.show(event.x, event.y)
-})
+const changeTimeRange = (val) => {
+  // 切换时间范围逻辑
+}
 </script>

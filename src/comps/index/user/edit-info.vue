@@ -44,14 +44,13 @@
                                 </span>
                             </el-tooltip>
                         </label>
-                        <el-input v-model="state.struct.avatar" autocomplete="off" class="custom" placeholder="填写图片地址或点击上传图片">
-                            <template #suffix>
-                                <el-button v-on:click="method.upload('avatar')" :loading="state.item.upload">
-                                    <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                                    <span class="ms-1">上传</span>
-                                </el-button>
-                            </template>
-                        </el-input>
+                        <div class="input-with-button">
+                            <el-input v-model="state.struct.avatar" class="custom" placeholder="填写图片地址或点击上传图片"></el-input>
+                            <el-button @click="method.upload('avatar')" :loading="state.item.upload"class="upload-btn">
+                                <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
+                                <span class="ms-1">上传</span>
+                            </el-button>
+                        </div>
                     </div>
                 </div>
             </div>

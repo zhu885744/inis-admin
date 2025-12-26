@@ -4,10 +4,11 @@
             <nav class="navbar navbar-dark navbar-expand-lg topnav-menu py-1">
                 <div class="collapse navbar-collapse justify-content-between">
                     <el-menu class="navbar-nav w-100 custom" :unique-opened="true" menu-trigger="hover" mode="horizontal" background-color="transparent">
-                        <el-menu-item index="/">
-                            <el-image v-on:click="push('/')" :src="`/assets/imgs/logo-${state.theme}.png`" style="width: 100px;" class="d-flex flex-center"></el-image>
+                        <el-menu-item index="/admin">
+                            <el-image v-on:click="method.push('/admin')" :src="`/assets/imgs/logo.png`" style="width: 70px;" class="d-flex flex-center"></el-image>
                         </el-menu-item>
                         <el-menu-item index="home" v-on:click="push('/admin')">
+                            <i-svg name="all" size="14px"></i-svg>
                             <span class="ms-1">控制台</span>
                         </el-menu-item>
                         <el-sub-menu v-for="(item, index) in state.menu" :key="index" :index="index.toString()" show-timeout="50" hide-timeout="50">
@@ -45,9 +46,9 @@
                                 </div>
                                 <el-avatar :src="store.comm.getLogin.user?.avatar" shape="square" size="medium"></el-avatar>
                             </template>
-                            <el-menu-item v-on:click="method.push({ path: '/admin' })" index="/admin">
-                                <i-svg name="console" size="16px" class="me-1"></i-svg>
-                                后台管理
+                            <el-menu-item v-on:click="method.push({ path: '/' })" index="/account/home">
+                                <i-svg name="!" size="15px" class="me-1"></i-svg>
+                                返回前台
                             </el-menu-item>
                             <el-menu-item v-on:click="method.push({ path: '/account/home' })" index="/account/home">
                                 <i-svg name="personal" size="15px" class="me-1"></i-svg>
@@ -84,15 +85,12 @@
     <el-drawer v-model="state.drawer.show" direction="ltr" size="75%" :show-close="false" class="custom side">
         <template #header>
             <div class="d-flex flex-column">
-                <span class="flex-center mb-3">
-                    <el-image v-on:click="method.push('/')" :src="`/assets/imgs/logo-${state.theme || 'white'}.png`" style="width: 100px;" class="d-flex flex-center"></el-image>
-                </span>
                 <div v-if="store.comm.getLogin.finish" class="d-flex flex-column">
                     <p class="mb-2 fw-medium font-14 d-flex align-items-center">
                         <span class="me-1 w-2px h-16px bg-info radius-4"></span>
                         个人信息
                     </p>
-                    <el-image src="https://inis.cn/api/file/rand?name=imgs.txt&size=250x120" style="height: 120px; border-radius: 6px 6px 0 0" fit="cover"></el-image>
+                    <el-image src="https://img1.zhuxu.asia/2025/12/17/694228ed6e402.jpg" style="height: 120px; border-radius: 6px 6px 0 0" fit="cover"></el-image>
                     <div class="card card-body position-relative mb-0 nav-bg">
                         <div class="d-flex">
                             <el-avatar :src="store.comm.getLogin.user?.avatar" :size="50" class="position-absolute avatar-shadow mirror-scan" style="top: -25px" shape="square"></el-avatar>
@@ -134,7 +132,7 @@
                 <span v-on:click="method.push({ path: '/admin' })" class="flex-center mx-1">
                     <i-svg color="rgb(var(--assist-color))" name="console" size="18px" class="me-1"></i-svg>
                 </span>
-                <span v-on:click="method.push({ path: '/admin/account/home' })" class="flex-center mx-1">
+                <span v-on:click="method.push({ path: '/account/home' })" class="flex-center mx-1">
                     <i-svg color="rgb(var(--assist-color))" name="personal" size="18px" class="me-1"></i-svg>
                 </span>
                 <span v-on:click="store.comm.logout('/')" class="flex-center mx-1">

@@ -57,7 +57,6 @@
 import notyf from "{src}/utils/notyf"
 import utils from '{src}/utils/utils'
 import axios from '{src}/utils/request'
-import { CustomMouseMenu } from '@howdyjs/mouse-menu'
 
 const { ctx, proxy } = getCurrentInstance()
 const emit = defineEmits(['selection:change'])
@@ -224,20 +223,6 @@ const handle = {
     },
     // 页码改变
     currentChange: val => method.init(val),
-    // 鼠标菜单
-    mouseMenu(row, column, event) {
-        const { x, y } = event
-        const ctx = CustomMouseMenu({
-            el: event.currentTarget,
-            params: {
-                // 解构赋值，防止修改原始数据
-                row: {...row}, select: [...state.item.selection.map(item => ({...item}))]
-            },
-            ...state.config.opts.menu
-        })
-        if (!state.config.opts.menu.hidden) ctx.show(x, y)
-        event.preventDefault()
-    },
     // 选中
     selectionChange(selection) {
         state.item.selection = selection

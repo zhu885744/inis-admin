@@ -35,7 +35,7 @@
                 <div class="col-md-6">
                     <div class="form-group mb-3">
                         <label class="form-label required">
-                            <el-tooltip content="签发者，比如：萌卜兔" placement="top">
+                            <el-tooltip content="可填写你的昵称" placement="top">
                                 <span>
                                     <i-svg name="hint" size="14px"></i-svg>
                                     <span class="ms-1">签发者：</span>
@@ -48,7 +48,7 @@
                 <div class="col-md-6">
                     <div class="form-group mb-3">
                         <label class="form-label required">
-                            <el-tooltip content="主题，比如：萌卜兔" placement="top">
+                            <el-tooltip content="可填写站点名称" placement="top">
                                 <span>
                                     <i-svg name="hint" size="14px"></i-svg>
                                     <span class="ms-1">主题：</span>

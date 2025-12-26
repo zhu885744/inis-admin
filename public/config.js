@@ -2,7 +2,7 @@
 globalThis.inis = {
     api: {
         // 请填写 API 服务地址
-        uri: '',
+        uri: 'https://www.zhuxu.asia',
         // 请求密钥 - 开启了 API KEY 时需要填写，否则留空
         key: ''
     },

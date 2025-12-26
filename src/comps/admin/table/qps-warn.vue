@@ -63,7 +63,6 @@ import utils from '{src}/utils/utils.js'
 import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 import ITable from '{src}/comps/custom/i-table.vue'
-import { config as MenuConfig } from '{src}/utils/menu.js'
 
 const emit  = defineEmits(['refresh','update:init'])
 const props = defineProps({
@@ -112,24 +111,6 @@ const state  = reactive({
             { prop: 'update_time', label: '更新时间', width: 140, sortable: true },
             { prop: 'create_time', label: '创建时间', width: 140, sortable: true },
         ],
-        menu: {
-            ...MenuConfig,
-            menuList: [{
-                label: '回收站',
-                icon: `<svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
-                        <path fill="rgb(var(--menu-icon-color))" d="M256 298.666667h512v554.666666H256V298.666667z m85.333333 85.333333v384h341.333334V384H341.333333z m42.666667 85.333333h85.333333v213.333334H384v-213.333334z m170.666667 0h85.333333v213.333334h-85.333333v-213.333334zM213.333333 298.666667h597.333334v85.333333H213.333333V298.666667z m170.666667-128h256v85.333333H384V170.666667z">
-                        </path>
-                    </svg>`,
-                fn: (params) => {
-                    // 删除一行
-                    if (utils.is.empty(params.select)) method.delete(params.row.id)
-                    else {
-                        const ids = params.select.map(item => item.id)
-                        method.delete(ids)
-                    }
-                },
-            }],
-        }
     },
 })
 
@@ -209,37 +190,6 @@ onMounted(async () => {
 watch(() => props.init, (val) => {
     if (val) method.init()
 })
-
-// 回收站数据
-if (props.type === 'remove') {
-    state.opts.menu.menuList = [{
-        label: '恢复',
-        icon: `<svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="14" height="14">
-            <path fill="rgb(var(--menu-icon-color))" d="M716.8 290.133333c-110.933333-102.4-281.6-106.666667-396.8-12.8S170.666667 537.6 247.466667 665.6c59.733333 106.666667 179.2 166.4 302.933333 149.333333s221.866667-102.4 256-221.866666c8.533333-34.133333 42.666667-51.2 76.8-42.666667 34.133333 8.533333 51.2 42.666667 42.666667 76.8-68.266667 226.133333-302.933333 354.133333-524.8 290.133333C174.933333 853.333333 42.666667 618.666667 106.666667 392.533333c42.666667-145.066667 153.6-256 298.666666-298.666666s298.666667 0 405.333334 102.4l81.066666-81.066667c8.533333-8.533333 21.333333-12.8 34.133334-8.533333 4.266667 12.8 12.8 21.333333 12.8 34.133333v264.533333c0 17.066667-12.8 29.866667-29.866667 29.866667h-260.266667c-12.8 0-25.6-8.533333-29.866666-17.066667s0-25.6 8.533333-34.133333l89.6-93.866667z"></path>
-        </svg>`,
-        fn: (params) => {
-            // 恢复一行
-            if (utils.is.empty(params.select)) method.restore(params.row.id)
-            else {
-                const ids = params.select.map(item => item.id)
-                method.restore(ids)
-            }
-        }
-    },{
-        label: '删除',
-        icon: `<svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
-            <path fill="rgb(var(--menu-icon-color))" d="M256 298.666667h512v554.666666H256V298.666667z m85.333333 85.333333v384h341.333334V384H341.333333z m42.666667 85.333333h85.333333v213.333334H384v-213.333334z m170.666667 0h85.333333v213.333334h-85.333333v-213.333334zM213.333333 298.666667h597.333334v85.333333H213.333333V298.666667z m170.666667-128h256v85.333333H384V170.666667z">
-        </path></svg>`,
-        fn: (params) => {
-            // 删除一行
-            if (utils.is.empty(params.select)) method.delete(params.row.id, false)
-            else {
-                const ids = params.select.map(item => item.id)
-                method.delete(ids, false)
-            }
-        },
-    }]
-}
 
 // 将子组件方法暴露给父组件
 defineExpose({

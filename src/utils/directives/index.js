@@ -10,10 +10,9 @@ import highlight  from './highlight.js'
 import ripple     from './ripple/index.ts'
 import hover      from './hover.js'
 import slideIn    from './slide-in.js'
-import { MouseMenuDirective } from '@howdyjs/mouse-menu'
 
 const directives = {
-    imageBox, imageScale, mouseMenu: MouseMenuDirective, load, lock, slideIn, fancybox, highlight, plyr, resize, ripple, hover
+    imageBox, imageScale, load, lock, slideIn, fancybox, highlight, plyr, resize, ripple, hover
 }
 
 export default {

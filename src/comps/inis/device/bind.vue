@@ -1,7 +1,7 @@
 <template>
     <div v-loading="state.status.loading" class="card">
         <div class="card-body">
-            <el-image src="https://inis.cn/favicon.ico" class="position-absolute opacity-25" style="right: 1.5rem; height: 55px" />
+            <el-image src="/favicon.png" class="position-absolute opacity-25" style="right: 1.5rem; height: 55px" />
             <h6 class="text-muted text-uppercase mt-0">
                 <el-tooltip placement="top">
                     <template #content>
