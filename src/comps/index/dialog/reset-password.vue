@@ -61,7 +61,7 @@
                         placeholder="请输入验证码"
                         clearable
                     >
-                        <template #suffix>
+                        <template #append>
                             <el-button 
                                 @click="method.code()" 
                                 :loading="state.item.loading"

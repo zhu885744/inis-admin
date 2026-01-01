@@ -69,7 +69,7 @@
                             </el-tooltip>
                         </label>
                         <el-input v-model="state.struct.key" class="custom" placeholder="请输入验证码">
-                            <template #suffix>
+                            <template #append>
                                 <el-button v-on:click="method.rand()">
                                     <i-svg name="restore" color="rgb(var(--vice-color))" size="14px"></i-svg>
                                     <span class="ms-1">随机</span>

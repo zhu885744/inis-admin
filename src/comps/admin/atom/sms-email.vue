@@ -125,7 +125,7 @@
                             </el-tooltip>
                         </label>
                         <el-input v-model="state.struct.email" v-on:keydown.enter="method.test()" class="custom" placeholder="请输入邮箱">
-                            <template #suffix>
+                            <template #append>
                                 <el-button v-on:click="method.test()" :loading="state.status.test">
                                     <i-svg v-if="!state.status.test" name="email" size="14px"></i-svg>
                                     <span class="ms-1">邮件服务测试</span>

@@ -85,7 +85,7 @@
                         </el-tooltip>
                     </label>
                     <el-input v-model="state.struct.code" class="custom" placeholder="请输入验证码">
-                        <template #suffix>
+                        <template #append>
                             <el-button @click="method.code()" :loading="state.item.loading">
                                 获取 <span v-if="state.item.loading">{{ state.item.second }} s</span>
                             </el-button>

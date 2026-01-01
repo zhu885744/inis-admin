@@ -5,12 +5,12 @@
             <h6 class="text-muted text-uppercase mt-0">
                 <el-tooltip placement="top">
                     <template #content>
-                        ● OSS可以替代传统的本地存储，有能力的情况推荐开启OSS存储<br>
+                        ● 阿里云对象存储OSS可以替代传统的本地存储，有能力的情况推荐开启OSS存储<br>
                         ● 开启后，后续上传的文件将会自动上传到OSS，不会占用服务器的空间和带宽
                     </template>
                     <span class="d-inline-flex align-items-center">
                         <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                        <span class="ms-1">OSS</span>
+                        <span class="ms-1">阿里云对象存储</span>
                     </span>
                 </el-tooltip>
             </h6>

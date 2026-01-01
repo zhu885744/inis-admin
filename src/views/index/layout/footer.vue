@@ -2,16 +2,16 @@
   <footer id="footer" class="text-dark user-select-none footer-container">
     <!-- 版权信息行 -->
     <div class="footer-row">
-      <div>Copyright © {{ state.year.start }} ~ {{ state.year.end }} 版权所有</div>
+      <div>Copyright © {{ state.year.start }} ~ {{ state.year.end }} 管理后台 版权所有</div>
       <div><a :href="state.site.struct?.copy?.link" target="_blank" class="text-dark">{{ state.site.struct?.copy?.code || '请在后台填写备案号' }}</a></div>
       <div><a :href="state.site.struct?.police?.link" target="_blank" class="text-dark">{{ state.site.struct?.police?.code || '请在后台填写公安备案备案号' }}</a></div>
       <div class="footer__item" aria-label="技术支持">
         <span>Powered by </span>
-        <a href="https://github.com/zhu885744/inisv1" target="_blank" rel="noopener noreferrer"class="footer__tech-link"title="Typecho 官方网站">
+        <a href="https://github.com/zhu885744/inisv1" target="_blank" rel="noopener noreferrer"class="footer__tech-link"title="inisv1">
         inis v{{ state.version.system }}
       </a>
       <span> | Theme by </span>
-      <a href="https://github.com/zhu885744/inis-admin" target="_blank" rel="noopener noreferrer"class="footer__tech-link" title="buyu 主题 GitHub 仓库">
+      <a href="https://github.com/zhu885744/inis-admin" target="_blank" rel="noopener noreferrer"class="footer__tech-link" title="inis-admin">
         inis-admin v{{ state.version.theme }}
       </a>
       </div>
@@ -37,7 +37,7 @@ const state = reactive({
     },
     version: {
         theme: inis.version,
-        system: '3.0.0',
+        system: '1.0.0',
     },
 })
 

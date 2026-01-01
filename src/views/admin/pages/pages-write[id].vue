@@ -65,7 +65,7 @@
                                         </el-option>
                                     </el-select>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group mb-3">
                                     <label class="form-label">
                                         <el-tooltip content="可同时选择多个标签" placement="top">
                                             <span>
@@ -89,7 +89,7 @@
                                     </el-tooltip>
                                     <el-input v-model="state.struct.key" autocomplete="new-password" placeholder="唯一识别码"></el-input>
                                 </div>
-                                <div class="form-group mb-3">
+                                <div class="form-group">
                                     <el-tooltip content="备注一下" placement="top">
                                         <span>
                                             <i-svg name="hint" size="14px"></i-svg>

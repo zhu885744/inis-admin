@@ -5,12 +5,12 @@
             <h6 class="text-muted text-uppercase mt-0">
                 <el-tooltip placement="top">
                     <template #content>
-                        ● KODO可以替代传统的本地存储，有能力的情况推荐开启KODO存储（但是总体体验上比OSS和COS略差）<br>
+                        ● 七牛云对象存储KODO可以替代传统的本地存储<br>
                         ● 开启后，后续上传的文件将会自动上传到KODO，不会占用服务器的空间和带宽
                     </template>
                     <span class="d-inline-flex align-items-center">
                         <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                        <span class="ms-1">KODO</span>
+                        <span class="ms-1">七牛云对象存储</span>
                     </span>
                 </el-tooltip>
             </h6>
@@ -19,7 +19,7 @@
                            active-text="开始" inactive-text="关闭">
                 </el-switch>
             </h2>
-            <span class="badge bg-info font-white"> 一般 </span>
+            <span class="badge bg-info font-white"> 还行 </span>
             <span class="text-muted ms-1">
                 不是很好用，<span v-on:click="method.show()" class="text-dark pointer">点我配置</span>
             </span>

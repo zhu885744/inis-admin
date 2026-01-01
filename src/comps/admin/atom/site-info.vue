@@ -94,7 +94,7 @@
                             </el-tooltip>
                         </label>
                         <el-input v-model="state.struct.json.avatar" class="custom" placeholder="填写图片地址或点击上传">
-                            <template #suffix>
+                            <template #append>
                                 <el-button v-on:click="method.upload('avatar')" :loading="state.upload.avatar">
                                     <i-svg v-if="!state.upload.avatar" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
                                     <span class="ms-1">上传</span>
@@ -114,7 +114,7 @@
                             </el-tooltip>
                         </label>
                         <el-input v-model="state.struct.json.favicon" class="custom" placeholder="填写图片地址或点击上传">
-                            <template #suffix>
+                            <template #append>
                                 <el-button v-on:click="method.upload('favicon')" :loading="state.upload.favicon">
                                     <i-svg v-if="!state.upload.favicon" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
                                     <span class="ms-1">上传</span>

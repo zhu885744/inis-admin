@@ -14,25 +14,25 @@
     <div class="stats-grid">
       <el-card>
         <div class="stat-info">
-          <p class="stat-label">总用户数</p>
-          <h3 class="stat-value">{{ totalUsers }}</h3>
-          <p class="stat-change positive">今日新增 4</p>
-        </div>
-      </el-card>
-
-      <el-card>
-        <div class="stat-info">
-          <p class="stat-label">活跃用户</p>
-          <h3 class="stat-value">{{ activeUsers }}</h3>
-          <p class="stat-change positive">昨天活跃 21</p>
-        </div>
-      </el-card>
-
-      <el-card>
-        <div class="stat-info">
-          <p class="stat-label">文章总量</p>
+          <p class="stat-label">文章总数</p>
           <h3 class="stat-value">{{ totalContents }}</h3>
-          <p class="stat-change positive">昨天发布 2篇</p>
+          <p class="stat-change positive">今日新增 0</p>
+        </div>
+      </el-card>
+
+      <el-card>
+        <div class="stat-info">
+          <p class="stat-label">总评论数</p>
+          <h3 class="stat-value">{{ activeUsers }}</h3>
+          <p class="stat-change positive">昨天新增 0</p>
+        </div>
+      </el-card>
+
+      <el-card>
+        <div class="stat-info">
+          <p class="stat-label">用户总数</p>
+          <h3 class="stat-value">{{ totalUsers }}</h3>
+          <p class="stat-change positive">昨天新增 0个</p>
         </div>
       </el-card>
 
@@ -69,22 +69,6 @@
         </div>
       </el-card>
     </div>
-
-    <!-- 最近动态 -->
-    <el-card>
-      <h2>最近动态</h2>
-      <el-table :data="activities" border>
-        <el-table-column prop="time" label="时间" width="180"></el-table-column>
-        <el-table-column prop="event" label="事件"></el-table-column>
-        <el-table-column prop="status" label="状态" width="120">
-          <template #default="scope">
-            <el-tag :type="scope.row.status === 'success' ? 'success' : 'warning'">
-              {{ scope.row.status === 'success' ? '完成' : '处理中' }}
-            </el-tag>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-card>
   </div>
   </div> 
 </template>
@@ -93,18 +77,9 @@
 import { ref } from 'vue'
 
 // 模拟数据
-const totalUsers = ref('51')
-const activeUsers = ref('13')
-const totalContents = ref('29')
-const timeRange = ref('30d')
-
-const activities = ref([
-  { time: '2025-12-15 09:23', event: '检测到系统有新版本更新，开始自动更新', status: 'success' },
-  { time: '2025-12-15 08:45', event: '系统自动备份完成', status: 'success' },
-  { time: '2025-12-15 07:12', event: '用户「不语」登录了系统', status: 'success' },
-  { time: '2025-12-14 23:10', event: '内容审核队列处理中', status: 'warning' },
-  { time: '2025-12-14 21:56', event: '服务器负载过高预警', status: 'warning' }
-])
+const totalUsers = ref('0')
+const activeUsers = ref('0')
+const totalContents = ref('0')
 
 // 方法
 const refreshData = () => {

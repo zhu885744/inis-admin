@@ -123,7 +123,7 @@ const state = reactive({
     cache: {
         name: 'article',
         json: {
-            editor: 'vditor'  // 固定为vditor
+            editor: 'vditor'
         }
     },
     struct: {
@@ -142,7 +142,7 @@ const state = reactive({
     },
     select: {
         editor: [
-            { value: 'vditor', label: 'Markdown' }  // 仅保留vditor选项
+            { value: 'vditor', label: 'Markdown' }
         ],
         comment: {
             allow: [

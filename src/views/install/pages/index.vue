@@ -238,32 +238,6 @@
                 <div class="alert alert-primary pb-0" role="alert">
                     <h3 class="alert-heading">恭喜您！</h3>
                     <p>当你看到我的时候，就表示你已经成功的安装 inis 程序，感谢你的使用。</p>
-                    <p>●
-                        <el-tooltip content="双击复制" placement="top">
-                            <span v-on:dblclick="method.copy(632274746)">inis官方QQ群：632274746</span>
-                        </el-tooltip>
-                        <span class="mx-2">|</span>
-                        <el-tooltip content="双击复制" placement="top">
-                            <span v-on:dblclick="method.copy(926403239)">开发者QQ群：926403239</span>
-                        </el-tooltip>
-                        <span class="mx-2">|</span>
-                        <el-tooltip content="点我前往" placement="top">
-                            <span v-on:click="method.window('//inis.cc', '_blank')">官方社区 inis.cc</span>
-                        </el-tooltip>
-                    </p>
-                    <p>●
-                        <el-tooltip content="双击复制" placement="top">
-                            <span v-on:dblclick="method.copy(97783391)">作者QQ：97783391</span>
-                        </el-tooltip>
-                        <span class="mx-2">|</span>
-                        <el-tooltip content="双击复制" placement="top">
-                            <span v-on:dblclick="method.copy('v-inis')">作者微信：v-inis</span>
-                        </el-tooltip>
-                        <span class="mx-2">|</span>
-                        <el-tooltip content="点我前往" placement="top">
-                            <span v-on:click="method.window('https://inis-pro.apifox.cn', '_blank')">API 文档：inis-pro.apifox.cn</span>
-                        </el-tooltip>
-                    </p>
                     <hr>
                     <p class="d-flex justify-content-center my-3">
                         <el-button v-on:click="method.window()" type="primary" class="mx-2">回 到 首 页</el-button>

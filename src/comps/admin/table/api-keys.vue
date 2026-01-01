@@ -71,7 +71,7 @@
                             </el-tooltip>
                         </label>
                         <el-input v-model="state.struct.value" class="custom" placeholder="为空自动生成32位密钥">
-                            <template #suffix>
+                            <template #append>
                                 <el-button v-on:click="method.rand()" ref="verify-code">
                                     <i-svg name="restore" color="rgb(var(--icon-color))" size="14px"></i-svg>
                                     <span class="ms-1">随机</span>

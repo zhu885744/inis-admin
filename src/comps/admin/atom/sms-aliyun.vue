@@ -112,7 +112,7 @@
                             </el-tooltip>
                         </label>
                         <el-input v-model="state.struct.phone" v-on:keydown.enter="method.test()" class="custom" placeholder="请输入手机号">
-                            <template #suffix>
+                            <template #append>
                                 <el-button v-on:click="method.test()" :loading="state.status.test">
                                     <i-svg v-if="!state.status.test" name="phone" size="14px"></i-svg>
                                     <span class="ms-1">阿里云短信测试</span>

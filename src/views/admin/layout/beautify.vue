@@ -1,12 +1,7 @@
 <template>
     <div ref="pointer" id="pointer"></div>
     <div id="background">
-        <el-image src="/assets/imgs/bg.webp" fit="cover" style="width: 100%; height: 100%;position: fixed;left: 0;top: 0;">
-            <template #error>
-                <el-image :src="state.cover" fit="cover" style="width: 100%; height: 100%;position: fixed;left: 0;top: 0;">
-                </el-image>
-            </template>
-        </el-image>
+        <el-image src="/assets/imgs/bg.webp" fit="cover" style="width: 100%; height: 100%;position: fixed;left: 0;top: 0;"></el-image>
         <div ref="cover" class="cover" style="opacity: 1; transition: all 1.5s ease 0s;"></div>
     </div>
     <div id="go-to-top" ref="go-to-top" class="d-none">
@@ -20,13 +15,8 @@
 import utils from '{src}/utils/utils'
 
 const { ctx, proxy } = getCurrentInstance()
-const unix  = Math.round(new Date().getTime() / 1000)
-const state = reactive({
-    cover: `https://api.inis.cc/api/file/random?name=cure&unix=${unix}`,
-})
 
 nextTick(() => {
-
     /* 鼠标样式 */
     const pointer = proxy.$refs['pointer']
     const width   = pointer.offsetWidth / 2
@@ -56,7 +46,6 @@ nextTick(() => {
     if (loading) setTimeout(() => loading.classList.add('loaded'), 500)
 
     const cover = proxy.$refs['cover']
-    const image = proxy.$refs['bg-img']
 
     cover.style.setProperty('opacity', 0)
     cover.style.setProperty('transition', 'all 1.5s ease 0s')
@@ -66,7 +55,7 @@ nextTick(() => {
         pointer.style.display = 'none'
     }
 
-    // 监听混动条
+    // 监听滚动条
     window.onscroll = () => {
         // defer => 延迟单击事件 execute=>是否执行单击事件
         let [defer, execute] = [null, true]

@@ -33,7 +33,7 @@
                                 class="custom" 
                                 placeholder="请输入验证码"
                             >
-                                <template #suffix>
+                                <template #append>
                                     <el-button @click="method.code()" :loading="state.item.loading">
                                         获取 <span v-if="state.item.loading">{{ state.item.second }} s</span>
                                     </el-button>
@@ -70,19 +70,14 @@
                     </el-tab-pane>
                 </el-tabs>
 
-                <!-- 忘记密码/注册链接 -->
-                <div class="d-flex justify-content-center mt-2">
-                    <span @click="method.reset()" class="pointer">忘记密码</span>
-                    <span v-if="parseInt(store.config.getAllowRegister?.value) === 1" class="mx-2">|</span>
-                    <span v-if="parseInt(store.config.getAllowRegister?.value) === 1" @click="method.register()" class="pointer">注册帐号</span>
-                </div>
-
                 <div class="modal-footer d-flex justify-content-center">
+                    <el-button @click="method.reset()" class="pointer">忘记密码</el-button>
                     <el-button @click="method.login()" :loading="state.item.wait">
                         {{state.item.wait ? '登录中 ...' : '登  录'}}
                     </el-button>
+                    <el-button v-if="parseInt(store.config.getAllowRegister?.value) === 1" @click="method.register()" class="pointer">注册帐号</el-button>
                 </div>
-                <!-- 第三方登录 -->
+                <!-- 第三方登录 
                 <div class="d-flex justify-content-center mt-3">
                     <span class="flex-center mx-1">
                         <el-button @click="method.oauth('qq')" round>
@@ -94,7 +89,7 @@
                             <i-svg name="github" size="26px"></i-svg>
                         </el-button>
                     </span>
-                </div>
+                </div>-->
             </div>
         </template>
     </el-dialog>
