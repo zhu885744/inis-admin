@@ -9,8 +9,6 @@ import svg from '{src}/comps/custom/i-svg.vue'
 import lottie from '{src}/comps/custom/i-lottie.vue'
 
 // 默认的bootstrap样式
-// https://github.com/caroso1222/notyf
-import 'notyf/notyf.min.css'                        // 待删除
 import 'bootstrap'                                  // 待删除
 import 'bootstrap/dist/css/bootstrap.min.css'       // 待删除
 

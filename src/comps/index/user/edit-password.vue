@@ -27,7 +27,6 @@
 
 <script setup>
 import cache from '{src}/utils/cache.js'
-import notyf from '{src}/utils/notyf.js'
 import utils from '{src}/utils/utils.js'
 import axios from '{src}/utils/request.js'
 import iRowText from '{src}/comps/custom/i-row-text.vue'
@@ -62,10 +61,10 @@ const method = {
     },
     save: async () => {
 
-        if (utils.is.empty((state.struct.id)))      return notyf.warn('请先登录！')
-        if (utils.is.empty(state.struct.password1)) return notyf.warn('请输入新密码！')
-        if (utils.is.empty(state.struct.password2)) return notyf.warn('请输入再次输入新密码！')
-        if (state.struct.password1 !== state.struct.password2) return notyf.warn('两次输入的密码不一致！')
+        if (utils.is.empty((state.struct.id)))      return ElMessage.warning('请先登录！')
+        if (utils.is.empty(state.struct.password1)) return ElMessage.warning('请输入新密码！')
+        if (utils.is.empty(state.struct.password2)) return ElMessage.warning('请再次输入新密码！')
+        if (state.struct.password1 !== state.struct.password2) return ElMessage.warning('两次输入的密码不一致！')
 
         state.item.wait     = true
 
@@ -75,13 +74,13 @@ const method = {
 
         state.item.wait     = false
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)
 
         state.item.edit     = false
 
         emit('finish')
 
-        notyf.success('密码重置成功，请重新登录！')
+        ElMessage.success('密码重置成功，请重新登录！')
 
         // 清除登录信息
         cache.del('user-info')

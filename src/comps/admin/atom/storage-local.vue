@@ -8,7 +8,7 @@
                         ● 本地存储是指将图片等资源文件存储到服务器本地，然后通过访问服务器的方式获取资源文件<br>
                         ● 本地存储的优点是不花钱，缺点是占用服务器空间和带宽
                     </template>
-                    <span class="d-inline-flex align-items-center">
+                    <span class="d-inline-flex align align-items-center">
                         <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
                         <span class="ms-1">本地存储</span>
                     </span>
@@ -68,7 +68,6 @@
 </template>
 
 <script setup>
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 
 const { ctx, proxy } = getCurrentInstance()
@@ -110,7 +109,7 @@ const method = {
         state.status.finish  = true
     },
     show() {
-        if (!state.status.finish) return notyf.warn('配置获取失败，无法进行配置！')
+        if (!state.status.finish) return ElMessage.warning('配置获取失败，无法进行配置！')
         state.status.dialog = true
     },
     change: async value => {
@@ -124,7 +123,7 @@ const method = {
         if (code === 200) return emit('refresh')
 
         state.status.active = !value
-        notyf.error(msg)
+        ElMessage.error(msg)
     },
     save: async () => {
 
@@ -134,8 +133,9 @@ const method = {
 
         state.status.wait   = false
 
-        if (code !== 200) return notyf.error('保存失败：' + msg)
-
+        if (code !== 200) return ElMessage.error('保存失败：' + msg)
+        
+        ElMessage.success('保存成功')
         state.status.dialog = false
     },
 }

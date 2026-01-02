@@ -60,7 +60,6 @@
 
 <script setup>
 import utils from '{src}/utils/utils.js'
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 
 const { ctx, proxy } = getCurrentInstance()
@@ -102,7 +101,7 @@ const method = {
         state.status.finish  = true
     },
     show() {
-        if (!state.status.finish) return notyf.warn('配置获取失败，无法进行配置！')
+        if (!state.status.finish) return ElMessage.warning('配置获取失败，无法进行配置！')
         state.status.dialog = true
     },
     change: async value => {
@@ -114,11 +113,11 @@ const method = {
         if (code === 200) return emit('refresh', 'cache-redis', 'cache-file')
 
         state.status.active = !value
-        notyf.error(msg)
+        ElMessage.error(msg)
     },
     save: async () => {
 
-        if (utils.is.empty(state.struct.expire)) return notyf.warn('请填写 过期时间！')
+        if (utils.is.empty(state.struct.expire)) return ElMessage.warning('请填写 过期时间！')
 
         state.status.wait   = true
 
@@ -126,8 +125,9 @@ const method = {
 
         state.status.wait   = false
 
-        if (code !== 200) return notyf.error('保存失败：' + msg)
-
+        if (code !== 200) return ElMessage.error('保存失败：' + msg)
+        
+        ElMessage.success('保存成功')
         state.status.dialog = false
     },
 }

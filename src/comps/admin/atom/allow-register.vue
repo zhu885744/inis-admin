@@ -87,7 +87,6 @@
 </template>
 
 <script setup>
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 import utils from "{src}/utils/utils.js";
 
@@ -143,10 +142,10 @@ const method = {
         if (code === 200) return
 
         state.status.active = !value
-        notyf.error(msg)
+        ElMessage.error(msg)
     },
     show() {
-        if (!state.status.finish) return notyf.warn('配置获取失败，无法进行配置！')
+        if (!state.status.finish) return ElMessage.warning('配置获取失败，无法进行配置！')
         state.status.dialog = true
     },
     // 保存配置
@@ -160,9 +159,10 @@ const method = {
 
         state.status.wait   = false
 
-        if (code !== 200) return notyf.error('保存失败：' + msg)
+        if (code !== 200) return ElMessage.error('保存失败：' + msg)
 
         state.status.dialog = false
+        ElMessage.success('保存成功')
     },
     // 获取权限分组
     auth: async () => {

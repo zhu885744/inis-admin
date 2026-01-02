@@ -11,7 +11,7 @@
                     </template>
                     <span class="d-inline-flex align-items-center">
                         <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                        <span class="ms-1">inis-admin</span>
+                        <span class="ms-1">inis-admin「开发中...」</span>
                     </span>
                 </el-tooltip>
             </h6>
@@ -78,88 +78,76 @@
 <script setup>
 import MarkdownIt from 'markdown-it'
 import utils from '{src}/utils/utils'
-import notyf from '{src}/utils/notyf'
-import axios from '{src}/utils/request'
 
 const { ctx, proxy } = getCurrentInstance()
 const state = reactive({
+    // 清空所有模拟数据，仅保留空结构
     struct: {},
     status: {
-        init:     true,
-        finish:   false,
-        dialog:   false,
-        loading:  true,
-        upgrade:  false,
+        init: false, // 关闭初始加载，仅保留样式
+        finish: false,
+        dialog: false,
+        loading: false,
+        upgrade: false,
     },
     show: {
         upgrade: false,
     },
-    version: inis.version
+    version: '1.0.0', // 清空版本号，仅保留展示位置
 })
 
 const method = {
+    // 简化init方法，仅更新状态，无逻辑、无提示、无延迟
     init: async (init = true) => {
-
-        state.status.init    = init
+        state.status.init = init
         state.status.loading = true
-
-        const { code, data } = await axios.get('/inis/theme-version/next', {
-            theme_key: 'inis', progress: 'pro'
-        })
-
-        state.status.init    = false
+        state.status.init = false
         state.status.loading = false
-
-        if (code !== 200) return
-
-        state.struct = data
     },
-    // 升级
+    // 简化升级方法，仅更新状态，无逻辑、无提示、无延迟
     upgrade: async () => {
-
         state.status.upgrade = true
-
-        const { code, msg } = await axios.post('/api/upgrade/theme', {
-            id: state.struct?.id
-        })
-
         state.status.upgrade = false
-
-        if (code !== 200) notyf.error(msg)
-
-        notyf.success('升级成功！')
-        await method.init(false)
     },
+    // 仅保留弹窗展示逻辑
     show() {
         state.status.dialog = true
     },
-    // 解析Markdown
+    // 保留Markdown解析方法（仅保留方法结构，无实际解析需求）
     markdown: content => {
-        const md   = new MarkdownIt()
-        return md.render(content)
+        const md = new MarkdownIt()
+        return md.render(content || '')
     },
-    color : value => {
+    // 保留颜色映射方法（仅保留方法结构）
+    color: (value) => {
         switch (value) {
-            case 'design':  return { color: 'var(--bs-secondary)', text: '设计中' }
-            case 'dev':     return { color: 'var(--bs-primary)',   text: '开发版' }
-            case 'test':    return { color: 'var(--bs-warning)',   text: '测试版' }
-            case 'pro':     return { color: 'var(--bs-success)',   text: '正式版' }
-            case 'abandon': return { color: 'var(--bs-danger)',    text: '停止维护' }
-            default:        return { color: 'var(--bs-light)',     text: '未知' }
+            case 'design':
+                return { color: 'var(--bs-secondary)', text: '设计中' }
+            case 'dev':
+                return { color: 'var(--bs-primary)', text: '开发版' }
+            case 'test':
+                return { color: 'var(--bs-warning)', text: '测试版' }
+            case 'pro':
+                return { color: 'var(--bs-success)', text: '正式版' }
+            case 'abandon':
+                return { color: 'var(--bs-danger)', text: '停止维护' }
+            default:
+                return { color: 'var(--bs-light)', text: '未知' }
         }
     },
 }
 
+// 组件挂载时仅执行空方法，无数据请求
 onMounted(async () => {
     await method.init()
 })
 
-// 监听版本变化
+// 保留监听结构，无实际逻辑
 watch(() => state.struct, (item = {}) => {
-    state.show.upgrade = utils.compare.version(item.version, state.version)
+    state.show.upgrade = false
 })
 
-// 将子组件方法暴露给父组件
+// 暴露方法（仅保留结构）
 defineExpose({
     init: method.init,
 })

@@ -122,7 +122,6 @@
 
 <script setup>
 import utils from '{src}/utils/utils.js'
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 import ITable from '{src}/comps/custom/i-table.vue'
 
@@ -187,8 +186,8 @@ const method = {
     // 保存数据
     save: async (params = state.struct || {}) => {
 
-        if (utils.is.empty(params)) return notyf.warn('你在想什么？什么都不填！')
-        if (utils.is.empty(params?.name)) return notyf.warn('分组名称是必须的呀，你在干嘛？')
+        if (utils.is.empty(params)) return ElMessage.warning('你在想什么？什么都不填！')
+        if (utils.is.empty(params?.name)) return ElMessage.warning('分组名称是必须的呀，你在干嘛？')
 
         state.item.wait     = true
 
@@ -196,12 +195,13 @@ const method = {
 
         state.item.wait     = false
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)
 
         // 关闭对话框
         state.item.dialog = false
         // 重新加载数据
         await method.init()
+        ElMessage.success('保存成功')
     },
     // 编辑数据
     edit: struct => {
@@ -220,13 +220,14 @@ const method = {
 
         const { code, msg } = await axios.del(uri, { ids })
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)
 
         // 刷新回收站数据
         emit('refresh', 'remove')
 
         // 重新加载数据
         await method.init()
+        ElMessage.success('删除成功')
     },
     // 恢复数据
     async restore(ids = []) {
@@ -235,13 +236,14 @@ const method = {
 
         const { code, msg } = await axios.put(`/api/${state.item.table}/restore`, { ids })
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)
 
         // 刷新全部数据
         emit('refresh', 'all')
 
         // 重新加载数据
         await method.init()
+        ElMessage.success('恢复成功')
     },
     // 上传
     async upload(field = 'image') {
@@ -264,12 +266,12 @@ const method = {
 
             state.item.upload         = false
 
-            if (code !== 200) return notyf.error(msg)
+            if (code !== 200) return ElMessage.error(msg)
             // 设置图片
             state.struct[field] = data.path
             // 清空 input
             input.value = ''
-            notyf.info('上传成功！')
+            ElMessage.success('上传成功！')
         })
 
         // 触发 input 的 click 事件
@@ -296,7 +298,7 @@ const method = {
 
         utils.set.copy.text(text)
 
-        if (!utils.is.empty(msg)) return notyf.info(msg)
+        if (!utils.is.empty(msg)) return ElMessage.info(msg)
     },
     // 省略文本
     omit  : (text = null, length = 10, omission = ' ... ', location = 'center') => {

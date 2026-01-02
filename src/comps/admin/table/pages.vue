@@ -84,11 +84,10 @@
 
 <script setup>
 import utils from '{src}/utils/utils.js'
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 import ITable from '{src}/comps/custom/i-table.vue'
-import { computed, reactive, getCurrentInstance, onMounted, watch } from 'vue' // 补充导入
-import { useRouter } from 'vue-router' // 补充导入useRouter
+import { computed, reactive, getCurrentInstance, onMounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const emit   = defineEmits(['refresh','update:init'])
@@ -157,7 +156,7 @@ const method = {
         // 拼接服务地址
         const uri = `/api/${state.item.table}/${isSoft ? 'remove' : 'delete'}`
         const { code, msg } = await axios.del(uri, { ids })
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)  // 使用Element Plus的Message
         // 刷新回收站数据
         emit('refresh', 'remove', 'check', 'audit')
         // 重新加载数据
@@ -167,7 +166,7 @@ const method = {
     async restore(ids = []) {
         if (utils.is.empty(ids)) return
         const { code, msg } = await axios.put(`/api/${state.item.table}/restore`, { ids })
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)  // 使用Element Plus的Message
         // 刷新全部数据
         emit('refresh', 'all', 'check', 'audit')
         // 重新加载数据
@@ -184,7 +183,7 @@ const method = {
     copy: (text = null, msg = '复制成功！') => {
         if (utils.is.empty(text)) return
         utils.set.copy.text(text)
-        if (!utils.is.empty(msg)) return notyf.info(msg)
+        if (!utils.is.empty(msg)) return ElMessage.success(msg)  // 使用Element Plus的Message
     },
     // 省略文本
     omit: (text = null, length = 10, omission = ' ... ', location = 'center') => {

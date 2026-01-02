@@ -143,7 +143,6 @@
 
 <script setup>
 import utils from '{src}/utils/utils.js'
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 
 const { ctx, proxy } = getCurrentInstance()
@@ -221,7 +220,7 @@ const method = {
         state.status.finish  = true
     },
     show() {
-        if (!state.status.finish) return notyf.warn('配置获取失败，无法进行配置！')
+        if (!state.status.finish) return ElMessage.warning('配置获取失败，无法进行配置！')
         state.status.dialog = true
     },
     change: async value => {
@@ -235,20 +234,20 @@ const method = {
         if (code === 200) return emit('refresh')
 
         state.status.active = !value
-        notyf.error(msg)
+        ElMessage.error(msg)
     },
     save: async () => {
 
         let field = ['secret_id', 'secret_key', 'app_id', 'region', 'bucket']
 
         // 检查关键配置是否有变化
-        if (!utils.object.equal(state.struct, state.backup, field)) return notyf.warn('请先OSS连接测试')
+        if (!utils.object.equal(state.struct, state.backup, field)) return ElMessage.warning('请先OSS连接测试')
 
-        if (utils.is.empty(state.struct.secret_id))  return notyf.warn('请填写 SecretId！')
-        if (utils.is.empty(state.struct.secret_key)) return notyf.warn('请填写 SecretKey！')
-        if (utils.is.empty(state.struct.app_id))     return notyf.warn('请填写 AppId！')
-        if (utils.is.empty(state.struct.region))     return notyf.warn('请填写 Bucket！')
-        if (utils.is.empty(state.struct.bucket))     return notyf.warn('请填写 Region！')
+        if (utils.is.empty(state.struct.secret_id))  return ElMessage.warning('请填写 SecretId！')
+        if (utils.is.empty(state.struct.secret_key)) return ElMessage.warning('请填写 SecretKey！')
+        if (utils.is.empty(state.struct.app_id))     return ElMessage.warning('请填写 AppId！')
+        if (utils.is.empty(state.struct.region))     return ElMessage.warning('请填写 Bucket！')
+        if (utils.is.empty(state.struct.bucket))     return ElMessage.warning('请填写 Region！')
 
         state.status.wait   = true
 
@@ -256,17 +255,18 @@ const method = {
 
         state.status.wait   = false
 
-        if (code !== 200) return notyf.error('保存失败：' + msg)
+        if (code !== 200) return ElMessage.error('保存失败：' + msg)
 
         state.status.dialog = false
+        ElMessage.success('保存成功')
     },
     test: async () => {
 
-        if (utils.is.empty(state.struct.secret_id))  return notyf.warn('请填写 SecretId！')
-        if (utils.is.empty(state.struct.secret_key)) return notyf.warn('请填写 SecretKey！')
-        if (utils.is.empty(state.struct.app_id))     return notyf.warn('请填写 AppId！')
-        if (utils.is.empty(state.struct.region))     return notyf.warn('请填写 Bucket！')
-        if (utils.is.empty(state.struct.bucket))     return notyf.warn('请填写 Region！')
+        if (utils.is.empty(state.struct.secret_id))  return ElMessage.warning('请填写 SecretId！')
+        if (utils.is.empty(state.struct.secret_key)) return ElMessage.warning('请填写 SecretKey！')
+        if (utils.is.empty(state.struct.app_id))     return ElMessage.warning('请填写 AppId！')
+        if (utils.is.empty(state.struct.region))     return ElMessage.warning('请填写 Bucket！')
+        if (utils.is.empty(state.struct.bucket))     return ElMessage.warning('请填写 Region！')
 
         state.status.test         = true
 
@@ -277,10 +277,10 @@ const method = {
         if (code === 200) {
             // 拷贝一份备份
             state.backup = JSON.parse(JSON.stringify(state.struct))
-            return notyf.success(msg)
+            return ElMessage.success(msg)
         }
 
-        notyf.error(`${msg}<br>${data}`)
+        ElMessage.error(`${msg}<br>${data}`)
     },
 }
 

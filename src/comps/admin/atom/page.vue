@@ -115,7 +115,6 @@
 
 <script setup>
 import cache from '{src}/utils/cache'
-import notyf from '{src}/utils/notyf'
 import axios from '{src}/utils/request'
 
 const { ctx, proxy } = getCurrentInstance()
@@ -138,7 +137,8 @@ const state = reactive({
     status: {
         finish: false,
         loading: true,
-        dialog: false
+        dialog: false,
+        wait: false  // 补充wait状态定义，避免保存时未定义错误
     },
     select: {
         editor: [
@@ -184,7 +184,7 @@ const method = {
         state.status.finish  = true
     },
     show() {
-        if (!state.status.finish) return notyf.warn('配置获取失败，无法进行配置！')
+        if (!state.status.finish) return ElMessage.warning('配置获取失败，无法进行配置！')
         state.status.dialog = true
     },
     save: async () => {
@@ -197,8 +197,9 @@ const method = {
 
         state.status.wait   = false
 
-        if (code !== 200) return notyf.error('保存失败：' + msg)
-
+        if (code !== 200) return ElMessage.error(`保存失败：${msg}`)
+        
+        ElMessage.success('保存成功')
         state.status.dialog = false
 
         cache.set(state.cache.name, state.cache.json)

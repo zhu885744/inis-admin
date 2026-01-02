@@ -101,7 +101,6 @@
 </template>
 
 <script setup>
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 
 const { ctx, proxy } = getCurrentInstance()
@@ -143,13 +142,16 @@ const method = {
         state.status.finish  = true
     },
     show() {
-        if (!state.status.finish) return notyf.warn('分页限制配置获取失败，无法进行配置！')
+        if (!state.status.finish) return ElMessage.warning('分页限制配置获取失败，无法进行配置！')
         state.status.dialog = true
     },
     change: async value => {
         if (!value) {
             state.status.active = true
-            notyf.warn('？？？？？？？？？？？？？<br>JWT是基础服务，这可不许关')
+            ElMessage.warning({
+                message: 'JWT是基础服务，这可不能关',
+                dangerouslyUseHTMLString: true
+            })
         }
     },
     save: async () => {
@@ -160,8 +162,9 @@ const method = {
 
         state.status.wait   = false
 
-        if (code !== 200) return notyf.error('保存失败：' + msg)
-
+        if (code !== 200) return ElMessage.error(`保存失败：${msg}`)
+        
+        ElMessage.success('保存成功')
         state.status.dialog = false
     },
     rand(field = 'key') {

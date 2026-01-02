@@ -36,7 +36,6 @@
 import Vditor from 'vditor'
 import 'vditor/dist/index.css'
 import utils from '{src}/utils/utils'
-import notyf from '{src}/utils/notyf'
 import axios from '{src}/utils/request'
 import { useCommStore } from '{src}/store/comm'
 
@@ -85,7 +84,7 @@ const method = {
         // 如果点击的元素和评论框无关联
         if (utils.is.empty(event.relatedTarget)) {
             // 如果评论内容为空
-            if (utils.is.empty(state.struct.content)) {
+            if (utils.is.empty(state.struct?.content)) {
                 // 取消焦点
                 state.focus = false
             }
@@ -125,9 +124,6 @@ const method = {
                     engine: 'MathJax',
                 },
             },
-            // after: () => {
-            //     state.item.setValue(props.modelValue)
-            // },
             upload: {
                 accept: 'image/*, video/*',
                 multiple: false,
@@ -148,7 +144,7 @@ const method = {
                     })
 
                     if (code !== 200) {
-                        notyf.error(msg)
+                        ElMessage.error(msg)  // 替换为Element Plus消息提示
                         state.progress.color = 'var(--bs-danger)'
                         setTimeout(() => (state.progress.show  = false), 3000)
                         return
@@ -218,14 +214,17 @@ const method = {
 
         const content = state.vditor.getValue()
 
-        if (utils.is.empty(content)) return notyf.warn('评论内容不能为空')
+        if (utils.is.empty(content)) return ElMessage.warning('评论内容不能为空')  // 替换为Element Plus消息提示
 
         const { code, msg } = await axios.post('/api/comment/create', {
             content, bind_id: props.bindId, bind_type: props.bindType, pid: props.pid, editor: 'markdown'
         })
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)  // 替换为Element Plus消息提示
 
+        // 新增评论成功提示
+        ElMessage.success('评论发送成功！')
+        
         state.vditor.setValue('')
         state.send  = false
         state.focus = false

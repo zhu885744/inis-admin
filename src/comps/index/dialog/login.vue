@@ -1,5 +1,5 @@
 <template>
-    <el-dialog v-model="state.item.dialog" class="custom small-dialog" :close-on-click-modal="false"width="500px"max-width="90vw">
+    <el-dialog v-model="state.item.dialog" class="custom small-dialog" :close-on-click-modal="false" width="500px" max-width="90vw">
         <template #default>
             <div class="container">
                 <el-alert type="success" :closable="false" center class="mb-3 box-shadow-light">
@@ -98,7 +98,6 @@
 <script setup>
 import cache from '{src}/utils/cache.js'
 import utils from '{src}/utils/utils.js'
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 import crypto from '{src}/utils/crypto.js'
 import { useCommStore } from '{src}/store/comm'
@@ -171,29 +170,30 @@ const method = {
                 store.comm.switchAuth('login', false)
                 // 通知父组件
                 emit('finish', data.user)
+                ElMessage.success('登录成功')
                 return
             }
-            if (code === 201) return notyf.info(msg)
+            if (code === 201) return ElMessage.info(msg)
 
             // 水平抖动动画
             method.animation()
 
-            notyf.error(msg)
+            ElMessage.error(msg)
             method.clearCache()
             // 重置计时器
             state.item.second = 0
             clearInterval(state.timer)
 
         } catch (error) {
-            notyf.error(error)
+            ElMessage.error(error.message || '登录失败')
             method.clearCache()
             state.item.wait = false
         }
     },
     // 获取验证码
     async code() {
-        if (utils.is.empty(state.struct.account))  return notyf.warn('帐号不能为空哟？')
-        if (!utils.is.email(state.struct.account) && !utils.is.phone(state.struct.account)) return notyf.warn('格式不对哟！')
+        if (utils.is.empty(state.struct.account))  return ElMessage.warning('账户不能为空哟？')
+        if (!utils.is.email(state.struct.account) && !utils.is.phone(state.struct.account)) return ElMessage.warning('格式不对哟！')
         state.struct.code = null
 
         await method.login()

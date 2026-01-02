@@ -1,6 +1,5 @@
 import cache from '{src}/utils/cache'
 import utils from '{src}/utils/utils'
-import notyf from '{src}/utils/notyf'
 import axios from '{src}/utils/request'
 import { useCommStore } from '{src}/store/comm'
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
@@ -155,11 +154,6 @@ const admin = {
         name: 'admin-qps-warn',
         meta: { title: 'QPS预警' },
         component: () => import('{src}/views/admin/pages/qps-warn.vue'),
-    },{
-        path: '/admin/badge',
-        name: 'admin-badge',
-        meta: { title: '徽章管理' },
-        component: () => import('{src}/views/admin/pages/badge.vue'),
     }],
 }
 

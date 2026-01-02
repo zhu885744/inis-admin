@@ -46,7 +46,6 @@
     100% {opacity:1;}
 }
 
-
 /* 加载动画 */
 #v-load {
     width: 100%;
@@ -142,11 +141,6 @@
     color: rgb(var(--loading-color)) !important;
 }
 
-
-
-
-
-
 #v-lock * {
     color: rgb(var(--loading-color)) !important;
 }
@@ -171,11 +165,6 @@
     background-color: rgb(255 255 255 / 30%);
     backdrop-filter: var(--theme-blur);
 }
-
-
-
-
-
 
 p.loading-title {
 	font-size:1.25rem;

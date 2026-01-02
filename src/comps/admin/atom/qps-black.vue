@@ -71,7 +71,6 @@
 </template>
 
 <script setup>
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 
 const { ctx, proxy } = getCurrentInstance()
@@ -111,7 +110,7 @@ const method = {
         state.status.finish  = true
     },
     show() {
-        if (!state.status.finish) return notyf.warn('配置获取失败，无法进行配置！')
+        if (!state.status.finish) return ElMessage.warning('配置获取失败，无法进行配置！')
         state.status.dialog = true
     },
     change: async value => {
@@ -124,7 +123,7 @@ const method = {
         if (code === 200) return
 
         state.status.active = !value
-        notyf.error(msg)
+        ElMessage.error(msg)
     },
     save: async () => {
 
@@ -137,9 +136,10 @@ const method = {
 
         state.status.wait   = false
 
-        if (code !== 200) return notyf.error('保存失败：' + msg)
+        if (code !== 200) return ElMessage.error('保存失败：' + msg)
 
         state.status.dialog = false
+        ElMessage.success('保存成功')
     }
 }
 

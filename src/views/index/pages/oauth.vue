@@ -13,7 +13,6 @@
 </template>
 
 <script setup>
-import notyf from '{src}/utils/notyf'
 import cache from '{src}/utils/cache'
 import utils from '{src}/utils/utils'
 import axios from '{src}/utils/request'
@@ -39,7 +38,7 @@ const method= {
             }
         })
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)
 
         cache.set('user-info', data.user, 10)
         utils.set.cookie(globalThis?.inis?.token_name || 'INIS_LOGIN_TOKEN', route.params.token, 7 * 24 * 60 * 60)

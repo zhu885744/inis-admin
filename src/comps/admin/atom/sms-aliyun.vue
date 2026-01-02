@@ -132,7 +132,6 @@
 
 <script setup>
 import utils from '{src}/utils/utils.js'
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 
 const { ctx, proxy } = getCurrentInstance()
@@ -186,7 +185,7 @@ const method = {
         state.status.finish  = true
     },
     show() {
-        if (!state.status.finish) return notyf.warn('SMS服务配置获取失败，无法进行配置！')
+        if (!state.status.finish) return ElMessage.warning('SMS服务配置获取失败，无法进行配置！')
         state.status.dialog = true
     },
     change: async value => {
@@ -198,20 +197,20 @@ const method = {
         if (code === 200) return emit('refresh', 'sms-tencent')
 
         state.status.active = !value
-        notyf.error(msg)
+        ElMessage.error(msg)
     },
     save: async () => {
 
         let field = ['access_key_id', 'access_key_secret', 'endpoint', 'sign_name', 'verify_code']
 
         // 检查关键配置是否有变化
-        if (!utils.object.equal(state.struct, state.backup, field)) return notyf.warn('请先完成阿里云短信测试')
+        if (!utils.object.equal(state.struct, state.backup, field)) return ElMessage.warning('请先完成阿里云短信测试')
 
-        if (utils.is.empty(state.struct.access_key_id))      return notyf.warn('请填写阿里云AccessKey ID！')
-        if (utils.is.empty(state.struct.access_key_secret))  return notyf.warn('请填写阿里云AccessKey Secret！')
-        if (utils.is.empty(state.struct.endpoint))           return notyf.warn('请填写阿里云短信服务endpoint！')
-        if (utils.is.empty(state.struct.sign_name))          return notyf.warn('请填写短信签名！')
-        if (utils.is.empty(state.struct.verify_code))        return notyf.warn('请填写验证码模板！')
+        if (utils.is.empty(state.struct.access_key_id))      return ElMessage.warning('请填写阿里云AccessKey ID！')
+        if (utils.is.empty(state.struct.access_key_secret))  return ElMessage.warning('请填写阿里云AccessKey Secret！')
+        if (utils.is.empty(state.struct.endpoint))           return ElMessage.warning('请填写阿里云短信服务endpoint！')
+        if (utils.is.empty(state.struct.sign_name))          return ElMessage.warning('请填写短信签名！')
+        if (utils.is.empty(state.struct.verify_code))        return ElMessage.warning('请填写验证码模板！')
 
         state.status.wait   = true
 
@@ -219,19 +218,20 @@ const method = {
 
          state.status.wait   = false
 
-        if (code !== 200) return notyf.error('保存失败：' + msg)
+        if (code !== 200) return ElMessage.error('保存失败：' + msg)
 
         state.status.dialog = false
+        ElMessage.success('保存成功')
     },
     test: async () => {
 
-        if (utils.is.empty(state.struct.phone))              return notyf.warn('请填写接收者手机号！')
-        if (utils.is.empty(state.struct.access_key_id))      return notyf.warn('请填写阿里云AccessKey ID！')
-        if (utils.is.empty(state.struct.access_key_secret))  return notyf.warn('请填写阿里云AccessKey Secret！')
-        if (utils.is.empty(state.struct.endpoint))           return notyf.warn('请填写阿里云短信服务endpoint！')
-        if (utils.is.empty(state.struct.sign_name))          return notyf.warn('请填写短信签名！')
-        if (utils.is.empty(state.struct.verify_code))        return notyf.warn('请填写验证码模板！')
-        if (!utils.is.phone(state.struct.phone))             return notyf.warn('接收者手机号格式不正确！')
+        if (utils.is.empty(state.struct.phone))              return ElMessage.warning('请填写接收者手机号！')
+        if (utils.is.empty(state.struct.access_key_id))      return ElMessage.warning('请填写阿里云AccessKey ID！')
+        if (utils.is.empty(state.struct.access_key_secret))  return ElMessage.warning('请填写阿里云AccessKey Secret！')
+        if (utils.is.empty(state.struct.endpoint))           return ElMessage.warning('请填写阿里云短信服务endpoint！')
+        if (utils.is.empty(state.struct.sign_name))          return ElMessage.warning('请填写短信签名！')
+        if (utils.is.empty(state.struct.verify_code))        return ElMessage.warning('请填写验证码模板！')
+        if (!utils.is.phone(state.struct.phone))             return ElMessage.warning('接收者手机号格式不正确！')
 
         state.status.test         = true
 
@@ -242,10 +242,10 @@ const method = {
         if (code === 200) {
             // 拷贝一份备份
             state.backup = JSON.parse(JSON.stringify(state.struct))
-            return notyf.success(msg)
+            return ElMessage.success(msg)
         }
 
-        notyf.error(`${msg}<br>${data}`)
+        ElMessage.error(`${msg}<br>${data}`)
     },
 }
 

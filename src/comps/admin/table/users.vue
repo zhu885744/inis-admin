@@ -1,6 +1,5 @@
 <template>
     <i-table :opts="state.opts" ref="i-table">
-
         <template #start>
             <el-table-column type="selection" width="55"></el-table-column>
         </template>
@@ -93,7 +92,6 @@
                 </span>
             </el-tooltip>
         </template>
-
     </i-table>
 
     <el-dialog v-model="state.item.dialog" class="custom" draggable :close-on-click-modal="false">
@@ -138,13 +136,14 @@
                                 </span>
                             </el-tooltip>
                         </label>
-                        <div class="input-with-button">
-                            <el-input v-model="state.struct.avatar" class="custom" placeholder="填写图片地址或点击上传图片"></el-input>
-                            <el-button @click="method.upload('avatar')" :loading="state.item.upload"class="upload-btn">
-                                <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                                <span class="ms-1">上传</span>
-                            </el-button>
-                        </div>
+                        <el-input v-model="state.struct.avatar" class="custom" placeholder="填写图片地址或点击上传图片">
+                            <template #append>
+                                <el-button @click="method.upload('avatar')" :loading="state.item.upload"class="upload-btn">
+                                    <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
+                                    <span class="ms-1">上传</span>
+                                </el-button>
+                            </template>
+                        </el-input>
                     </div>
                 </div>
             </div>
@@ -168,7 +167,7 @@
                             <el-tooltip content="可用于手机验证码登录" placement="top">
                                 <span>
                                     <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">手机：</span>
+                                    <span class="ms-1">手机号：</span>
                                 </span>
                             </el-tooltip>
                         </label>
@@ -277,7 +276,6 @@
 
 <script setup>
 import utils from '{src}/utils/utils.js'
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 import ITable from '{src}/comps/custom/i-table.vue'
 
@@ -388,15 +386,15 @@ const method = {
     async updateAuthGroup(uid = null, ids = []) {
         if (utils.is.empty(uid)) return
         const { code, msg } = await axios.put('/api/auth-group/uids', { uid, ids })
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)
     },
     // 保存数据
     save: async (params = state.struct || {}) => {
 
-        if (utils.is.empty(params))          return notyf.warn('你在想什么？什么都不填！')
-        if (utils.is.empty(params?.account)) return notyf.warn('账号还是要设置的！')
-        if (!utils.is.empty(params?.email))  if (!utils.is.email(params?.email)) return notyf.warn('邮箱格式不正确！')
-        if (!utils.is.empty(params?.phone))  if (!utils.is.phone(params?.phone)) return notyf.warn('手机号格式不正确！')
+        if (utils.is.empty(params))          return ElMessage.warning('你在想什么？什么都不填！')
+        if (utils.is.empty(params?.account)) return ElMessage.warning('账号还是要设置的！')
+        if (!utils.is.empty(params?.email))  if (!utils.is.email(params?.email)) return ElMessage.warning('邮箱格式不正确！')
+        if (!utils.is.empty(params?.phone))  if (!utils.is.phone(params?.phone)) return ElMessage.warning('手机号格式不正确！')
 
         state.item.wait           = true
 
@@ -404,7 +402,7 @@ const method = {
 
         state.item.wait           = false
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)
 
         // 关闭对话框
         state.item.dialog = false
@@ -433,7 +431,7 @@ const method = {
 
         const { code, msg } = await axios.del(uri, { ids })
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)
 
         // 刷新回收站数据
         emit('refresh', 'remove')
@@ -448,7 +446,7 @@ const method = {
 
         const { code, msg } = await axios.put(`/api/${state.item.table}/restore`, { ids })
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)
 
         // 刷新全部数据
         emit('refresh', 'all')
@@ -477,12 +475,12 @@ const method = {
 
             state.item.upload         = false
 
-            if (code !== 200) return notyf.error(msg)
+            if (code !== 200) return ElMessage.error(msg)
             // 设置图片
             state.struct[field] = data.path
             // 清空 input
             input.value = ''
-            notyf.info('上传成功！')
+            ElMessage.info('上传成功！')
         })
 
         // 触发 input 的 click 事件
@@ -515,7 +513,7 @@ const method = {
 
         utils.set.copy.text(text)
 
-        if (!utils.is.empty(msg)) return notyf.info(msg)
+        if (!utils.is.empty(msg)) return ElMessage.info(msg)
     },
     // 省略文本
     omit  : (text = null, length = 10, omission = ' ... ', location = 'center') => {

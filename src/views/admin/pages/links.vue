@@ -2,37 +2,25 @@
     <div class="container-fluid container-box">
         <div class="row d-none d-lg-flex">
             <div class="col-lg-6 d-flex">
-                <el-dropdown v-if="!state.item.tabs.includes('setting')" class="custom mimic me-2" trigger="click">
-                    <span class="el-dropdown-link d-flex align-items-center">
+                <el-dropdown v-if="!state.item.tabs.includes('setting')" class="me-2" trigger="click">
+                    <el-button>
                         {{ state.item.sort }}
                         <i-svg name="down"></i-svg>
-                    </span>
+                    </el-button>
                     <template #dropdown>
                         <el-dropdown-item v-on:click="method.order('create_time desc', '最新')">最新</el-dropdown-item>
                         <el-dropdown-item v-on:click="method.order('create_time asc', '最早')">最早</el-dropdown-item>
                     </template>
                 </el-dropdown>
-                <div class="input-group custom-search me-1">
-                    <i-svg name="search" color="rgb(var(--icon-color))" size="18px"></i-svg>
-                    <input v-model="state.item.search" class="form-control custom search mimic" autocomplete="new-password" type="text" placeholder="昵称 | 网址 | 描述 | 备注">
+                <div class="me-1">
+                    <el-input v-model="state.item.search" style="width: 200px" autocomplete="new-password" type="text" placeholder="昵称 | 网址 | 描述 | 备注" />
                 </div>
-                <el-button v-on:click="method.refresh()" class="btn btn-auto mx-1 mimic" type="button">刷新</el-button>
-                <el-dropdown class="custom mimic mx-1" trigger="click">
-                    <span class="el-dropdown-link d-flex align-items-center">
-                        {{ state.item.group }}
-                        <i-svg name="down"></i-svg>
-                    </span>
-                    <template #dropdown>
-                        <el-dropdown-item v-for="(item, index) in state.select.group" :key="index" v-on:click="method.group(item)">
-                            <el-avatar shape="square" v-if="item?.avatar" :src="method.imageSize(item?.avatar)" :size="20" class="me-1"></el-avatar>
-                            <span>{{ item.label }}</span>
-                        </el-dropdown-item>
-                    </template>
-                </el-dropdown>
-                <el-button v-on:click="method.add()" v-if="state.item.tabs.includes('all')" class="btn btn-auto ms-1 mimic" type="button">添加</el-button>
+                <el-button v-on:click="method.refresh()" type="button">刷新</el-button>
+                <!-- 移除分组下拉框 -->
+                <el-button v-on:click="method.add()" v-if="state.item.tabs.includes('all')" type="button">添加</el-button>
             </div>
             <div class="col-lg-6 d-flex justify-content-end" style="z-index: -1">
-                <el-button class="btn btn-auto mimic" disabled type="button">
+                <el-button disabled type="button">
                     {{ state.item.title }}
                 </el-button>
             </div>
@@ -73,22 +61,20 @@ const state  = reactive({
         title : '友链管理',
         search: null,
         sort  : '排序',
-        group : '分组',
-        tabs  : 'all',
+        tabs  : 'all', // 移除group相关配置
     },
     params: {
         all: {
             order: 'id asc'
+            // 移除分组查询条件，默认查询全部
         },
         remove: {
             order: 'id asc',
             onlyTrashed: true
+            // 移除分组查询条件，默认查询全部回收站数据
         },
     },
-    // 下拉框
-    select: {
-        group: [{ value: 0, label: '默认分组', avatar: '' }],
-    },
+    // 移除分组相关的select配置
     tabs: {
         all: false,
         remove: false,
@@ -97,49 +83,30 @@ const state  = reactive({
 
 // 方法
 const method = {
-    // 初始化数据
+    // 初始化数据 - 移除分组加载逻辑
     async init() {
-        const { code, data } = await axios.get('/api/links-group/column', {
-            field: 'id,name,description,avatar',
-        })
-        if (code !== 200) return
-
-        state.select.group.push(...data.map(item => ({ value: item.id, label: item.name, ...item })))
+        // 无需加载分组数据，直接刷新友链列表
+        method.refresh()
     },
-    // 选择分组
-    group(item = {}) {
-        state.item.group = item.label
-        for (let item in state.params) {
-            state.params[item].where = '`group` = ' + item.value
-        }
-        // 重新加载数据
-        method.refresh('all','remove')
-    },
+    // 移除group方法（分组选择逻辑）
     // 设置排序方式
     order(order = 'create_time asc', sort = '排序') {
         state.item.sort = sort
         for (let item in state.params) state.params[item].order = order
-        // 指定刷新
         method.refresh('all','remove')
     },
     // 添加
     add: () => proxy.$refs['all']['show'](),
     // 刷新
     refresh(...args) {
-        // 允许刷新的参数
         let allow = ['all','remove']
-        // 如果没有传参则刷新所有
         if (args.length === 0) args = allow
-        // 如果传参则过滤不允许的参数
         else args = args.filter(item => allow.includes(item))
-        // 批量刷新
         for (let item of args) proxy.$refs[item]['init']()
     },
     // 图片大小
     imageSize(url = '', size = '50x50') {
-        // 判断 url 是否为空
         if (utils.is.empty(url)) return url
-        // 返回新的 url
         return url.includes('?') ? `${url}&size=${size}` : `${url}?size=${size}`
     },
     // 切换 tab
@@ -152,7 +119,6 @@ onMounted(async () => {
 })
 
 watch(() => state.item.search, (val) => {
-
     const allow = ['all', 'remove']
 
     for (let item of allow) {
@@ -165,7 +131,6 @@ watch(() => state.item.search, (val) => {
         else delete state.params[item].like
     }
 
-    // 防抖 - 没变化的 500ms 后再刷新
     clearTimeout(state.item.timer)
     state.item.timer = setTimeout(() => method.refresh(...allow), globalThis.inis?.lazy_time ?? 500)
 })
