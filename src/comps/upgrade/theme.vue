@@ -15,7 +15,8 @@ const state = reactive({
 onMounted(async () => {
     // 只有超级管理员才有权限
     if (state.user?.result?.auth?.all === true) {
-        await method.check()
+        // 暂时禁止检查更新 - 注释掉调用
+        // await method.check()
     }
 })
 

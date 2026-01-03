@@ -37,9 +37,7 @@
                         <label class="form-label">
                             <el-tooltip placement="top">
                                 <template #content>
-                                    <span>（可选）为该分组的用户分配更高级的权限</span><br>
-                                    <span>● 默认：即便用户拥有了对应的权限，也只能操作自己的数据，适用于普通用户或会员</span><br>
-                                    <span>● 管理权限：该权限适用于有管理权限的用户，比如管理员和编辑员等，对别人的数据有操作权限</span><br>
+                                    <span>请选择是否允许注册</span>
                                 </template>
                                 <span>
                                     <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
