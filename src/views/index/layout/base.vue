@@ -1,8 +1,4 @@
 <template>
-
-    <!-- 默认美化 -->
-    <i-beautify></i-beautify>
-
     <!-- 顶部导航栏 -->
     <i-nav></i-nav>
 
@@ -20,7 +16,6 @@ import '{src}/assets/css/app.min.css'
 import '{src}/assets/css/media.min.css'
 import '{src}/assets/css/theme.min.css'
 import iNav from '{src}/views/index/layout/nav.vue'
-import iBeautify from '{src}/views/index/layout/beautify.vue'
 import iFooter from '{src}/views/index/layout/footer.vue'
 import upgradePage from '{src}/comps/upgrade/page.vue'
 

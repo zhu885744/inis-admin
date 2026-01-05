@@ -105,7 +105,6 @@ export const externals = () => {
 
 ### 6. 功能扩展库
 - **echarts**：数据可视化图表库
-- **TinyMCE**（`@tinymce/tinymce-vue`）：富文本编辑器
 - **md-editor-v3**：Markdown 编辑器 https://imzbf.github.io/md-editor-v3/zh-CN/about
 - **plyr**：视频播放器
 - **lottie-web**（`vue3-lottie`）：动画渲染库
@@ -124,8 +123,6 @@ export const externals = () => {
 ## 版本更新日志
 [1.0.0]更新内容如下
 - 新增：文章发布，独立页面发布，支持自定义发布日期
-- 新增: 相册管理页面
-- 新增：相册分类管理页面
 - 去除：前端博文相关，仅保留基础引导单页
 - 优化：大量 UI 显示细节
 - 修复：大量bug

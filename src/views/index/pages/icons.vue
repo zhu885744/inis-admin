@@ -18,7 +18,6 @@
 
 <script setup>
 import utils from '{src}/utils/utils.js'
-import notyf from '{src}/utils/notyf.js'
 
 const { ctx, proxy } = getCurrentInstance()
 
@@ -33,7 +32,7 @@ state.icons = files.map(item => item.split('/').pop().split('.').shift())
 const copy = (text = null, msg = null) => {
   if (utils.is.empty(text)) return
   utils.set.copy.text(text)
-  if (!utils.is.empty(msg)) return notyf.success(msg)
+  if (!utils.is.empty(msg)) return ElMessage.success(msg)
 }
 </script>
 

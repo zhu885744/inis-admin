@@ -1,8 +1,5 @@
 <template>
 
-    <!-- 默认美化 -->
-    <i-beautify></i-beautify>
-
     <i-index></i-index>
 
 </template>
@@ -11,7 +8,6 @@
 import '{src}/assets/css/app.min.css'
 import '{src}/assets/css/media.min.css'
 import '{src}/assets/css/theme.min.css'
-import iBeautify from '{src}/views/install/layout/beautify.vue'
 import iIndex from '{src}/views/install/pages/index.vue'
 
 nextTick(()=>{

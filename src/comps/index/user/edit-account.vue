@@ -21,7 +21,6 @@
 
 <script setup>
 import cache from '{src}/utils/cache.js'
-import notyf from '{src}/utils/notyf.js'
 import utils from '{src}/utils/utils.js'
 import axios from '{src}/utils/request.js'
 import iRowText from '{src}/comps/custom/i-row-text.vue'
@@ -52,9 +51,8 @@ const method = {
         }
     },
     save: async () => {
-
-        if (utils.is.empty(state.struct.id))      return notyf.warn('请先登录！')
-        if (utils.is.empty(state.struct.account)) return notyf.warn('账号不能为空！')
+        if (utils.is.empty(state.struct.id))      return ElMessage.warning('请先登录！')
+        if (utils.is.empty(state.struct.account)) return ElMessage.warning('账号不能为空！')
 
         state.item.wait     = true
 
@@ -65,9 +63,10 @@ const method = {
 
         state.item.wait     = false
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)
 
         state.item.edit     = false
+        ElMessage.success('账号修改成功')
 
         // 重新获取用户信息
         await method.checkToken()

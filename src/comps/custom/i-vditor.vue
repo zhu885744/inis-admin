@@ -7,7 +7,6 @@
 import Vditor from 'vditor'
 import 'vditor/dist/index.css'
 import utils from '{src}/utils/utils'
-import notyf from '{src}/utils/notyf'
 import axios from '{src}/utils/request'
 
 const { ctx, proxy } = getCurrentInstance()
@@ -72,7 +71,7 @@ const method = {
                     })
 
                     if (code !== 200) {
-                        notyf.error(msg)
+                        ElMessage.error(msg)  // 替换为Element Plus消息提示
                         state.progress.color = 'var(--bs-danger)'
                         setTimeout(() => (state.progress.show  = false), 3000)
                         return

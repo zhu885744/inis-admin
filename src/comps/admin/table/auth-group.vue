@@ -229,7 +229,6 @@
 
 <script setup>
 import utils from '{src}/utils/utils.js'
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 import ITable from '{src}/comps/custom/i-table.vue'
 import { useUsersStore } from '{src}/store/users'
@@ -348,7 +347,7 @@ const method = {
 
         const {code, msg} = await axios.del(uri, {ids})
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)  // 使用Element Plus的Message
 
         // 刷新回收站数据
         emit('refresh', 'remove')
@@ -432,7 +431,7 @@ const method = {
 
         const {code, msg} = await axios.put(`/api/${state.item.table}/restore`, {ids})
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)  // 使用Element Plus的Message
 
         // 刷新全部数据
         emit('refresh', 'all')
@@ -443,8 +442,8 @@ const method = {
     // 保存数据
     save: async (params = state.struct || {}) => {
 
-        if (utils.is.empty(params)) return notyf.warn('你在想什么？什么都不填！')
-        if (utils.is.empty(params?.name)) return notyf.warn('分组名称是必须的哟！')
+        if (utils.is.empty(params)) return ElMessage.warning('你在想什么？什么都不填！')  // 使用Element Plus的Message
+        if (utils.is.empty(params?.name)) return ElMessage.warning('分组名称是必须的哟！')  // 使用Element Plus的Message
 
         // 判断是否拥有全部的权限
         let ids = store.authRules.getFlat.map(item=>parseInt(item.hash))
@@ -480,8 +479,9 @@ const method = {
 
         state.item.wait = false
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)  // 使用Element Plus的Message
 
+        ElMessage.success('操作成功')  // 使用Element Plus的Message
         // 关闭模态框
         state.item.dialog = false
         // 重新加载数据

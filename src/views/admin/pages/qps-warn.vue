@@ -2,24 +2,23 @@
     <div class="container-fluid container-box">
         <div class="row d-none d-lg-flex">
             <div class="col-lg-6 d-flex">
-                <el-dropdown v-if="!state.item.tabs.includes('setting')" class="custom mimic me-2" trigger="click">
-                    <span class="el-dropdown-link d-flex align-items-center">
+                <el-dropdown v-if="!state.item.tabs.includes('setting')" class="me-2" trigger="click">
+                    <el-button>
                         {{ state.item.sort }}
                         <i-svg name="down"></i-svg>
-                    </span>
+                    </el-button>
                     <template #dropdown>
                         <el-dropdown-item v-on:click="method.order('create_time desc', '最新')">最新</el-dropdown-item>
                         <el-dropdown-item v-on:click="method.order('create_time asc', '最早')">最早</el-dropdown-item>
                     </template>
                 </el-dropdown>
-                <div class="input-group custom-search me-1">
-                    <i-svg name="search" color="rgb(var(--icon-color))" size="18px"></i-svg>
-                    <input v-model="state.item.search" class="form-control custom search mimic" autocomplete="new-password" type="text" placeholder="IP | 路由 | User-Agent">
+                <div class="me-1">
+                    <el-input v-model="state.item.search" style="width: 200px" autocomplete="new-password" type="text" placeholder="IP | 路由 | User-Agent" />
                 </div>
-                <el-button v-on:click="method.refresh()" class="btn btn-auto mx-1 mimic" type="button">刷新</el-button>
+                <el-button v-on:click="method.refresh()" type="button">刷新</el-button>
             </div>
             <div class="col-lg-6 d-flex justify-content-end" style="z-index: -1">
-                <el-button class="btn btn-auto mimic" disabled type="button">
+                <el-button disabled type="button">
                     {{ state.item.title }}
                 </el-button>
             </div>

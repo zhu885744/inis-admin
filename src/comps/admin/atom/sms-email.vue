@@ -145,7 +145,6 @@
 
 <script setup>
 import utils from '{src}/utils/utils.js'
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 
 const { ctx, proxy } = getCurrentInstance()
@@ -200,7 +199,7 @@ const method = {
         state.status.finish  = true
     },
     show() {
-        if (!state.status.finish) return notyf.warn('邮件服务配置获取失败，无法进行配置！')
+        if (!state.status.finish) return ElMessage.warning('邮件服务配置获取失败，无法进行配置！')
         state.status.dialog = true
     },
     change: async value => {
@@ -212,21 +211,21 @@ const method = {
         if (code === 200) return
 
         state.status.active = !value
-        notyf.error(msg)
+        ElMessage.error(msg)
     },
     save: async () => {
 
         let field = ['host', 'port', 'account', 'password']
 
         // 检查关键配置是否有变化
-        if (!utils.object.equal(state.struct, state.backup, field)) return notyf.warn('请先完成邮件服务测试')
+        if (!utils.object.equal(state.struct, state.backup, field)) return ElMessage.warning('请先完成邮件服务测试')
 
-        if (utils.is.empty(state.struct.host))      return notyf.warn('请填写邮件服务器地址！')
-        if (utils.is.empty(state.struct.port))      return notyf.warn('请填写邮件服务器端口！')
-        if (utils.is.empty(state.struct.account))   return notyf.warn('请填写邮件账号！')
-        if (utils.is.empty(state.struct.password))  return notyf.warn('请填写服务密码！')
-        if (utils.is.empty(state.struct.sign_name)) return notyf.warn('请填写邮件签名！')
-        if (method.chinese(state.struct.nickname))  return notyf.warn('邮件昵称不能包含中文！')
+        if (utils.is.empty(state.struct.host))      return ElMessage.warning('请填写邮件服务器地址！')
+        if (utils.is.empty(state.struct.port))      return ElMessage.warning('请填写邮件服务器端口！')
+        if (utils.is.empty(state.struct.account))   return ElMessage.warning('请填写邮件账号！')
+        if (utils.is.empty(state.struct.password))  return ElMessage.warning('请填写服务密码！')
+        if (utils.is.empty(state.struct.sign_name)) return ElMessage.warning('请填写邮件签名！')
+        if (method.chinese(state.struct.nickname))  return ElMessage.warning('邮件昵称不能包含中文！')
 
         state.status.wait   = true
 
@@ -234,20 +233,21 @@ const method = {
 
         state.status.wait   = false
 
-        if (code !== 200) return notyf.error('保存失败：' + msg)
+        if (code !== 200) return ElMessage.error('保存失败：' + msg)
 
         state.status.dialog = false
+        ElMessage.success('保存成功')
     },
     test: async () => {
 
-        if (utils.is.empty(state.struct.email))     return notyf.warn('请填写接收者邮箱！')
-        if (utils.is.empty(state.struct.host))      return notyf.warn('请填写邮件服务器地址！')
-        if (utils.is.empty(state.struct.port))      return notyf.warn('请填写邮件服务器端口！')
-        if (utils.is.empty(state.struct.account))   return notyf.warn('请填写邮件账号！')
-        if (utils.is.empty(state.struct.password))  return notyf.warn('请填写服务密码！')
-        if (utils.is.empty(state.struct.sign_name)) return notyf.warn('请填写邮件签名！')
-        if (!utils.is.email(state.struct.email))    return notyf.warn('接收者邮箱格式不正确！')
-        if (method.chinese(state.struct.nickname))  return notyf.warn('邮件昵称不能包含中文！')
+        if (utils.is.empty(state.struct.email))     return ElMessage.warning('请填写接收者邮箱！')
+        if (utils.is.empty(state.struct.host))      return ElMessage.warning('请填写邮件服务器地址！')
+        if (utils.is.empty(state.struct.port))      return ElMessage.warning('请填写邮件服务器端口！')
+        if (utils.is.empty(state.struct.account))   return ElMessage.warning('请填写邮件账号！')
+        if (utils.is.empty(state.struct.password))  return ElMessage.warning('请填写服务密码！')
+        if (utils.is.empty(state.struct.sign_name)) return ElMessage.warning('请填写邮件签名！')
+        if (!utils.is.email(state.struct.email))    return ElMessage.warning('接收者邮箱格式不正确！')
+        if (method.chinese(state.struct.nickname))  return ElMessage.warning('邮件昵称不能包含中文！')
 
         state.status.test         = true
 
@@ -258,10 +258,10 @@ const method = {
         if (code === 200) {
             // 拷贝一份备份
             state.backup = JSON.parse(JSON.stringify(state.struct))
-            return notyf.success(msg)
+            return ElMessage.success(msg)
         }
 
-        notyf.error(`${msg}<br>${data}`)
+        ElMessage.error(`${msg}<br>${data}`)
     },
     chinese: value => {
         // 匹配中文字符的Unicode范围

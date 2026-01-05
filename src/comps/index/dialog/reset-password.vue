@@ -1,5 +1,5 @@
 <template>
-    <el-dialog v-model="state.item.dialog" class="custom small-dialog" :close-on-click-modal="false"width="500px"max-width="90vw">
+    <el-dialog v-model="state.item.dialog" class="custom small-dialog" :close-on-click-modal="false" width="500px" max-width="90vw">
         <template #default>
             <div class="container">
                 <el-alert type="success" :closable="false" center class="mb-3 box-shadow-light">
@@ -30,10 +30,10 @@
                 <!-- 联系方式输入项 -->
                 <div class="form-item mb-3">
                     <label class="form-label block mb-1">
-                        <el-tooltip content="可以是邮箱或者手机号，用于找回密码或验证码登录等" placement="top">
+                        <el-tooltip content="邮箱或者手机号，用于找回密码或验证码登录等" placement="top">
                             <span>
                                 <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span class="ms-1">联系方式：</span>
+                                <span class="ms-1">邮箱或手机号：</span>
                             </span>
                         </el-tooltip>
                     </label>
@@ -133,7 +133,6 @@
 <script setup>
 import { reactive, watch, onUnmounted, getCurrentInstance } from 'vue'
 import utils from '{src}/utils/utils.js'
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 import { useCommStore } from '{src}/store/comm'
 
@@ -170,20 +169,20 @@ const method = {
         const { value: pwd, verify: pwdVerify } = state.password
 
         if (utils.is.empty(account) && utils.is.empty(social)) {
-            return notyf.warn('账号或联系方式二选一！')
+            return ElMessage.warning('账号、邮箱或者手机号二选一！')
         }
-        if (utils.is.empty(pwd)) return notyf.warn('请输入新密码！')
-        if (pwd.length < 6) return notyf.warn('密码长度至少6位！')
-        if (utils.is.empty(pwdVerify)) return notyf.warn('请再次输入密码！')
-        if (utils.is.empty(code)) return notyf.warn('请输入验证码！')
-        if (pwd !== pwdVerify) return notyf.warn('两次输入的密码不一致！')
+        if (utils.is.empty(pwd)) return ElMessage.warning('请输入新密码！')
+        if (pwd.length < 6) return ElMessage.warning('密码长度至少6位！')
+        if (utils.is.empty(pwdVerify)) return ElMessage.warning('请再次输入密码！')
+        if (utils.is.empty(code)) return ElMessage.warning('请输入验证码！')
+        if (pwd !== pwdVerify) return ElMessage.warning('两次输入的密码不一致！')
 
-        // 联系方式格式校验
+        // 格式校验
         if (social) {
             const isPhone = /^1[3-9]\d{9}$/.test(social)
             const isEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(social)
             if (!isPhone && !isEmail) {
-                return notyf.warn('联系方式请填写正确的手机号或邮箱！')
+                return ElMessage.warning('请填写正确的手机号或邮箱！')
             }
         }
 
@@ -199,13 +198,13 @@ const method = {
 
             if (resCode !== 200) throw new Error(msg || '重置密码失败！')
 
-            notyf.success('重置成功！')
+            ElMessage.success('密码重置成功！')
             state.item.dialog = false
             emit('finish')
 
         } catch (error) {
             state.item.wait = false
-            notyf.error(error.message || '网络异常，请稍后再试！')
+            ElMessage.error(error.message || '网络异常，请稍后再试！')
         }
     },
 
@@ -214,29 +213,29 @@ const method = {
         // 基础校验
         const { account, social } = state.struct
         if (utils.is.empty(account) && utils.is.empty(social)) {
-            return notyf.warn('账号或联系方式二选一！')
+            return ElMessage.warning('账号、邮箱或者手机号二选一！')
         }
 
-        // 联系方式格式校验
+        // 格式校验
         if (social) {
             const isPhone = /^1[3-9]\d{9}$/.test(social)
             const isEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(social)
             if (!isPhone && !isEmail) {
-                return notyf.warn('联系方式请填写正确的手机号或邮箱！')
+                return ElMessage.warning('请填写正确的手机号或邮箱！')
             }
         }
 
         try {
             state.item.loading = true
             // 拆分验证码接口（避免与重置密码复用）
-            const { code: resCode, msg } = await axios.post('/api/comm/send-reset-code', {
+            const { code: resCode, msg } = await axios.post('/api/comm/reset-password', {
                 social,
                 account
             })
 
             if (!utils.in.array(resCode, [200, 201])) throw new Error(msg || '发送验证码失败！')
 
-            notyf.success(msg || '验证码发送成功！')
+            ElMessage.success(msg || '验证码发送成功！')
 
             // 安全管理定时器
             if (state.timer) clearInterval(state.timer)
@@ -252,7 +251,7 @@ const method = {
 
         } catch (error) {
             state.item.loading = false
-            notyf.error(error.message || '网络异常，验证码发送失败！')
+            ElMessage.error(error.message || '网络异常，验证码发送失败！')
         }
     },
 

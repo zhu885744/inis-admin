@@ -250,7 +250,6 @@
 
 <script setup>
 import utils from '{src}/utils/utils'
-import notyf from '{src}/utils/notyf'
 import axios from '{src}/utils/request'
 
 const { ctx, proxy } = getCurrentInstance()
@@ -308,11 +307,11 @@ const method = {
     // 连接数据库
     connect: async () => {
 
-        if (utils.is.empty(state.struct.hostname)) return notyf.warn('数据库地址不能为空！')
-        if (utils.is.empty(state.struct.hostport)) return notyf.warn('数据库端口不能为空！')
-        if (utils.is.empty(state.struct.database)) return notyf.warn('数据库名称不能为空！')
-        if (utils.is.empty(state.struct.username)) return notyf.warn('数据库用户名不能为空！')
-        if (utils.is.empty(state.struct.password)) return notyf.warn('数据库密码不能为空！')
+        if (utils.is.empty(state.struct.hostname)) return ElMessage.warning('数据库地址不能为空！')
+        if (utils.is.empty(state.struct.hostport)) return ElMessage.warning('数据库端口不能为空！')
+        if (utils.is.empty(state.struct.database)) return ElMessage.warning('数据库名称不能为空！')
+        if (utils.is.empty(state.struct.username)) return ElMessage.warning('数据库用户名不能为空！')
+        if (utils.is.empty(state.struct.password)) return ElMessage.warning('数据库密码不能为空！')
 
         state.load.connect  = true
 
@@ -322,11 +321,11 @@ const method = {
 
         if (code !== 200) {
             state.item.connect = false
-            return notyf.error(msg)
+            return ElMessage.error(msg)
         }
 
         state.item.connect = true
-        notyf.success('数据库连接成功！')
+        ElMessage.success('数据库连接成功！')
         utils.set.session(state.item.DB_KEY, state.struct)
     },
     // 初始化数据库
@@ -335,20 +334,20 @@ const method = {
         const { code, msg } = await axios.post('/dev/install/init-db')
         if (code === 200) return
 
-        notyf.error(msg)
+        ElMessage.error(msg)
         state.item.connect = false
     },
     // 创建管理员
     createAdmin: async () => {
 
-        if (!state.item.connect) return notyf.warn('请先测试数据库连接！')
+        if (!state.item.connect) return ElMessage.warning('请先测试数据库连接！')
 
-        if (utils.is.empty(state.user.account))   return notyf.warn('帐号不能为空！')
-        if (utils.is.empty(state.user.email))     return notyf.warn('邮箱不能为空！')
-        if (!utils.is.email(state.user.email))    return notyf.warn('邮箱格式不正确！')
-        if (utils.is.empty(state.user.password1)) return notyf.warn('密码不能为空！')
-        if (utils.is.empty(state.user.password2)) return notyf.warn('请再次输入密码！')
-        if (state.user.password1 !== state.user.password2) return notyf.warn('两次输入的密码不一致！')
+        if (utils.is.empty(state.user.account))   return ElMessage.warning('帐号不能为空！')
+        if (utils.is.empty(state.user.email))     return ElMessage.warning('邮箱不能为空！')
+        if (!utils.is.email(state.user.email))    return ElMessage.warning('邮箱格式不正确！')
+        if (utils.is.empty(state.user.password1)) return ElMessage.warning('密码不能为空！')
+        if (utils.is.empty(state.user.password2)) return ElMessage.warning('请再次输入密码！')
+        if (state.user.password1 !== state.user.password2) return ElMessage.warning('两次输入的密码不一致！')
 
         state.user.password = state.user.password2
 
@@ -356,12 +355,12 @@ const method = {
 
             const { code, msg } = await axios.post('/dev/install/create-admin', state.user)
             if (code === 500) return method.retry()
-            if (code !== 200) return notyf.error(msg)
+            if (code !== 200) return ElMessage.error(msg)
 
             delete state.user.password1
             delete state.user.password2
 
-            notyf.success('创建管理员成功！')
+            ElMessage.success('创建管理员成功！')
             utils.clear.session(state.item.DB_KEY)
             await method.lock()
             await method.next(3)
@@ -373,7 +372,8 @@ const method = {
     // 重试
     retry: async () => {
 
-        if (state.retry.count > 5) return notyf.error('安装失败，请联系兔子，QQ：97783391', {
+        if (state.retry.count > 5) return ElMessage.error({
+            message: '安装失败：创建管理员失败，请检查数据库配置及数据库状态是否正常！',
             duration: 10 * 60 * 1000,
         })
 
@@ -390,12 +390,12 @@ const method = {
     // 上锁（安装锁）
     lock: async () => {
         const { code, msg } = await axios.post('/dev/install/lock')
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)
     },
     // 下一步
     next: async (active = 1) => {
         if (active === 2) {
-            if (!state.item.connect) return notyf.warn('请先测试数据库连接！')
+            if (!state.item.connect) return ElMessage.warning('请先测试数据库连接！')
             await method.initDB()
         }
         state.item.active = active
@@ -413,7 +413,7 @@ const method = {
 
         utils.set.copy.text(text)
 
-        if (!utils.is.empty(msg)) return notyf.info(msg)
+        if (!utils.is.empty(msg)) return ElMessage.info(msg)
     },
 }
 

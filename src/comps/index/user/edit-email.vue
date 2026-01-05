@@ -34,7 +34,6 @@
 
 <script setup>
 import cache from '{src}/utils/cache.js'
-import notyf from '{src}/utils/notyf.js'
 import utils from '{src}/utils/utils.js'
 import axios from '{src}/utils/request.js'
 import iRowText from '{src}/comps/custom/i-row-text.vue'
@@ -68,55 +67,90 @@ const method = {
         }
     },
     save: async () => {
+        // 邮箱格式验证
+        if (utils.is.empty(state.struct?.email)) {
+            return ElMessage.warning('请输入邮箱！')
+        }
+        if (!utils.is.email(state.struct?.email)) {
+            return ElMessage.warning('请输入正确的邮箱格式！')
+        }
+        if (utils.is.empty(state.struct?.code)) {
+            return ElMessage.warning('请输入验证码！')
+        }
 
-        if (utils.is.empty(state.struct?.email))  return notyf.warn('请输入邮箱！')
-        if (utils.is.empty(state.struct?.code))   return notyf.warn('请输入验证码！')
+        state.item.wait = true
 
-        state.item.wait     = true
+        try {
+            const { code, msg } = await axios.put('/api/users/email', {
+                email: state.struct?.email,
+                code: state.struct?.code
+            })
 
-        const { code, msg } = await axios.put('/api/users/email', {
-            email: state.struct?.email, code: state.struct?.code
-        })
+            if (code !== 200) {
+                ElMessage.error(msg)
+                return
+            }
 
-        state.item.wait     = false
-
-        if (code !== 200) return notyf.error(msg)
-
-        state.item.edit     = false
-
-        state.item.second   = 0
-        state.struct.code   = null
-        clearInterval(state.timer)
-
-        // 重新获取用户信息
-        await method.checkToken()
+            ElMessage.success('邮箱修改成功！')
+            state.item.edit = false
+            state.item.second = 0
+            state.struct.code = null
+            clearInterval(state.timer)
+            
+            // 重新获取用户信息
+            await method.checkToken()
+        } catch (error) {
+            ElMessage.error('网络异常，请稍后重试')
+        } finally {
+            state.item.wait = false
+        }
     },
     code: async () => {
+        if (utils.is.empty(state.struct?.email)) {
+            return ElMessage.warning('请输入邮箱！')
+        }
+        if (!utils.is.email(state.struct?.email)) {
+            return ElMessage.warning('请输入正确的邮箱格式！')
+        }
 
-        if (utils.is.empty(state.struct?.email))  return notyf.warn('请输入邮箱！')
+        try {
+            const { code, msg } = await axios.put('/api/users/email', {
+                email: state.struct?.email,
+            })
 
-        const { code, msg } = await axios.put('/api/users/email', {
-            email: state.struct?.email,
-        })
+            if (!utils.in.array(code, [200, 201])) {
+                ElMessage.error(msg)
+                return
+            }
 
-        if (!utils.in.array(code, [200,201])) return notyf.error(msg)
-
-        state.item.second = 60
-        state.timer = setInterval(() => {
-            state.item.second--
-            if (state.item.second <= 0) clearInterval(state.timer)
-        }, 1000)
+            ElMessage.success('验证码已发送，请查收！')
+            state.item.second = 60
+            state.timer = setInterval(() => {
+                state.item.second--
+                if (state.item.second <= 0) {
+                    clearInterval(state.timer)
+                }
+            }, 1000)
+        } catch (error) {
+            ElMessage.error('验证码发送失败，请稍后重试')
+        }
     },
     // 校验登录
     async checkToken() {
+        try {
+            const { data, code } = await axios.post('/api/comm/check-token')
 
-        const { data, code } = await axios.post('/api/comm/check-token')
+            if (code !== 200) {
+                ElMessage.warning('用户信息同步失败')
+                return
+            }
 
-        if (code !== 200) return
-
-        emit('finish', data.user)
-
-        cache.set('user-info', data.user, 10)
+            emit('finish', data.user)
+            cache.set('user-info', data.user, 10)
+            ElMessage.success('用户信息已更新')
+        } catch (error) {
+            ElMessage.error('用户信息同步失败')
+        }
     },
 }
 

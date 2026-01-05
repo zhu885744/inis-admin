@@ -81,7 +81,6 @@
 <script setup>
 import cache from '{src}/utils/cache'
 import utils from '{src}/utils/utils'
-import notyf from '{src}/utils/notyf'
 import axios from '{src}/utils/request'
 import MarkdownIt from 'markdown-it'
 
@@ -199,14 +198,14 @@ const method = {
 
         if (code !== 200) {
             state.loading.upgrade = false
-            return notyf.error(msg)
+            return ElMessage.error(msg)  // 替换为Element Plus消息提示
         }
 
         state.lottie.play     = false
         state.loading.finish  = true
         state.loading.upgrade = false
 
-        notyf.success('升级成功！')
+        ElMessage.success('升级成功！')  // 替换为Element Plus消息提示
     },
     // 忽略本次更新
     ignore: async () => {

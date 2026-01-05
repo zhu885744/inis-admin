@@ -164,7 +164,6 @@
 
 <script setup>
 import utils from '{src}/utils/utils.js'
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 import ITable from '{src}/comps/custom/i-table.vue'
 
@@ -232,9 +231,9 @@ const method = {
     // 保存数据
     save: async (params = state.struct || {}) => {
 
-        if (utils.is.empty(params))      return notyf.warn('你在想什么？什么都不填！')
-        if (utils.is.empty(params?.name)) return notyf.warn('名称是必填项！')
-        if (utils.is.empty(params?.path)) return notyf.warn('路径是必填项！')
+        if (utils.is.empty(params))      return ElMessage.warning('你在想什么？什么都不填！')
+        if (utils.is.empty(params?.name)) return ElMessage.warning('名称是必填项！')
+        if (utils.is.empty(params?.path)) return ElMessage.warning('路径是必填项！')
 
         state.item.wait     = true
 
@@ -242,8 +241,9 @@ const method = {
 
         state.item.wait     = false
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)
 
+        ElMessage.success('保存成功')  // 添加成功提示
         // 关闭对话框
         state.item.dialog = false
         // 重新加载数据
@@ -266,8 +266,9 @@ const method = {
 
         const { code, msg } = await axios.del(uri, { ids })
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)
 
+        ElMessage.success('删除成功')  // 添加成功提示
         // 刷新回收站数据
         emit('refresh', 'remove')
 
@@ -281,8 +282,9 @@ const method = {
 
         const { code, msg } = await axios.put(`/api/${state.item.table}/restore`, { ids })
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)
 
+        ElMessage.success('恢复成功')  // 添加成功提示
         // 刷新全部数据
         emit('refresh', 'all')
 
@@ -311,7 +313,7 @@ const method = {
 
         utils.set.copy.text(text)
 
-        if (!utils.is.empty(msg)) return notyf.info(msg)
+        if (!utils.is.empty(msg)) return ElMessage.info(msg)
     },
     // 省略文本
     omit  : (text = null, length = 10, omission = ' ... ', location = 'center') => {

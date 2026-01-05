@@ -101,7 +101,7 @@ import UserEditAccount from '{src}/comps/index/user/edit-account.vue'
 import UserEditEmail from '{src}/comps/index/user/edit-email.vue'
 import UserEditPhone from '{src}/comps/index/user/edit-phone.vue'
 import UserEditPassword from '{src}/comps/index/user/edit-password.vue'
-import { ElLoading } from 'element-plus'
+import { ElLoading, ElMessage } from 'element-plus'
 
 const { ctx, proxy } = getCurrentInstance()
 const store  = {

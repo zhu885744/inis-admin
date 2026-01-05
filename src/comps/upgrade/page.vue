@@ -3,8 +3,6 @@
 </template>
 
 <script setup>
-import { ElNotification } from 'element-plus'
-
 const { ctx, proxy } = getCurrentInstance()
 const state = reactive({
     last: null,

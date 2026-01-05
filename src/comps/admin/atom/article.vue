@@ -5,7 +5,7 @@
             <h6 class="text-muted text-uppercase mt-0">
                 <el-tooltip placement="top">
                     <template #content>
-                        ● Markdown编辑器：Vditor支持所见即所得、即时渲染（类似 Typora）和分屏预览模式。<br>
+                        ● Markdown编辑器：Vditor支持所见即所得、即时时渲染（类似 Typora）和分屏预览模式。<br>
                     </template>
                     <span class="d-inline-flex align-items-center">
                         <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
@@ -115,7 +115,6 @@
 
 <script setup>
 import cache from '{src}/utils/cache'
-import notyf from '{src}/utils/notyf'
 import axios from '{src}/utils/request'
 
 const { ctx, proxy } = getCurrentInstance()
@@ -138,7 +137,8 @@ const state = reactive({
     status: {
         finish: false,
         loading: true,
-        dialog: false
+        dialog: false,
+        wait: false
     },
     select: {
         editor: [
@@ -188,7 +188,7 @@ const method = {
         state.status.finish  = true
     },
     show() {
-        if (!state.status.finish) return notyf.warn('配置获取失败，无法进行配置！')
+        if (!state.status.finish) return ElMessage.warning('配置获取失败，无法进行配置！') 
         state.status.dialog = true
     },
     save: async () => {
@@ -204,10 +204,10 @@ const method = {
 
         state.status.wait   = false
 
-        if (code !== 200) return notyf.error('保存失败：' + msg)
+        if (code !== 200) return ElMessage.error('保存失败：' + msg)
 
         state.status.dialog = false
-
+        ElMessage.success('保存成功') 
         cache.set(state.cache.name, state.cache.json)
     },
     // 获取缓存

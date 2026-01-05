@@ -1,6 +1,5 @@
 <template>
     <i-table :opts="state.opts" ref="i-table">
-
         <template #start>
             <el-table-column type="selection" width="55"></el-table-column>
         </template>
@@ -12,7 +11,7 @@
                         <el-button v-on:click="method.edit(scope.row)" class="custom" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" class="ms-0" :disabled="scope.row.id === 1">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -29,7 +28,7 @@
                         <el-button v-on:click="method.edit(scope.row)" size="small" class="ms-0">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" class="ms-0":disabled="scope.row.id === 1">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -94,113 +93,137 @@
             </el-tooltip>
         </template>
 
+        <template #i-status="{ scope = {} }">
+            <el-tag :type="scope.status === 0 ? 'success' : 'danger'" class="cursor-default">
+                {{ scope.status === 0 ? '正常' : '冻结' }}
+            </el-tag>
+        </template>
     </i-table>
 
-    <el-dialog v-model="state.item.dialog" class="custom" draggable :close-on-click-modal="false">
-        <template #header>
-            <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 用 户</strong>
-        </template>
-        <template #default>
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="这位兄dei叫什么？" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">昵称：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-input v-model="state.struct.nickname"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group mb-3">
+    <el-dialog v-model="state.item.dialog" title="用户信息编辑" width="800px" class="custom" draggable :close-on-click-modal="false">
+        <div class="user-form-container" style="padding: 10px 0;">
+            <div class="row mb-4 align-items-end">
+                <div class="col-md-4">
+                    <div class="form-group">
                         <label class="form-label required">
-                            <el-tooltip content="（必须）可用于账密登录" placement="top">
+                            <el-tooltip content="（必须）用户显示名称" placement="top">
                                 <span>
                                     <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">账号：</span>
+                                    <span class="ms-1">昵称</span>
                                 </span>
                             </el-tooltip>
                         </label>
-                        <el-input v-model="state.struct.account"></el-input>
+                        <el-input v-model="state.struct.nickname" placeholder="请输入用户昵称"></el-input>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="建议设置一个头像，效果更佳" placement="top">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label required">
+                            <el-tooltip content="（必须）登录账号，不可重复" placement="top">
                                 <span>
                                     <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">头像：</span>
+                                    <span class="ms-1">账号</span>
                                 </span>
                             </el-tooltip>
                         </label>
-                        <div class="input-with-button">
-                            <el-input v-model="state.struct.avatar" class="custom" placeholder="填写图片地址或点击上传图片"></el-input>
-                            <el-button @click="method.upload('avatar')" :loading="state.item.upload"class="upload-btn">
-                                <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                                <span class="ms-1">上传</span>
-                            </el-button>
-                        </div>
+                        <el-input v-model="state.struct.account" placeholder="请输入登录账号"></el-input>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <el-tooltip content="设置用户账号可用状态" placement="top">
+                                <span>
+                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                    <span class="ms-1">账号状态</span>
+                                </span>
+                            </el-tooltip>
+                        </label>
+                        <el-select v-model="state.struct.status" class="d-block font-13" :disabled="state.struct.id === 1">
+                            <el-option label="正常" :value="0"></el-option>
+                            <el-option label="冻结" :value="1"></el-option>
+                        </el-select>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="（必须）可用于邮箱验证码登录" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">邮箱：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-input v-model="state.struct.email"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
+
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="form-group">
                         <label class="form-label">
-                            <el-tooltip content="可用于手机验证码登录" placement="top">
+                            <el-tooltip content="用户头像展示" placement="top">
                                 <span>
                                     <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">手机：</span>
+                                    <span class="ms-1">头像</span>
                                 </span>
                             </el-tooltip>
                         </label>
-                        <el-input v-model="state.struct.phone"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="为空不修改，反之修改密码" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">密码：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-input v-model="state.struct.password" placeholder="为空不修改密码"></el-input>
+                        <el-input v-model="state.struct.avatar" class="custom" placeholder="图片地址/点击上传">
+                            <template #append>
+                                <el-button @click="method.upload('avatar')" :loading="state.item.upload" class="upload-btn">
+                                    <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
+                                    <span class="ms-1">上传</span>
+                                </el-button>
+                            </template>
+                        </el-input>
                     </div>
                 </div>
             </div>
-            <div class="row">
+
+            <div class="row mb-4">
                 <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="为该用户分配权限，默认只有公共权限" placement="top">
+                    <div class="form-group">
+                        <label class="form-label required">
+                            <el-tooltip content="（必须）邮箱验证码登录使用" placement="top">
                                 <span>
                                     <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">权限：</span>
+                                    <span class="ms-1">邮箱</span>
                                 </span>
                             </el-tooltip>
                         </label>
-                        <el-select v-model="state.struct.result.auth.group.ids" multiple collapse-tags placeholder="请选择权限" class="d-block custom font-13">
+                        <el-input v-model="state.struct.email" type="email" placeholder="请输入邮箱地址"></el-input>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <el-tooltip content="手机号验证码登录使用" placement="top">
+                                <span>
+                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                    <span class="ms-1">手机号</span>
+                                </span>
+                            </el-tooltip>
+                        </label>
+                        <el-input v-model="state.struct.phone" placeholder="请输入手机号码"></el-input>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <el-tooltip content="为空则不修改，填写则更新密码" placement="top">
+                                <span>
+                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                    <span class="ms-1">密码</span>
+                                </span>
+                            </el-tooltip>
+                        </label>
+                        <el-input v-model="state.struct.password" type="password" placeholder="为空不修改密码"></el-input>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <el-tooltip content="分配用户系统权限组" placement="top">
+                                <span>
+                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                    <span class="ms-1">权限</span>
+                                </span>
+                            </el-tooltip>
+                        </label>
+                        <el-select v-model="state.struct.result.auth.group.ids" multiple collapse-tags placeholder="请选择权限组" class="d-block font-13">
                             <el-option v-for="item in state.select.auth_group" :key="item.value" :label="item.label" :value="item.value">
                                 <span class="font-13">{{ item.label }}</span>
                             </el-option>
@@ -208,76 +231,83 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="form-group mb-3">
+                    <div class="form-group">
                         <label class="form-label">
-                            <el-tooltip content="您的性别是？" placement="top">
+                            <el-tooltip content="用户性别标识" placement="top">
                                 <span>
                                     <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">性别：</span>
+                                    <span class="ms-1">性别</span>
                                 </span>
                             </el-tooltip>
                         </label>
-                        <el-select v-model="state.struct.gender" class="d-block custom font-13" placeholder="请选择">
-                            <el-option v-for="item in state.select.gender" :key="item.value" :label="item.label" :value="item.value">
-                            </el-option>
+                        <el-select v-model="state.struct.gender" class="d-block font-13" placeholder="请选择性别">
+                            <el-option label="保密" :value="null"></el-option>
+                            <el-option label="男" value="boy"></el-option>
+                            <el-option label="女" value="girl"></el-option>
                         </el-select>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="form-group mb-3">
+                    <div class="form-group">
                         <label class="form-label">
-                            <el-tooltip content="为这个用户设置一个专属的头衔，彰显与众不同" placement="top">
+                            <el-tooltip content="用户专属头衔展示" placement="top">
                                 <span>
                                     <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">专属头衔：</span>
+                                    <span class="ms-1">专属头衔</span>
                                 </span>
                             </el-tooltip>
                         </label>
-                        <el-input v-model="state.struct.title" placeholder="独领风骚"></el-input>
+                        <el-input v-model="state.struct.title" placeholder="请输入专属头衔"></el-input>
                     </div>
                 </div>
             </div>
+
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <el-tooltip content="用户个人介绍展示" placement="top">
+                                <span>
+                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                    <span class="ms-1">个人简介</span>
+                                </span>
+                            </el-tooltip>
+                        </label>
+
+                        <el-input v-model="state.struct.description" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" placeholder="请输入个人简介"></el-input>
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group mb-3">
+                <div class="col-md-12">
+                    <div class="form-group">
                         <label class="form-label">
-                            <el-tooltip content="简单的介绍一下" placement="top">
+                            <el-tooltip content="内部备注，不对外展示" placement="top">
                                 <span>
                                     <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">个人简介：</span>
+                                    <span class="ms-1">备注</span>
                                 </span>
                             </el-tooltip>
                         </label>
-                        <el-input v-model="state.struct.description" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea"></el-input>
+                        <el-input v-model="state.struct.remark" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea" placeholder="请输入备注信息（仅内部可见）"></el-input>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="备注而已，页面上不会显示此项" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">备注：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea"></el-input>
-                    </div>
-                </div>
-            </div>
-        </template>
+        </div>
+
         <template #footer>
-            <el-button v-on:click="state.item.dialog = false">取 消</el-button>
-            <el-button v-on:click="method.save()" :loading="state.item.wait">保 存</el-button>
+            <div style="text-align: right; padding: 10px 0;">
+                <el-button @click="state.item.dialog = false" size="default" style="margin-right: 10px;">取 消</el-button>
+                <el-button @click="method.save()" :loading="state.item.wait" type="primary" size="default">保 存</el-button>
+            </div>
         </template>
     </el-dialog>
 </template>
 
 <script setup>
+import { reactive, computed, watch, onMounted, getCurrentInstance } from 'vue'
 import utils from '{src}/utils/utils.js'
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 import ITable from '{src}/comps/custom/i-table.vue'
 
@@ -305,7 +335,6 @@ const left = computed(() => {
     if (utils.is.mobile()) result = false
     return result
 })
-// table - fixed
 const right = computed(() => {
     let result = 'right'
     if (utils.is.mobile()) result = false
@@ -321,7 +350,9 @@ const state  = reactive({
         wait: false,
     },
     struct: {
+        id: null, // 存储当前编辑用户的ID
         remark: null,
+        status: 0, // 默认值为数字0，对应"正常"
         result: {
             auth: {
                 all: false,
@@ -341,12 +372,12 @@ const state  = reactive({
             { prop: 'account', label: '账号', width: 130, slot: true },
             { prop: 'email',   label: '邮箱', width: 120, slot: true },
             { prop: 'phone',   label: '电话', width: 120, slot: true },
+            { prop: 'status',  label: '状态', width: 100, slot: true },
             { prop: 'remark' , label: '备注', width: 150, slot: true },
             { prop: 'login_time', label: '最近登录', width: 140, sortable: true, slot: true },
             { prop: 'create_time', label: '创建时间', width: 140, sortable: true },
         ],
     },
-    // 下拉框
     select: {
         auth_group: [],
         gender: [
@@ -361,7 +392,9 @@ const method = {
     // 刷新数据
     init: async () => {
         state.struct = {
+            id: null, // 重置用户ID
             remark: null,
+            status: 0, // 重置为数字0，显示"正常"
             result: {
                 auth: {
                     all: false,
@@ -373,7 +406,6 @@ const method = {
                 }
             }
         }
-        // 重新加载数据
         await proxy.$refs['i-table']['init']()
     },
     // 获取权限分组
@@ -388,137 +420,141 @@ const method = {
     async updateAuthGroup(uid = null, ids = []) {
         if (utils.is.empty(uid)) return
         const { code, msg } = await axios.put('/api/auth-group/uids', { uid, ids })
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)
     },
-    // 保存数据
+    // 保存数据 - 仅限制状态修改
     save: async (params = state.struct || {}) => {
+        try {
+            if (utils.is.empty(params)) return ElMessage.warning('表单数据不能为空！')
+            if (utils.is.empty(params?.account)) return ElMessage.warning('账号为必填项！')
+            
+            // 邮箱格式验证
+            if (!utils.is.empty(params?.email) && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(params.email)) {
+                return ElMessage.warning('邮箱格式不正确！')
+            }
+            
+            // 手机号格式验证
+            if (!utils.is.empty(params?.phone) && !/^1[3-9]\d{9}$/.test(params.phone)) {
+                return ElMessage.warning('手机号格式不正确！')
+            }
 
-        if (utils.is.empty(params))          return notyf.warn('你在想什么？什么都不填！')
-        if (utils.is.empty(params?.account)) return notyf.warn('账号还是要设置的！')
-        if (!utils.is.empty(params?.email))  if (!utils.is.email(params?.email)) return notyf.warn('邮箱格式不正确！')
-        if (!utils.is.empty(params?.phone))  if (!utils.is.phone(params?.phone)) return notyf.warn('手机号格式不正确！')
+            state.item.wait = true
 
-        state.item.wait           = true
+            const { code, msg, data } = await axios.post(`/api/${state.item.table}/save`, params)
 
-        const { code, msg, data } = await axios.post(`/api/${state.item.table}/save`, params)
+            state.item.wait = false
 
-        state.item.wait           = false
-
-        if (code !== 200) return notyf.error(msg)
-
-        // 关闭对话框
-        state.item.dialog = false
-        // 重新加载数据
-        await method.init()
-        // 更新用户权限
-        await method.updateAuthGroup(data.id, params.result.auth.group.ids)
+            if (code !== 200) throw new Error(msg || '保存失败')
+            
+            ElMessage.success('保存成功！')
+            state.item.dialog = false
+            await method.init()
+            await method.updateAuthGroup(data.id, params.result.auth.group.ids)
+        } catch (error) {
+            state.item.wait = false
+            ElMessage.error(error.message || '保存失败，请重试')
+        }
     },
     // 编辑数据
     edit: struct => {
-        state.struct = struct
+        // 确保status是数字类型，匹配下拉框的value类型
+        const editStruct = {
+            ...struct,
+            status: Number(struct.status) // 强制转换为数字
+        }
+        state.struct = editStruct
         state.item.dialog = true
     },
-    // 显示盒子
+    // 显示盒子（新增用户）
     show: () => {
         method.init()
         state.item.dialog = true
     },
-     // 真删 和 软删
+    // 真删 和 软删 - 禁用超级管理员删除
     async delete(ids = [], isSoft = true) {
-
+        // 禁止删除ID为1的用户
+        if (ids === 1 || (Array.isArray(ids) && ids.includes(1))) {
+            ElMessage.error('禁止删除系统管理员！')
+            return
+        }
+        
         if (utils.is.empty(ids)) return
-
-        // 拼接服务地址
+        
         const uri = `/api/${state.item.table}/${isSoft ? 'remove' : 'delete'}`
-
-        const { code, msg } = await axios.del(uri, { ids })
-
-        if (code !== 200) return notyf.error(msg)
-
-        // 刷新回收站数据
-        emit('refresh', 'remove')
-
-        // 重新加载数据
-        await method.init()
+        try {
+            const { code, msg } = await axios.del(uri, { ids })
+            if (code !== 200) throw new Error(msg)
+            
+            ElMessage.success(isSoft ? '软删除成功！' : '永久删除成功！')
+            emit('refresh', 'remove')
+            await method.init()
+        } catch (error) {
+            ElMessage.error(error.message || '删除失败')
+        }
     },
     // 恢复数据
     async restore(ids = []) {
-
         if (utils.is.empty(ids)) return
-
-        const { code, msg } = await axios.put(`/api/${state.item.table}/restore`, { ids })
-
-        if (code !== 200) return notyf.error(msg)
-
-        // 刷新全部数据
-        emit('refresh', 'all')
-
-        // 重新加载数据
-        await method.init()
+        
+        try {
+            const { code, msg } = await axios.put(`/api/${state.item.table}/restore`, { ids })
+            if (code !== 200) throw new Error(msg)
+            
+            ElMessage.success('恢复成功！')
+            emit('refresh', 'all')
+            await method.init()
+        } catch (error) {
+            ElMessage.error(error.message || '恢复失败')
+        }
     },
     // 上传
     async upload(field = 'image') {
-
-        // 创建一个 input
-        const input  = document.createElement('input')
-        input.type   = 'file'
-        input.accept = 'image/*'
-
-        // 监听 input 的 change 事件
-        input.addEventListener('change', async () => {
-            // 创建一个 formData
-            const params = new FormData
-            params.append('file', input.files[0])
-
-            state.item.upload         = true
-
-            // 上传图片
-            const { code, msg, data } = await axios.post('/api/file/upload', params)
-
-            state.item.upload         = false
-
-            if (code !== 200) return notyf.error(msg)
-            // 设置图片
-            state.struct[field] = data.path
-            // 清空 input
-            input.value = ''
-            notyf.info('上传成功！')
-        })
-
-        // 触发 input 的 click 事件
-        input.click()
+        try {
+            const input = document.createElement('input')
+            input.type = 'file'
+            input.accept = 'image/*'
+            
+            input.addEventListener('change', async () => {
+                if (!input.files.length) return
+                
+                const params = new FormData()
+                params.append('file', input.files[0])
+                
+                state.item.upload = true
+                const { code, msg, data } = await axios.post('/api/file/upload', params)
+                state.item.upload = false
+                
+                if (code !== 200) throw new Error(msg)
+                
+                state.struct[field] = data.path
+                ElMessage.info('上传成功！')
+            })
+            
+            input.click()
+        } catch (error) {
+            state.item.upload = false
+            ElMessage.error(error.message || '上传失败')
+        }
     },
-    // 打开新窗口
-    window(url = null, target = '_blank'){
+    window(url = null, target = '_blank') {
         if (utils.is.empty(url)) return
-        // 新窗口打开
         globalThis.open(url, target)
     },
-    // 图片大小
     imageSize(url = '', size = '50x50') {
-        // 判断 url 是否为空
         if (utils.is.empty(url)) return url
-        // 返回新的 url
         return url.includes('?') ? `${url}&size=${size}` : `${url}?size=${size}`
     },
-    // 自动换行
     autoWrap(text = '', length = 40, symbol = '<br>') {
-        // 判断 text 是否为空
         if (utils.is.empty(text)) return text
-        // 每隔 length 个字符添加一个换行符
         return text.replace(new RegExp(`(.{${length}})`, 'g'), `$1${symbol}`)
     },
-    // 复制文本
-    copy  : (text = null, msg = '复制成功！') => {
-
+    copy: (text = null, msg = '复制成功！') => {
         if (utils.is.empty(text)) return
-
+        
         utils.set.copy.text(text)
-
-        if (!utils.is.empty(msg)) return notyf.info(msg)
+        ElMessage.info(msg)
     },
-    // 省略文本
-    omit  : (text = null, length = 10, omission = ' ... ', location = 'center') => {
+    omit: (text = null, length = 10, omission = ' ...', location = 'center') => {
         if (utils.is.empty(text)) return '-'
         return utils.string.omit(text, length, omission, location)
     },
@@ -533,13 +569,27 @@ watch(() => props.init, (val) => {
     if (val) method.init()
 })
 
-// 监听对话框状态
+// 监听对话框关闭，重置表单
 watch(() => state.item.dialog, (value) => {
-    // 关闭对话框时清空数据
-    if (!value) state.struct = {}
+    if (!value) {
+        state.struct = {
+            id: null, // 重置用户ID
+            remark: null,
+            status: 0, // 重置为数字0，显示"正常"
+            result: {
+                auth: {
+                    all: false,
+                    root: false,
+                    group: {
+                        ids: [],
+                        list: [],
+                    },
+                }
+            }
+        }
+    }
 })
 
-// 将子组件方法暴露给父组件
 defineExpose({
     init: method.init,
     show: method.show,

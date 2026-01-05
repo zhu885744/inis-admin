@@ -9,7 +9,8 @@
                         </span>
                     </div>
                     <div class="card-footer">
-                        <el-button v-on:click="method.save()" :loading="state.item.wait" type="primary" plain class="float-end">保 存</el-button>
+                        <el-button v-on:click="method.save()" :loading="state.item.wait" class="float-end">发布文章</el-button>
+                        <el-button>保存草稿</el-button>
                     </div>
                 </div>
             </div>
@@ -151,7 +152,6 @@
 <script setup>
 import cache from '{src}/utils/cache'
 import utils from '{src}/utils/utils'
-import notyf from '{src}/utils/notyf'
 import axios from '{src}/utils/request'
 import IVditor from '{src}/comps/custom/i-vditor.vue'
 import { useCommStore } from '{src}/store/comm'
@@ -173,7 +173,7 @@ const state  = reactive({
     },
     struct: {
         content: '',
-        editor: 'vditor', // 固定使用vditor
+        editor: 'vditor',
         json: { comment: { allow: 0, show: 0 } }
     },
     select: {
@@ -211,7 +211,7 @@ const method = {
         }
         await method.getTags()
         if (!utils.is.empty(state.item.id)) await method.getPage(state.item.id)
-        else state.struct.editor = 'vditor' // 初始化默认使用vditor
+        else state.struct.editor = 'vditor'
     },
     // 获取文章标签
     getTags: async () => {
@@ -226,8 +226,8 @@ const method = {
         const { code, msg, data } = await axios.get('/api/pages/one', { id })
         if (code !== 200) {
             await router.push({path: '/admin/pages/write'})
-            notyf.error(msg)
-            return notyf.warn('已为您跳转到页面撰写页！')
+            ElMessage.error(msg)
+            return ElMessage.warning('已为您跳转到页面撰写页！')
         }
 
         // 合并 json 项默认数据
@@ -263,13 +263,14 @@ const method = {
         let length = state.struct?.content?.replace(reg, '')?.replace(/\n/g, '')?.length || 0
         switch (length) {
         case 0:
-            return notyf.warn('你这页面一个字都没写，糊弄谁呢？')
+
+            return ElMessage.warning('你这页面一个字都没写，糊弄谁呢？')
         case 1:
-            return notyf.warn('真就只写一个字呗？')
+            return ElMessage.warning('真就只写一个字呗？')
         default:
-            if (length < 10) return notyf.warn('你这太水了，10个字都不到。')
+            if (length < 10) return ElMessage.warning('你这太水了，10个字都不到。')
         }
-        if (utils.is.empty(state.struct?.title)) return notyf.warn('你可能忘记写标题了')
+        if (utils.is.empty(state.struct?.title)) return ElMessage.warning('你可能忘记写标题了')
 
         state.struct.tags = !utils.is.empty(state.item.tags) ? `|${state.item.tags.join('|')}|` : ''
 
@@ -281,8 +282,9 @@ const method = {
 
         state.item.wait = false
 
-        if (code !== 200) return notyf.error(msg)
-        notyf.success(msg)
+        if (code !== 200) return ElMessage.error(msg)
+
+        ElMessage.success(msg)
 
         state.item.id   = data.id
         state.struct.id = data.id
@@ -300,7 +302,7 @@ const method = {
                     const {code, msg, data} = await axios.post('/api/tags/save', {name: item})
                     // 创建失败，删除对应的 tag
                     if (code !== 200) {
-                        notyf.error('添加标签失败：' + msg)
+                        ElMessage.error('添加标签失败：' + msg)
                         return state.item.tags.splice(index, 1)
                     }
                     // 把原来的 tag 替换成新的 tag.id

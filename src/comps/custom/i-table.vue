@@ -54,7 +54,6 @@
 </template>
 
 <script setup>
-import notyf from "{src}/utils/notyf"
 import utils from '{src}/utils/utils'
 import axios from '{src}/utils/request'
 
@@ -191,7 +190,7 @@ const method = {
         })
 
         // 数据加载失败
-        if (!utils.in.array(code, [200, 204])) return notyf.error(msg)
+        if (!utils.in.array(code, [200, 204])) return ElMessage.error(msg)  // 替换为Element Plus消息提示
 
         state.item.data       = data.data
         state.item.count      = data.count

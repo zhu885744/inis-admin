@@ -2,12 +2,12 @@
     <div class="container-fluid container-box">
         <div class="row d-none d-lg-flex">
             <div class="col-lg-6 d-flex">
-                <button v-on:click="method.refresh()" class="btn btn-auto mimic" type="button">刷新</button>
+                <el-button v-on:click="method.refresh()" type="button">刷新</el-button>
             </div>
             <div class="col-lg-6 d-flex justify-content-end" style="z-index: -1">
-                <button class="btn btn-auto h-35px mimic" disabled type="button">
+                <el-button disabled type="button">
                     {{ state.item.title }}
-                </button>
+                </el-button>
             </div>
         </div>
         <div class="row mt-3">
@@ -119,9 +119,6 @@
                             <div class="col-md-4">
                                 <atom-upgrade ref="upgrade" v-on:refresh="method.refresh"></atom-upgrade>
                             </div>
-                            <div class="col-md-4">
-                                <device-bind ref="device-bind" v-on:refresh="method.refresh"></device-bind>
-                            </div>
                         </div>
                     </el-tab-pane>
 
@@ -152,7 +149,6 @@ import AtomStorageKodo from '{src}/comps/admin/atom/storage-kodo.vue'
 import AtomPage from '{src}/comps/admin/atom/page.vue'
 import AtomArticle from '{src}/comps/admin/atom/article.vue'
 import AtomSiteInfo from '{src}/comps/admin/atom/site-info.vue'
-import DeviceBind from '{src}/comps/inis/device/bind.vue'
 import AtomUpgrade from '{src}/comps/admin/atom/upgrade.vue'
 
 const { ctx, proxy } = getCurrentInstance()

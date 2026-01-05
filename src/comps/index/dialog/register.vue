@@ -1,5 +1,5 @@
 <template>
-    <el-dialog v-model="state.item.dialog" class="custom small-dialog" :close-on-click-modal="false"width="500px"max-width="90vw">
+    <el-dialog v-model="state.item.dialog" class="custom small-dialog" :close-on-click-modal="false" width="500px" max-width="90vw">
         <template #default>
             <div class="container">
                 <el-alert type="success" :closable="false" center class="mb-3 box-shadow-light">
@@ -35,39 +35,13 @@
                     <el-input v-model="state.struct.account" class="custom" placeholder="请输入账号"></el-input>
                 </div>
 
-                <!-- 密码输入项 -->
-                <div class="form-item mb-3">
-                    <label class="form-label block mb-1">
-                        <el-tooltip content="该账号的密码" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span class="ms-1 required">密码：</span>
-                            </span>
-                        </el-tooltip>
-                    </label>
-                    <el-input v-model="state.password.value" show-password class="custom" placeholder="请输入密码"></el-input>
-                </div>
-
-                <!-- 确认密码输入项 -->
-                <div class="form-item mb-3">
-                    <label class="form-label block mb-1 required">
-                        <el-tooltip content="（必须）再次确认密码" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span class="ms-1">确认密码：</span>
-                            </span>
-                        </el-tooltip>
-                    </label>
-                    <el-input v-model="state.password.verify" show-password class="custom" placeholder="请再次输入密码"></el-input>
-                </div>
-
                 <!-- 联系方式输入项 -->
                 <div class="form-item mb-3">
                     <label class="form-label block mb-1">
                         <el-tooltip content="可以是邮箱或者手机号，用于找回密码或验证码登录等" placement="top">
                             <span>
                                 <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span class="ms-1 required">联系方式：</span>
+                                <span class="ms-1 required">邮箱或手机号：</span>
                             </span>
                         </el-tooltip>
                     </label>
@@ -92,6 +66,32 @@
                         </template>
                     </el-input>
                 </div>
+
+                <!-- 密码输入项 -->
+                <div class="form-item mb-3">
+                    <label class="form-label block mb-1">
+                        <el-tooltip content="该账号的密码" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span class="ms-1 required">密码：</span>
+                            </span>
+                        </el-tooltip>
+                    </label>
+                    <el-input v-model="state.password.value" show-password class="custom" placeholder="请输入密码"></el-input>
+                </div>
+
+                <!-- 确认密码输入项 -->
+                <div class="form-item mb-3">
+                    <label class="form-label block mb-1 required">
+                        <el-tooltip content="（必须）再次确认密码密码" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span class="ms-1">确认密码：</span>
+                            </span>
+                        </el-tooltip>
+                    </label>
+                    <el-input v-model="state.password.verify" show-password class="custom" placeholder="请再次输入密码"></el-input>
+                </div>
             </div>
         </template>
 
@@ -110,7 +110,6 @@
 
 <script setup>
 import utils from '{src}/utils/utils.js'
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 import cache from "{src}/utils/cache.js";
 import { useCommStore } from '{src}/store/comm'
@@ -145,13 +144,13 @@ const state = reactive({
 const method = {
     // 注册
     register: async () => {
-        if (utils.is.empty(state.struct.nickname)) return notyf.warn('请填写您的昵称！')
-        if (utils.is.empty(state.struct.account)) return notyf.warn('请输入一个自定义账号！')
-        if (utils.is.empty(state.struct.social)) return notyf.warn('请输入您的联系方式！')
-        if (utils.is.empty(state.password.value)) return notyf.warn('请输入密码！')
-        if (utils.is.empty(state.password.verify)) return notyf.warn('请再次输入密码！')
-        if (utils.is.empty(state.struct.code)) return notyf.warn('请输入验证码！')
-        if (state.password.value !== state.password.verify) return notyf.warn('两次输入的密码不一致！')
+        if (utils.is.empty(state.struct.nickname)) return ElMessage.warning('请填写您的昵称！')
+        if (utils.is.empty(state.struct.account)) return ElMessage.warning('请输入一个自定义账号！')
+        if (utils.is.empty(state.struct.social)) return ElMessage.warning('请输入您的邮箱或手机号！')
+        if (utils.is.empty(state.password.value)) return ElMessage.warning('请输入密码！')
+        if (utils.is.empty(state.password.verify)) return ElMessage.warning('请再次输入密码！')
+        if (utils.is.empty(state.struct.code)) return ElMessage.warning('请输入验证码！')
+        if (state.password.value !== state.password.verify) return ElMessage.warning('两次输入的密码不一致！')
 
         state.item.wait = true
 
@@ -162,9 +161,16 @@ const method = {
 
             state.item.wait = false
 
-            if (code !== 200) return notyf.error(msg)
+            if (code !== 200) return ElMessage.error(msg)
 
-            notyf.success(msg)
+            // 优化注册成功提示
+            ElMessage({
+                message: `🎉 注册成功！欢迎您，${state.struct.nickname}！`,
+                type: 'success',
+                duration: 6000,
+                showClose: true
+            })
+            
             cache.set('user-info', data.user, 10)
             utils.set.cookie(globalThis?.inis?.token_name || 'INIS_LOGIN_TOKEN', data.token, 7 * 24 * 60 * 60)
             state.item.dialog = false
@@ -176,29 +182,29 @@ const method = {
             emit('finish', data.user)
         } catch (error) {
             state.item.wait = false
-            notyf.error('网络异常，请稍后再试！')
+            ElMessage.error('网络异常，请稍后再试！')
         }
     },
     // 获取验证码
     code: async () => {
-        if (utils.is.empty(state.struct.social)) return notyf.warn('请输入您的联系方式！')
+        if (utils.is.empty(state.struct.social)) return ElMessage.warning('请输入您的邮箱或手机号！')
 
         // 校验联系方式格式（手机号/邮箱）
         const social = state.struct.social
         const isPhone = /^1[3-9]\d{9}$/.test(social)
         const isEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(social)
         if (!isPhone && !isEmail) {
-            return notyf.warn('联系方式请填写正确的手机号或邮箱！')
+            return ElMessage.warning('请填写正确的手机号或邮箱！')
         }
 
         try {
-            const { code, msg } = await axios.post('/api/comm/send-register-code', {
+            const { code, msg } = await axios.post('/api/comm/register', {
                 social: state.struct.social,
             })
 
-            if (!utils.in.array(code, [200, 201])) return notyf.error(msg)
+            if (!utils.in.array(code, [200, 201])) return ElMessage.error(msg)
 
-            notyf.success(msg || '验证码发送成功！')
+            ElMessage.success(msg || '验证码发送成功！')
 
             // 启动倒计时，先清除旧定时器
             if (state.timer) clearInterval(state.timer)
@@ -212,7 +218,7 @@ const method = {
                 }
             }, 1000)
         } catch (error) {
-            notyf.error('网络异常，验证码发送失败！')
+            ElMessage.error('网络异常，验证码发送失败！')
         }
     },
     // 显示对话框

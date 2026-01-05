@@ -122,7 +122,6 @@
 
 <script setup>
 import utils from '{src}/utils/utils.js'
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 import ITable from '{src}/comps/custom/i-table.vue'
 
@@ -187,8 +186,8 @@ const method = {
     // 保存数据
     save: async (params = state.struct || {}) => {
 
-        if (utils.is.empty(params)) return notyf.warn('你在想什么？什么都不填！')
-        if (utils.is.empty(params?.name)) return notyf.warn('标签怎么能没有名字呢！')
+        if (utils.is.empty(params)) return ElMessage.warning('你在想什么？什么都不填！')  // 使用Element Plus的Message
+        if (utils.is.empty(params?.name)) return ElMessage.warning('标签怎么能没有名字呢！')  // 使用Element Plus的Message
 
         state.item.wait     = true
 
@@ -196,7 +195,7 @@ const method = {
 
         state.item.wait     = false
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)  // 使用Element Plus的Message
 
         // 关闭对话框
         state.item.dialog = false
@@ -220,7 +219,7 @@ const method = {
 
         const { code, msg } = await axios.del(uri, { ids })
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)  // 使用Element Plus的Message
 
         // 刷新回收站数据
         emit('refresh', 'remove')
@@ -235,7 +234,7 @@ const method = {
 
         const { code, msg } = await axios.put(`/api/${state.item.table}/restore`, { ids })
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)  // 使用Element Plus的Message
 
         // 刷新全部数据
         emit('refresh', 'all')
@@ -264,12 +263,12 @@ const method = {
 
             state.item.upload         = false
 
-            if (code !== 200) return notyf.error(msg)
+            if (code !== 200) return ElMessage.error(msg)  // 使用Element Plus的Message
             // 设置图片
             state.struct[field] = data.path
             // 清空 input
             input.value = ''
-            notyf.info('上传成功！')
+            ElMessage.success('上传成功！')  // 使用Element Plus的Message
         })
 
         // 触发 input 的 click 事件
@@ -296,7 +295,7 @@ const method = {
 
         utils.set.copy.text(text)
 
-        if (!utils.is.empty(msg)) return notyf.info(msg)
+        if (!utils.is.empty(msg)) return ElMessage.success(msg)  // 使用Element Plus的Message
     },
     // 省略文本
     omit  : (text = null, length = 10, omission = ' ... ', location = 'center') => {

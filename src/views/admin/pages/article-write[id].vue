@@ -4,11 +4,11 @@
             <div class="col-lg-9">
                 <div class="card mb-2">
                     <div v-loading="utils.is.empty(state.struct.editor)" class="card-body custom" style="min-height: 485px">
-                        <!-- 仅保留 Vditor 编辑器 -->
                         <i-vditor ref="vditor" v-model="state.struct.content" :opts="{ height: 600 }"></i-vditor>
                     </div>
                     <div class="card-footer">
-                        <el-button v-on:click="method.save()" :loading="state.item.wait" type="primary" plain class="float-end">保 存</el-button>
+                        <el-button v-on:click="method.save()" :loading="state.item.wait" class="float-end">发布文章</el-button>
+                        <el-button>保存草稿</el-button>
                     </div>
                 </div>
             </div>
@@ -201,9 +201,8 @@
 <script setup>
 import cache from '{src}/utils/cache'
 import utils from '{src}/utils/utils'
-import notyf from '{src}/utils/notyf'
 import axios from '{src}/utils/request'
-import IVditor from '{src}/comps/custom/i-vditor.vue'  // 仅保留 Vditor 组件
+import IVditor from '{src}/comps/custom/i-vditor.vue'
 import { useCommStore } from '{src}/store/comm'
 
 const { ctx, proxy } = getCurrentInstance()
@@ -232,7 +231,7 @@ const state  = reactive({
     },
     struct: {
         content: '',
-        editor: 'vditor',  // 固定使用 Vditor 编辑器
+        editor: 'vditor',
         json: { comment: { allow: 0, show: 0 } }
     },
     select: {
@@ -277,7 +276,6 @@ const method = {
         await method.getTags()
         if (!utils.is.empty(state.item.id))  await method.getArticle(state.item.id)
         else {
-            // 直接设置为 Vditor 编辑器，无需读取缓存
             state.struct.editor = 'vditor'
         }
     },
@@ -287,7 +285,7 @@ const method = {
         const { code, msg, data } = await axios.get('/api/article/one', { id })
         if (code !== 200) {
             await router.push({path: '/admin/article/write'})
-            return notyf.error('已为您跳转到文章撰写页！', msg)
+            return ElMessage.error(`已为您跳转到文章撰写页！${msg}`)
         }
 
         // 合并 json 项默认数据
@@ -343,13 +341,13 @@ const method = {
         let length = state.struct?.content?.replace(reg, '')?.replace(/\n/g, '')?.length || 0
         switch (length) {
         case 0:
-            return notyf.warn('你这文章一个字都没写，糊弄谁呢？')
+            return ElMessage.warning('你这文章一个字都没写，糊弄谁呢？')
         case 1:
-            return notyf.warn('真就只写一个字呗？')
+            return ElMessage.warning('真就只写一个字呗？')
         default:
-            if (length < 10) return notyf.warn('你这太水了，10个字都不到。')
+            if (length < 10) return ElMessage.warning('你这太水了，10个字都不到。')
         }
-        if (utils.is.empty(state.struct?.title)) return notyf.warn('你可能忘记写标题了')
+        if (utils.is.empty(state.struct?.title)) return ElMessage.warning('你可能忘记写标题了')
 
         // 封面图 - 去空
         let covers = state.item.cover.links.split('\n').filter(item => !utils.is.empty(item))
@@ -370,8 +368,9 @@ const method = {
 
         state.item.wait = false
 
-        if (code !== 200) return notyf.error(msg)
-        notyf.success(msg)
+        if (code !== 200) return ElMessage.error(msg)
+
+        ElMessage.success(msg)
 
         state.item.id   = data.id
         state.struct.id = data.id
@@ -418,7 +417,7 @@ const method = {
         success: async (response, file, list) => {
 
             const { code, msg } = response
-            if (code !== 200) return notyf.error(msg)
+            if (code !== 200) return ElMessage.error(msg)
 
             for (let key = 0; key < list.length; key++) {
                 // 判断是否存在 response
@@ -467,7 +466,7 @@ const method = {
                     const {code, msg, data} = await axios.post('/api/tags/save', {name: item})
                     // 创建失败，删除对应的 tag
                     if (code !== 200) {
-                        notyf.error('添加标签失败：' + msg)
+                        ElMessage.error('添加标签失败：' + msg)
                         return state.item.tags.splice(index, 1)
                     }
                     // 把原来的 tag 替换成新的 tag.id

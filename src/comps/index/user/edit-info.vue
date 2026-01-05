@@ -44,13 +44,14 @@
                                 </span>
                             </el-tooltip>
                         </label>
-                        <div class="input-with-button">
-                            <el-input v-model="state.struct.avatar" class="custom" placeholder="填写图片地址或点击上传图片"></el-input>
-                            <el-button @click="method.upload('avatar')" :loading="state.item.upload"class="upload-btn">
-                                <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                                <span class="ms-1">上传</span>
-                            </el-button>
-                        </div>
+                        <el-input v-model="state.struct.avatar" autocomplete="off" class="custom" placeholder="填写图片地址或点击上传图片">
+                            <template #append>
+                                <el-button v-on:click="method.upload('avatar')" :loading="state.item.upload">
+                                    <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
+                                    <span class="ms-1">上传</span>
+                                </el-button>
+                            </template>
+                        </el-input>
                     </div>
                 </div>
             </div>
@@ -80,7 +81,6 @@
 <script setup>
 import cache from '{src}/utils/cache'
 import utils from '{src}/utils/utils'
-import notyf from '{src}/utils/notyf'
 import axios from '{src}/utils/request'
 
 const { ctx, proxy } = getCurrentInstance()
@@ -105,36 +105,55 @@ const method = {
     // 显示对话框
     show: () => (state.item.dialog = true),
     save: async () => {
+        // 增加昵称必填验证
+        if (utils.is.empty(state.struct?.nickname)) {
+            return ElMessage.warning('请输入昵称！')
+        }
+        
+        if (utils.is.empty(state.struct?.id)) {
+            return ElMessage.warning('请先登录！')
+        }
 
-        if (utils.is.empty(state.struct?.id)) return notyf.warn('请先登录！')
+        state.item.wait = true
 
-        state.item.wait           = true
+        try {
+            const { code, msg } = await axios.put('/api/users/update', state.struct)
 
-        const { code, msg } = await axios.put('/api/users/update', state.struct)
+            if (code !== 200) {
+                ElMessage.error(msg)
+                return
+            }
 
-        state.item.wait           = false
-
-        if (code !== 200) return notyf.error(msg)
-
-        state.item.dialog = false
-
-        // 重新获取用户信息
-        await method.checkToken()
+            ElMessage.success('个人信息修改成功！')
+            state.item.dialog = false
+            
+            // 重新获取用户信息
+            await method.checkToken()
+        } catch (error) {
+            ElMessage.error('网络异常，修改失败')
+        } finally {
+            state.item.wait = false
+        }
     },
     // 校验登录
     async checkToken() {
+        try {
+            const { data, code } = await axios.post('/api/comm/check-token')
 
-        const { data, code } = await axios.post('/api/comm/check-token')
+            if (code !== 200) {
+                ElMessage.warning('用户信息同步失败')
+                return
+            }
 
-        if (code !== 200) return
-
-        emit('finish', data.user)
-
-        cache.set('user-info', data.user, 10)
+            emit('finish', data.user)
+            cache.set('user-info', data.user, 10)
+            ElMessage.success('用户信息已更新')
+        } catch (error) {
+            ElMessage.error('用户信息同步失败')
+        }
     },
     // 上传
     async upload(field = 'image') {
-
         // 创建一个 input
         const input  = document.createElement('input')
         input.type   = 'file'
@@ -142,23 +161,36 @@ const method = {
 
         // 监听 input 的 change 事件
         input.addEventListener('change', async () => {
+            // 验证是否选择了文件
+            if (!input.files || input.files.length === 0) {
+                return ElMessage.warning('请选择图片文件')
+            }
+
             // 创建一个 formData
             const params = new FormData
             params.append('file', input.files[0])
 
-            state.item.upload         = true
+            state.item.upload = true
 
-            // 上传图片
-            const { code, msg, data } = await axios.post('/api/file/upload', params)
+            try {
+                // 上传图片
+                const { code, msg, data } = await axios.post('/api/file/upload', params)
 
-            state.item.upload         = false
-
-            if (code !== 200) return notyf.error(msg)
-            // 设置图片
-            state.struct[field] = data.path
-            // 清空 input
-            input.value = ''
-            notyf.info('上传成功！')
+                if (code !== 200) {
+                    ElMessage.error(msg)
+                    return
+                }
+                
+                // 设置图片
+                state.struct[field] = data.path
+                ElMessage.success('上传成功！')
+            } catch (error) {
+                ElMessage.error('图片上传失败，请重试')
+            } finally {
+                // 清空 input
+                input.value = ''
+                state.item.upload = false
+            }
         })
 
         // 触发 input 的 click 事件

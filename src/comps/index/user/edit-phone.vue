@@ -34,7 +34,6 @@
 
 <script setup>
 import cache from '{src}/utils/cache.js'
-import notyf from '{src}/utils/notyf.js'
 import utils from '{src}/utils/utils.js'
 import axios from '{src}/utils/request.js'
 import iRowText from '{src}/comps/custom/i-row-text.vue'
@@ -69,8 +68,8 @@ const method = {
     },
     save: async () => {
 
-        if (utils.is.empty(state.struct?.phone))  return notyf.warn('请输入手机号！')
-        if (utils.is.empty(state.struct?.code))   return notyf.warn('请输入验证码！')
+        if (utils.is.empty(state.struct?.phone))  return ElMessage.warning('请输入手机号！')
+        if (utils.is.empty(state.struct?.code))   return ElMessage.warning('请输入验证码！')
 
         state.item.wait     = true
 
@@ -80,7 +79,7 @@ const method = {
 
         state.item.wait     = false
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)
 
         state.item.edit     = false
 
@@ -88,19 +87,23 @@ const method = {
         state.struct.code   = null
         clearInterval(state.timer)
 
+        ElMessage.success('手机号修改成功！')
+        
         // 重新获取用户信息
         await method.checkToken()
     },
     code: async () => {
 
-        if (utils.is.empty(state.struct?.phone))  return notyf.warn('请输入手机号！')
+        if (utils.is.empty(state.struct?.phone))  return ElMessage.warning('请输入手机号！')
+        if (!utils.is.phone(state.struct?.phone)) return ElMessage.warning('请输入正确的手机号格式！')
 
         const { code, msg } = await axios.put('/api/users/phone', {
             phone: state.struct?.phone,
         })
 
-        if (!utils.in.array(code, [200,201])) return notyf.error(msg)
-
+        if (!utils.in.array(code, [200,201])) return ElMessage.error(msg)
+        
+        ElMessage.success('验证码发送成功，请查收！')
         state.item.second = 60
         state.timer = setInterval(() => {
             state.item.second--

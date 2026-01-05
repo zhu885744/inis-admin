@@ -87,7 +87,7 @@
                 <div class="col-md-6">
                     <div class="form-group mb-3">
                         <label class="form-label">
-                            <el-tooltip content="自定义公告类型场景，用不到就默认即可" placement="top">
+                            <el-tooltip content="自定义公告类型场景，用不到到就默认即可" placement="top">
                                 <span>
                                     <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
                                     <span class="ms-1">类型：</span>
@@ -171,7 +171,6 @@
 
 <script setup>
 import utils from '{src}/utils/utils.js'
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 import ITable from '{src}/comps/custom/i-table.vue'
 
@@ -241,8 +240,8 @@ const method = {
     // 保存数据
     save: async (params = state.struct || {}) => {
 
-        if (utils.is.empty(params)) return notyf.warn('你在想什么？什么都不填！')
-        if (utils.is.empty(params?.title)) return notyf.warn('公告怎么能没有标题呢！')
+        if (utils.is.empty(params)) return ElMessage.warning('你在想什么？什么都不填！')
+        if (utils.is.empty(params?.title)) return ElMessage.warning('公告怎么能没有标题呢！')
 
         state.item.wait     = true
 
@@ -250,8 +249,9 @@ const method = {
 
         state.item.wait     = false
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)
 
+        ElMessage.success('操作成功')
         // 关闭对话框
         state.item.dialog = false
         // 重新加载数据
@@ -274,8 +274,9 @@ const method = {
 
         const { code, msg } = await axios.del(uri, { ids })
 
-        if (code !== 200) return notyf.error(msg)
-
+        if (code !== 200) return ElMessage.error(msg)
+        
+        ElMessage.success('删除成功')
         // 刷新回收站数据
         emit('refresh', 'remove')
 
@@ -289,8 +290,9 @@ const method = {
 
         const { code, msg } = await axios.put(`/api/${state.item.table}/restore`, { ids })
 
-        if (code !== 200) return notyf.error(msg)
-
+        if (code !== 200) return ElMessage.error(msg)
+        
+        ElMessage.success('恢复成功')
         // 刷新全部数据
         emit('refresh', 'all')
 
@@ -317,7 +319,7 @@ const method = {
 
         utils.set.copy.text(text)
 
-        if (!utils.is.empty(msg)) return notyf.info(msg)
+        if (!utils.is.empty(msg)) return ElMessage.info(msg)
     },
     // 省略文本
     omit  : (text = null, length = 10, omission = ' ... ', location = 'center') => {

@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import cache from '{src}/utils/cache'
-import notyf from '{src}/utils/notyf'
 import utils from '{src}/utils/utils'
 import axios from '{src}/utils/request'
 import { push } from '{src}/utils/route'

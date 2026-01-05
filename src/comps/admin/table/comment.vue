@@ -74,7 +74,7 @@
         <template #i-source="{ scope = {} }">
             <el-tooltip :content="method.autoWrap(scope?.result?.article?.title)" :disabled="utils.is.empty(scope?.result?.article?.title)" placement="top">
                 <span v-if="!utils.is.empty(scope?.result?.article?.title)" class="limit-1-line">
-                    文章：《{{ scope?.result?.article?.title || '-' }}》
+                    {{ scope?.result?.article?.title || '-' }}
                 </span>
             </el-tooltip>
         </template>
@@ -111,7 +111,6 @@
 
 <script setup>
 import utils from '{src}/utils/utils.js'
-import notyf from '{src}/utils/notyf.js'
 import axios from '{src}/utils/request.js'
 import ITable from '{src}/comps/custom/i-table.vue'
 import IMarkdown from '{src}/comps/custom/i-markdown.vue'
@@ -161,7 +160,7 @@ const state  = reactive({
         columns: [
             { prop: 'user', label: '用户', width: 150, slot: true, fixed: left },
             { prop: 'content', label: '内容', width: 200, slot: true },
-            { prop: 'source' , label: '源', width: 200, slot: true },
+            { prop: 'source' , label: '源文章', width: 200, slot: true },
             { prop: 'update_time', label: '更新时间', width: 140, sortable: true },
             { prop: 'create_time', label: '创建时间', width: 140, sortable: true },
         ],
@@ -177,8 +176,8 @@ const method = {
     // 保存数据
     save: async (params = state.struct || {}) => {
 
-        if (utils.is.empty(params)) return notyf.warn('你在想什么？什么都不填！')
-        if (utils.is.empty(params?.content)) return notyf.warn('评论内容怎么能是空的呢？！')
+        if (utils.is.empty(params)) return ElMessage.warning('你在想什么？什么都不填！')  // 使用Element Plus的Message
+        if (utils.is.empty(params?.content)) return ElMessage.warning('评论内容怎么能是空的呢？！')  // 使用Element Plus的Message
 
         state.item.wait     = true
 
@@ -186,12 +185,13 @@ const method = {
 
         state.item.wait     = false
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)  // 使用Element Plus的Message
 
         // 关闭对话框
         state.item.dialog = false
         // 重新加载数据
         await method.init()
+        ElMessage.success('保存成功')  // 使用Element Plus的Message
     },
     // 编辑数据
     edit: struct => {
@@ -210,13 +210,14 @@ const method = {
 
         const { code, msg } = await axios.del(uri, { ids })
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)  // 使用Element Plus的Message
 
         // 刷新回收站数据
         emit('refresh', 'remove')
 
         // 重新加载数据
         await method.init()
+        ElMessage.success('删除成功')  // 使用Element Plus的Message
     },
     // 恢复数据
     async restore(ids = []) {
@@ -225,13 +226,14 @@ const method = {
 
         const { code, msg } = await axios.put(`/api/${state.item.table}/restore`, { ids })
 
-        if (code !== 200) return notyf.error(msg)
+        if (code !== 200) return ElMessage.error(msg)  // 使用Element Plus的Message
 
         // 刷新全部数据
         emit('refresh', 'all')
 
         // 重新加载数据
         await method.init()
+        ElMessage.success('恢复成功')  // 使用Element Plus的Message
     },
     // 打开新窗口
     window(url = null, target = '_blank'){
@@ -260,7 +262,7 @@ const method = {
 
         utils.set.copy.text(text)
 
-        if (!utils.is.empty(msg)) return notyf.info(msg)
+        if (!utils.is.empty(msg)) return ElMessage.info(msg)  // 使用Element Plus的Message
     },
     // 省略文本
     omit  : (text = null, length = 10, omission = ' ... ', location = 'center') => {
