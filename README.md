@@ -110,19 +110,18 @@ export const externals = () => {
 - **lottie-web**（`vue3-lottie`）：动画渲染库
 - **highlight.js**：代码高亮库
 - **crypto-js**：加密算法库
-- **notyf**：轻量级通知提示组件
 - **@fancyapps/ui**：图片查看器等交互组件
 
 ### 7. 其他工具
 - **js-base64**：Base64 编码解码工具
 - **lscache**：本地存储管理工具
-- **@howdyjs/mouse-menu**：自定义右键菜单指令
 - **animejs**：动画库
 - **colorthief**：提取图片主色调工具
 
 ## 版本更新日志
 [1.0.0]更新内容如下
 - 新增：文章发布，独立页面发布，支持自定义发布日期
+- 新增：短信登录方式增加了阿里云号码验证
 - 去除：前端博文相关，仅保留基础引导单页
 - 优化：大量 UI 显示细节
 - 修复：大量bug

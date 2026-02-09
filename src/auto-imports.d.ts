@@ -6,7 +6,9 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue')['EffectScope']
+  const ElConfirm: typeof import('element-plus/es')['ElConfirm']
   const ElMessage: typeof import('element-plus/es')['ElMessage']
+  const ElMessageBox: typeof import('element-plus/es')['ElMessageBox']
   const ElNotification: typeof import('element-plus/es')['ElNotification']
   const computed: typeof import('vue')['computed']
   const createApp: typeof import('vue')['createApp']
@@ -45,7 +47,6 @@ declare global {
   const readonly: typeof import('vue')['readonly']
   const ref: typeof import('vue')['ref']
   const resolveComponent: typeof import('vue')['resolveComponent']
-  const resolveDirective: typeof import('vue')['resolveDirective']
   const shallowReactive: typeof import('vue')['shallowReactive']
   const shallowReadonly: typeof import('vue')['shallowReadonly']
   const shallowRef: typeof import('vue')['shallowRef']

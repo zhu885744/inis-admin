@@ -12,9 +12,9 @@
                         <el-button v-on:click="method.edit(scope.row)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" class="ms-0">
+                        <!--<el-button v-on:click="method.delete(scope.row.id, true)" size="small" class="ms-0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
-                        </el-button>
+                        </el-button>-->
                     </span>
                 </template>
             </el-table-column>
@@ -60,7 +60,7 @@
 
     <el-dialog v-model="state.item.dialog" class="custom" draggable :close-on-click-modal="false">
         <template #header>
-            <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 页 面 权 限</strong>
+            <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 管 理 页 面</strong>
         </template>
         <template #default>
             <div class="row">

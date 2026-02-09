@@ -42,7 +42,7 @@
 
                     <el-tab-pane name="optimize">
                         <template #label>
-                            <span class="fw-bolder font-12">优化</span>
+                            <span class="fw-bolder font-12">缓存</span>
                         </template>
                         <div class="row">
                             <div class="col-md-4">
@@ -89,6 +89,9 @@
                                 <atom-sms-aliyun ref="sms-aliyun" v-on:refresh="method.refresh"></atom-sms-aliyun>
                             </div>
                             <div class="col-md-4">
+                                <atom-sms-aliyun-verify ref="sms-aliyun-verify" v-on:refresh="method.refresh"></atom-sms-aliyun-verify>
+                            </div>
+                            <div class="col-md-4">
                                 <atom-sms-tencent ref="sms-tencent" v-on:refresh="method.refresh"></atom-sms-tencent>
                             </div>
                         </div>
@@ -132,6 +135,7 @@
 import { useCommStore } from '{src}/store/comm'
 import AtomSmsEmail from '{src}/comps/admin/atom/sms-email.vue'
 import AtomSmsAliyun from '{src}/comps/admin/atom/sms-aliyun.vue'
+import AtomSmsAliyunVerify from '{src}/comps/admin/atom/sms-aliyun-verify.vue'
 import AtomSmsTencent from '{src}/comps/admin/atom/sms-tencent.vue'
 import AtomApiKey from '{src}/comps/admin/atom/api-key.vue'
 import AtomAllowRegister from '{src}/comps/admin/atom/allow-register.vue'
@@ -164,7 +168,7 @@ const state  = reactive({
         inis    : ['device-bind','upgrade'],
         other   : ['site-info','page','article'],
         optimize: ['cache-redis','cache-file','cache-ram'],
-        sms     : ['sms-email','sms-aliyun','sms-tencent'],
+        sms     : ['sms-email','sms-aliyun','sms-aliyun-verify','sms-tencent'],
         storage : ['storage-local','storage-oss','storage-cos','storage-kodo'],
         security: ['api-key','qps','page-limit','jwt','allow-register','qps-black'],
     },
@@ -172,16 +176,29 @@ const state  = reactive({
 
 // 方法
 const method = {
-    // 刷新
-    refresh(...args) {
-        // 允许刷新的参数
-        let allow = [...state.refresh[state.item.tabs]]
-        // 如果没有传参则刷新所有
-        if (args.length === 0) args = allow
-        // 如果传参则过滤不允许的参数
-        else args = args.filter(item => allow.includes(item))
-        // 批量刷新
-        for (let item of args) proxy.$refs[item]['init']()
-    },
+  // 刷新
+  refresh(...args) {
+    // 允许刷新的参数
+    const allow = [...state.refresh[state.item.tabs]]
+    // 如果没有传参则刷新所有
+    let targetItems = args.length === 0 ? allow : args.filter(item => allow.includes(item))
+    
+    // 批量刷新（增加安全校验）
+    targetItems.forEach(item => {
+      // 1. 校验ref是否存在
+      const compRef = proxy.$refs[item]
+      if (!compRef) {
+        console.warn(`组件ref不存在：${item}`)
+        return
+      }
+      // 2. 校验init是否为函数
+      if (typeof compRef.init !== 'function') {
+        console.warn(`组件${item}未暴露init方法`)
+        return
+      }
+      // 3. 安全调用init
+      compRef.init()
+    })
+  },
 }
 </script>

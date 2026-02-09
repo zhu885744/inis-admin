@@ -6,7 +6,7 @@
                 <el-tooltip placement="top">
                     <template #content>
                         ● 用于发送验证码相关的服务<br>
-                        ● 注册、找回密码、通知等功能都需要依赖此服务
+                        ● 注册、登录、找回密码、通知等功能都需要依赖此服务
                     </template>
                     <span class="d-inline-flex align-items-center">
                         <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
@@ -194,7 +194,7 @@ const method = {
             sms: value ? 'aliyun' : ''
         })
 
-        if (code === 200) return emit('refresh', 'sms-tencent')
+        if (code === 200) return emit('refresh', 'sms-tencent', 'sms-aliyun-verify')
 
         state.status.active = !value
         ElMessage.error(msg)

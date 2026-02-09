@@ -1,8 +1,8 @@
+import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 import cache from '{src}/utils/cache'
 import utils from '{src}/utils/utils'
 import axios from '{src}/utils/request'
 import { useCommStore } from '{src}/store/comm'
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 
 // 安装引导
 const install = {
@@ -132,7 +132,7 @@ const admin = {
     },{
         path: '/admin/auth/pages',
         name: 'admin-auth-pages',
-        meta: { title: '页面权限' },
+        meta: { title: '管理页面' },
         component: () => import('{src}/views/admin/pages/auth-pages.vue'),
     },{
         path: '/admin/api/keys',

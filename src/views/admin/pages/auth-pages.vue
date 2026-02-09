@@ -56,7 +56,7 @@ const { ctx, proxy } = getCurrentInstance()
 const state  = reactive({
     item: {
         timer : null,
-        title : '页面权限',
+        title : '管理页面',
         search: null,
         sort  : '排序',
         tabs  : 'all',

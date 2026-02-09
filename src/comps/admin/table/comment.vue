@@ -90,7 +90,7 @@
                 <div class="col-lg-12">
                     <div class="form-group mb-3">
                         <label class="form-label">
-                            <el-tooltip content="轮播图上面的文案，可以不设置" placement="top">
+                            <el-tooltip content="可在这里自定义评论内容" placement="top">
                                 <span>
                                     <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
                                     <span class="ms-1">内容：</span>

@@ -211,7 +211,7 @@ body[inis-theme] #app .topnav {
   box-shadow: var(--box-shadow);
   position: fixed;
   top: 0;
-  z-index: 99;
+  z-index: 10;
   width: 100%;
 }
 
@@ -418,23 +418,6 @@ body[inis-theme] .el-step__title.is-wait {
 body[inis-theme] .el-step.is-simple .el-step__arrow::after,
 body[inis-theme] .el-step.is-simple .el-step__arrow::before {
   background-color: rgb(var(--theme-color));
-}
-
-/* ---------- 对话框组件 ---------- */
-body[inis-theme] .el-dialog {
-  background: #f2f3f5;
-  border-radius: var(--border-radius-lg);
-  background-size: 20px 20px;
-  background-position: 50%;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-}
-
-body[inis-theme] .sm .el-dialog__body {
-  padding: 0;
-}
-
-body[inis-theme] .el-dialog.slot-default-pt-0 .el-dialog__body {
-  padding-top: 0;
 }
 
 /* ---------- 抽屉组件 ---------- */
