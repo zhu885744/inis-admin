@@ -1,16 +1,26 @@
 <template>
-    <i-table :opts="state.opts" ref="i-table">
+    <div>
+        <div class="mb-3" v-if="state.item.selection.length > 0">
+            <el-button v-on:click="method.batchAudit()" type="primary" size="small">
+                <i-svg color="rgb(var(--icon-color))" name="audit" size="16px"></i-svg>
+                <span class="ms-1">批量审核</span>
+            </el-button>
+        </div>
+        <i-table :opts="state.opts" ref="i-table" @selection:change="method.selectionChange">
 
         <template #start>
             <el-table-column type="selection" width="55"></el-table-column>
         </template>
 
         <template v-if="props.type === 'all'" #end>
-            <el-table-column :fixed="right" label="操作" width="100" class-name="text-end">
+            <el-table-column :fixed="right" label="操作" width="150" class-name="text-end">
                 <template #default="scope">
                     <span class="d-flex justify-content-end">
                         <el-button v-on:click="method.edit(scope.row)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
+                        </el-button>
+                        <el-button v-on:click="method.audit([scope.row.id])" size="small" class="ms-0" v-if="scope.row.audit === 0">
+                            <i-svg color="rgb(var(--icon-color))" name="audit" size="16px"></i-svg>
                         </el-button>
                         <el-button v-on:click="method.delete(scope.row.id, true)" size="small" class="ms-0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
@@ -30,6 +40,24 @@
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
                         <el-button v-on:click="method.delete(scope.row.id, false)" size="small" class="ms-0">
+                            <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
+                        </el-button>
+                    </span>
+                </template>
+            </el-table-column>
+        </template>
+
+        <template v-if="props.type !== 'remove'" #end>
+            <el-table-column :fixed="right" label="操作" width="150" class-name="text-end">
+                <template #default="scope">
+                    <span class="d-flex justify-content-end">
+                        <el-button v-on:click="method.edit(scope.row)" size="small">
+                            <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
+                        </el-button>
+                        <el-button v-on:click="method.audit([scope.row.id])" size="small" class="ms-0" v-if="scope.row.audit === 0">
+                            <i-svg color="rgb(var(--icon-color))" name="audit" size="16px"></i-svg>
+                        </el-button>
+                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" class="ms-0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -62,6 +90,12 @@
                 </template>
                 <span>{{ method.omit(scope?.description) }}</span>
             </el-tooltip>
+        </template>
+
+        <template #i-audit="{ scope = {} }">
+            <el-tag :type="scope.audit === 1 ? 'success' : 'warning'" size="small">
+                {{ scope.audit === 1 ? '已审核' : '待审核' }}
+            </el-tag>
         </template>
 
         <template #i-remark="{ scope = {} }">
@@ -134,6 +168,22 @@
                         </el-input>
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="form-group mb-3">
+                        <label class="form-label">
+                            <el-tooltip content="设置友链的审核状态" placement="top">
+                                <span>
+                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                    <span class="ms-1">审核状态：</span>
+                                </span>
+                            </el-tooltip>
+                        </label>
+                        <el-select v-model="state.struct.audit" placeholder="请选择审核状态" class="d-block custom font-13">
+                            <el-option label="待审核" value="0"></el-option>
+                            <el-option label="已审核" value="1"></el-option>
+                        </el-select>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
@@ -204,6 +254,7 @@
             <el-button v-on:click="method.save()" :loading="state.item.wait">保 存</el-button>
         </template>
     </el-dialog>
+    </div>
 </template>
 
 <script setup>
@@ -249,6 +300,7 @@ const state  = reactive({
         dialog: false,
         upload: false,
         wait: false,
+        selection: [],
     },
     struct: {},
     opts: {
@@ -258,6 +310,7 @@ const state  = reactive({
             { prop: 'nickname', label: '昵称', width: 120, slot: true, fixed: left },
             { prop: 'url', label: '链接', width: 160, slot: true },
             { prop: 'description' , label: '描述', width: 200, slot: true },
+            { prop: 'audit', label: '审核状态', width: 100, slot: true },
             { prop: 'remark' , label: '备注', width: 200, slot: true },
             { prop: 'update_time', label: '更新时间', width: 140, sortable: true },
             { prop: 'create_time', label: '创建时间', width: 140, sortable: true },
@@ -347,6 +400,36 @@ const method = {
         // 重新加载数据
         await method.init()
         ElMessage.success('恢复成功')
+    },
+    // 审核友链
+    async audit(ids = []) {
+
+        if (utils.is.empty(ids)) return
+
+        const { code, msg } = await axios.put(`/api/${state.item.table}/update`, { 
+            ids, 
+            audit: 1 
+        })
+
+        if (code !== 200) return ElMessage.error(msg)
+
+        // 刷新全部数据和审核数据
+        emit('refresh', 'all')
+        emit('refresh', 'audit')
+
+        // 重新加载数据
+        await method.init()
+        ElMessage.success('审核成功')
+    },
+    // 批量审核
+    async batchAudit() {
+        const ids = state.item.selection.map(item => item.id)
+        if (utils.is.empty(ids)) return ElMessage.warning('请选择要审核的友链')
+        await method.audit(ids)
+    },
+    // 选择变化
+    selectionChange(selection) {
+        state.item.selection = selection
     },
     // 上传
     async upload(field = 'image') {

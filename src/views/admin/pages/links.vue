@@ -36,6 +36,13 @@
                         <table-links :params="state.params.all" v-model:init="state.tabs.all" v-on:refresh="method.refresh" ref="all"></table-links>
                     </el-tab-pane>
 
+                    <el-tab-pane name="audit">
+                        <template #label>
+                            <span class="fw-bolder font-12">待审核</span>
+                        </template>
+                        <table-links :params="state.params.audit" v-model:init="state.tabs.audit" v-on:refresh="method.refresh" ref="audit"></table-links>
+                    </el-tab-pane>
+
                     <el-tab-pane name="remove">
                         <template #label>
                             <span class="fw-bolder font-12">回收站</span>
@@ -68,6 +75,11 @@ const state  = reactive({
             order: 'id asc'
             // 移除分组查询条件，默认查询全部
         },
+        audit: {
+            order: 'id asc',
+            where: [['audit', 0]]
+            // 查询待审核的友链
+        },
         remove: {
             order: 'id asc',
             onlyTrashed: true
@@ -77,6 +89,7 @@ const state  = reactive({
     // 移除分组相关的select配置
     tabs: {
         all: false,
+        audit: false,
         remove: false,
     }
 })
@@ -93,13 +106,13 @@ const method = {
     order(order = 'create_time asc', sort = '排序') {
         state.item.sort = sort
         for (let item in state.params) state.params[item].order = order
-        method.refresh('all','remove')
+        method.refresh('all','audit','remove')
     },
     // 添加
     add: () => proxy.$refs['all']['show'](),
     // 刷新
     refresh(...args) {
-        let allow = ['all','remove']
+        let allow = ['all','audit','remove']
         if (args.length === 0) args = allow
         else args = args.filter(item => allow.includes(item))
         for (let item of args) proxy.$refs[item]['init']()
@@ -119,7 +132,7 @@ onMounted(async () => {
 })
 
 watch(() => state.item.search, (val) => {
-    const allow = ['all', 'remove']
+    const allow = ['all', 'audit', 'remove']
 
     for (let item of allow) {
         if (!utils.is.empty(val)) state.params[item].like = [
