@@ -46,14 +46,6 @@
                                 </div>
                                 <el-avatar :src="store.comm.getLogin.user?.avatar" shape="square" size="medium"></el-avatar>
                             </template>
-                            <el-menu-item v-on:click="method.push({ path: '/' })" index="/account/home">
-                                <i-svg name="!" size="15px" class="me-1"></i-svg>
-                                返回前台
-                            </el-menu-item>
-                            <el-menu-item v-on:click="method.push({ path: '/account/home' })" index="/account/home">
-                                <i-svg name="personal" size="15px" class="me-1"></i-svg>
-                                用户中心
-                            </el-menu-item>
                             <el-menu-item>
                                 <i-svg name="logout" size="16px" class="me-1"></i-svg>
                                 <span v-on:click="store.comm.logout('/')" class="w-100">退出登录</span>
@@ -131,9 +123,6 @@
             <span class="flex-center">
                 <span v-on:click="method.push({ path: '/admin' })" class="flex-center mx-1">
                     <i-svg color="rgb(var(--assist-color))" name="console" size="18px" class="me-1"></i-svg>
-                </span>
-                <span v-on:click="method.push({ path: '/account/home' })" class="flex-center mx-1">
-                    <i-svg color="rgb(var(--assist-color))" name="personal" size="18px" class="me-1"></i-svg>
                 </span>
                 <span v-on:click="store.comm.logout('/')" class="flex-center mx-1">
                     <i-svg color="rgb(var(--assist-color))" name="logout" size="17px" class="me-1"></i-svg>

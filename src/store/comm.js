@@ -42,12 +42,6 @@ const logout = (state = {}, path = null) => {
 
 export const useCommStore = defineStore('comm', {
     state: () => ({
-        // 登录注册重置密码的状态
-        auth: {
-            login   : false,
-            reset   : false,
-            register: false,
-        },
         login: {
             // 登录状态 - 是否登录完成
             finish: false,
@@ -61,12 +55,6 @@ export const useCommStore = defineStore('comm', {
     }),
     // methods
     actions: {
-        // 切换登录注册重置密码的状态
-        switchAuth(name = 'login', bool = true) {
-            for (const key in this.auth) {
-                this.auth[key] = key === name ? bool : false
-            }
-        },
         // 登出
         logout(path = null) {
             logout(this, path)

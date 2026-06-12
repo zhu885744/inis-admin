@@ -17,30 +17,24 @@ const install = {
     }],
 }
 
-// 前台路由
-const index = {
+// 登录、注册、找回密码路由（无需登录）
+const auth = {
     path: '/',
-    component: () => import('{src}/views/index/layout/base.vue'),
     children: [{
         path: '/',
-        name: 'index-home',
-        meta: { title: '首页' },
-        component: () => import('{src}/views/index/pages/index.vue'),
+        name: 'login',
+        meta: { title: '登录' },
+        component: () => import('{src}/views/admin/pages/login.vue'),
     },{
-        path: '/account/home',
-        name: 'index-account-home',
-        meta: { title: '用户中心' },
-        component: () => import('{src}/views/index/pages/account-home.vue'),
+        path: '/register',
+        name: 'register',
+        meta: { title: '注册' },
+        component: () => import('{src}/views/admin/pages/register.vue'),
     },{
-        path: '/oauth/:token',
-        name: 'index-oauth',
-        meta: { title: '三方登录' },
-        component: () => import('{src}/views/index/pages/oauth.vue'),
-    },{
-        path: '/icons',
-        name: 'index-icons',
-        meta: { title: '图标' },
-        component: () => import('{src}/views/index/pages/icons.vue'),
+        path: '/reset-password',
+        name: 'reset-password',
+        meta: { title: '找回密码' },
+        component: () => import('{src}/views/admin/pages/reset-password.vue'),
     }],
 }
 
@@ -157,7 +151,7 @@ const admin = {
     }],
 }
 
-const routes = [ index, install, admin, {
+const routes = [ auth, install, admin, {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: () => import('{src}/views/error.vue'),
@@ -166,9 +160,12 @@ const routes = [ index, install, admin, {
 const base = '/'
 const mode = 'hash'
 const route = createRouter({
-    routes, 
+    routes,
     history: mode === 'history' ? createWebHistory(base) : createWebHashHistory(base)
 })
+
+// 不需要登录验证的路由
+const noAuthRoutes = ['login', 'register', 'reset-password', 'install', 'install-index', 'not-found']
 
 // 路由守卫
 route.beforeEach(async (to, from, next) => {
@@ -194,10 +191,17 @@ route.beforeEach(async (to, from, next) => {
             return notyf.error(msg)
         }
         next()
+        return
     }
 
-    // 后台路由校验
-    else if (to.path.indexOf('/admin') === 0) {
+    // 登录、注册、找回密码路由直接放行
+    if (noAuthRoutes.includes(to.name)) {
+        next()
+        return
+    }
+
+    // 后台路由校验 - 未登录跳转到登录页
+    if (to.path.indexOf('/admin') === 0) {
         const cacheName = 'check-token'
 
         // 校验登录状态
@@ -210,12 +214,11 @@ route.beforeEach(async (to, from, next) => {
 
         useCommStore().nav.title = to.meta.title
         next()
+        return
     }
 
-    // 其他路由直接放行
-    else {
-        next()
-    }
+    // 其他路由跳转到登录页
+    next('/')
 })
 
 export default route

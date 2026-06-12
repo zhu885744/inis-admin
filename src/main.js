@@ -9,8 +9,8 @@ import svg from '{src}/comps/custom/i-svg.vue'
 import lottie from '{src}/comps/custom/i-lottie.vue'
 
 // 默认的bootstrap样式
-import 'bootstrap'                                  // 待删除
-import 'bootstrap/dist/css/bootstrap.min.css'       // 待删除
+// import 'bootstrap'                                  // 待删除
+// import 'bootstrap/dist/css/bootstrap.min.css'       // 待删除
 
 import directives from '{src}/utils/directives'
 import socket from '{src}/utils/socket'

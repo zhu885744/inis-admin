@@ -31,13 +31,4 @@ const item = new channel('theme')
 item.on((data) => {
     console.log('主题更新：', data)
 })
-
-// /* 创建一个广播通道 */
-//const channelObj = new BroadcastChannel('televiseChannel');
-//
-// // 监听消息事件
-//channelObj.onmessage = function(event) {
-//const newData = event.data;
-//console.log('收到的更新数据：', newData);
-//};
 </script>
