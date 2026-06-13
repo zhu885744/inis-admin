@@ -68,7 +68,7 @@
                     <i-svg name="top" color="rgb(var(--icon-color))" size="16px" style="margin-right: 4px"></i-svg>
                 </el-tooltip>
                 <el-tooltip v-if="scope.status === 0" content="草稿" placement="top">
-                    <el-tag type="info" size="small" style="margin-right: 4px">草</el-tag>
+                    <el-icon><Edit /></el-icon>
                 </el-tooltip>
                 <el-tooltip :content="scope.title" :disabled="utils.is.empty(scope.title)" placement="top">
                     <span class="limit-1-line">{{ scope?.title }}</span>

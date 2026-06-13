@@ -1,30 +1,36 @@
-<template>
-    <el-card v-loading="state.status.loading" style="margin-bottom: 1rem">
+﻿<template>
+    <el-card v-loading="state.status.loading" style="margin-bottom: 12px">
         <template #header>
-            <div class="card-header-content">
-                <i-svg name="serve" color="rgb(var(--assist-color))" size="60px" style="position: absolute; right: 1.5rem; opacity: 0.25"></i-svg>
+            <div class="card-header-content" style="display: flex; align-items: center; gap: 8px">
                 <el-tooltip placement="top">
                     <template #content>
                         ● 本地存储是指将图片等资源文件存储到服务器本地，然后通过访问服务器的方式获取资源文件<br>
                         ● 本地存储的优点是不花钱，缺点是占用服务器空间和带宽
                     </template>
-                    <span style="display: inline-flex; align-items: center">
-                        <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                        <span style="margin-left: 0.25rem">本地存储</span>
-                    </span>
+                    <span style="font-weight: 600">本地存储</span>
                 </el-tooltip>
+                <el-tag size="small" type="info">传统</el-tag>
             </div>
         </template>
         <template #default>
             <div style="display: flex; align-items: center; justify-content: space-between">
-                <el-switch v-model="state.status.active" v-on:change="method.change" :disabled="!state.status.finish"
-                           active-text="开始" inactive-text="关闭">
-                </el-switch>
-                <div style="display: flex; align-items: center; gap: 0.5rem">
-                    <el-tag type="info">传统</el-tag>
-                    <span style="color: var(--el-text-color-secondary)">
-                        这个不花钱，<span v-on:click="method.show()" style="color: var(--el-text-color-primary); cursor: pointer">点我配置</span>
-                    </span>
+                <div style="display: flex; align-items: center; gap: 12px">
+                    <div style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 8px; background: var(--el-color-primary-light-9); color: var(--el-color-primary)">
+                        <i-svg name="save" size="20px"></i-svg>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px; line-height: 1.4">本地存储</div>
+                        <div style="font-size: 12px; color: var(--el-text-color-secondary); margin-top: 2px; line-height: 1.4">将资源文件存储到服务器本地磁盘</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px">
+                    <el-switch v-model="state.status.active" v-on:change="method.change" :disabled="!state.status.finish"
+                               active-text="开始" inactive-text="关闭">
+                    </el-switch>
+                    <el-button text type="primary" v-on:click="method.show()">
+                        配置
+                        <el-icon style="margin-left: 2px"><ArrowRight /></el-icon>
+                    </el-button>
                 </div>
             </div>
         </template>
@@ -35,30 +41,20 @@
             <strong style="display: flex; align-items: center; justify-content: center">配置本地存储</strong>
         </template>
         <template #default>
-            <el-row :gutter="20">
-                <el-col :span="12">
-                    <el-form-item label="域名">
-                        <el-tooltip content="自定义存储域名" placement="top">
-                            <span>
-                                <i-svg name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 0.25rem">域名：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.domain"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="存储目录">
-                        <el-tooltip content="存储在哪个目录下" placement="top">
-                            <span>
-                                <i-svg name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 0.25rem">存储目录：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.path" placeholder="如: storage"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
+            <el-form label-width="100px" label-position="left">
+                <el-row :gutter="20">
+                    <el-col :lg="12">
+                        <el-form-item label="域名">
+                            <el-input v-model="state.struct.domain" placeholder="请输入域名"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="12">
+                        <el-form-item label="存储目录">
+                            <el-input v-model="state.struct.path" placeholder="storage"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
         </template>
         <template #footer>
             <el-button v-on:click="state.status.dialog = false">取 消</el-button>
@@ -134,7 +130,7 @@ const method = {
         state.status.wait   = false
 
         if (code !== 200) return ElMessage.error('保存失败：' + msg)
-        
+
         ElMessage.success('保存成功')
         state.status.dialog = false
     },

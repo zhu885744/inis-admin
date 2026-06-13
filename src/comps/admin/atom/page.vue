@@ -1,28 +1,31 @@
 <template>
     <el-card v-loading="state.status.loading" style="margin-bottom: 12px">
         <template #header>
-            <div class="card-header-content">
-                <i-svg name="editor" color="rgb(var(--assist-color))" size="43px" style="position: absolute; opacity: 0.25; right: 2rem"></i-svg>
+            <div class="card-header-content" style="display: flex; align-items: center; gap: 8px">
                 <el-tooltip placement="top">
                     <template #content>
                         ● Markdown编辑器：Vditor支持所见即所得、即时渲染（类似 Typora）和分屏预览模式。
                     </template>
-                    <span style="display: inline-flex; align-items: center">
-                        <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                        <span style="margin-left: 4px">页面</span>
-                    </span>
+                    <span style="font-weight: 600">页面</span>
                 </el-tooltip>
+                <el-tag size="small" type="success">更多</el-tag>
             </div>
         </template>
         <template #default>
             <div style="display: flex; align-items: center; justify-content: space-between">
-                <h4 style="margin-bottom: 0">Markdown编辑器</h4>
-                <div style="display: flex; align-items: center; gap: 8px">
-                    <el-tag type="success">更多</el-tag>
-                    <span style="color: var(--el-text-color-secondary)">
-                        其它配置信息，<span v-on:click="method.show()" style="color: var(--el-text-color-primary); cursor: pointer">点我配置</span>
-                    </span>
+                <div style="display: flex; align-items: center; gap: 12px">
+                    <div style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 8px; background: var(--el-color-primary-light-9); color: var(--el-color-primary)">
+                        <i-svg name="book" size="20px"></i-svg>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px; line-height: 1.4">页面管理</div>
+                        <div style="font-size: 12px; color: var(--el-text-color-secondary); margin-top: 2px; line-height: 1.4">管理单页面的编辑器与评论审核配置</div>
+                    </div>
                 </div>
+                <el-button text type="primary" v-on:click="method.show()">
+                    配置
+                    <el-icon style="margin-left: 2px"><ArrowRight /></el-icon>
+                </el-button>
             </div>
         </template>
     </el-card>
@@ -32,75 +35,48 @@
             <strong class="flex-center">页面配置</strong>
         </template>
         <template #default>
-            <el-row :gutter="20">
-                <el-col :span="12">
-                    <el-form-item label="编辑器">
-                        <el-tooltip placement="top">
-                            <template #content>
-                                ● Markdown编辑器：Vditor支持所见即所得、即时渲染（类似 Typora）和分屏预览模式。
-                            </template>
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">编辑器：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-select v-model="state.cache.json.editor" style="display: block; font-size: 13px" class="custom" placeholder="请选择" disabled>
-                            <el-option value="vditor" label="Markdown">
-                                <span style="font-size: 13px">Markdown</span>
-                                <small style="float: right">vditor</small>
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="审核">
-                        <el-tooltip content="用户发布的页面，是否需要审核" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">审核：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-select v-model="state.struct.json.audit" style="display: block; font-size: 13px" class="custom" placeholder="请选择">
-                            <el-option v-for="item in state.select.audit" :key="item.value" :label="item.label" :value="item.value">
-                                <span style="font-size: 13px">{{ item.label }}</span>
-                                <small style="float: right; color: var(--el-text-color-secondary)">{{ item.subtitle }}</small>
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="允许评论">
-                        <el-tooltip content="是否允许用户评论" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">允许评论：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-select v-model="state.struct.json.comment.allow" style="display: block; font-size: 13px" class="custom" placeholder="请选择">
-                            <el-option v-for="item in state.select.comment.allow" :key="item.value" :label="item.label" :value="item.value">
-                                <span style="font-size: 13px">{{ item.label }}</span>
-                                <small style="float: right">{{ item.value }}</small>
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="显示评论">
-                        <el-tooltip content="是否显示评论" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 0.25rem">显示评论：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-select v-model="state.struct.json.comment.show" style="display: block; font-size: 13px" class="custom" placeholder="请选择">
-                            <el-option v-for="item in state.select.comment.show" :key="item.value" :label="item.label" :value="item.value">
-                                <span style="font-size: 13px">{{ item.label }}</span>
-                                <small style="float: right">{{ item.value }}</small>
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-            </el-row>
+            <el-form label-width="100px" label-position="left">
+                <el-row :gutter="20">
+                    <el-col :lg="12">
+                        <el-form-item label="编辑器">
+                            <el-select v-model="state.cache.json.editor" style="width: 100%" disabled>
+                                <el-option value="vditor" label="Markdown">
+                                    <span>Markdown</span>
+                                    <small style="float: right">vditor</small>
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="12">
+                        <el-form-item label="审核">
+                            <el-select v-model="state.struct.json.audit" style="width: 100%" placeholder="请选择">
+                                <el-option v-for="item in state.select.audit" :key="item.value" :label="item.label" :value="item.value">
+                                    <span>{{ item.label }}</span>
+                                    <small style="float: right; color: var(--el-text-color-secondary)">{{ item.subtitle }}</small>
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="12">
+                        <el-form-item label="允许评论">
+                            <el-select v-model="state.struct.json.comment.allow" style="width: 100%" placeholder="请选择">
+                                <el-option v-for="item in state.select.comment.allow" :key="item.value" :label="item.label" :value="item.value">
+                                    <span>{{ item.label }}</span>
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="12">
+                        <el-form-item label="显示评论">
+                            <el-select v-model="state.struct.json.comment.show" style="width: 100%" placeholder="请选择">
+                                <el-option v-for="item in state.select.comment.show" :key="item.value" :label="item.label" :value="item.value">
+                                    <span>{{ item.label }}</span>
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
         </template>
         <template #footer>
             <el-button v-on:click="state.status.dialog = false">取 消</el-button>

@@ -20,7 +20,13 @@
                     @select="handleMenuSelect"
                     class="el-menu-vertical"
                 >
-                    <template v-for="(item, index) in state.menu" :key="index">
+                    <el-menu-item index="/admin">
+                            <el-icon :size="16">
+                                <House />
+                            </el-icon>
+                            <span>首页</span>
+                        </el-menu-item>
+                        <template v-for="(item, index) in state.menu" :key="index">
                         <el-sub-menu v-if="item.children?.length" :index="item.name">
                             <template #title>
                                 <el-icon :size="16" v-if="item.icon" v-html="item.icon" />
@@ -65,7 +71,7 @@
                         @click="state.sidebarCollapsed = !state.sidebarCollapsed"
                     >
                         <el-icon :size="18">
-                            <component :is="componentMap['Menu']" />
+                            <DArrowLeft />
                         </el-icon>
                     </button>
                     <el-breadcrumb separator="/" class="breadcrumb">
@@ -90,7 +96,7 @@
                             </div>
                             <template #dropdown>
                                 <el-dropdown-menu>
-                                    <el-dropdown-item divided @click="store.comm.logout('/')">
+                                    <el-dropdown-item @click="store.comm.logout('/')">
                                         <span>退出登录</span>
                                     </el-dropdown-item>
                                 </el-dropdown-menu>
@@ -268,6 +274,9 @@ nextTick(() => {
 .el-menu-vertical :deep(.el-menu-item svg),
 .el-menu-vertical :deep(.el-sub-menu__title svg) {
     margin-right: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .el-menu-vertical :deep(.el-menu-item:hover),
@@ -280,8 +289,7 @@ nextTick(() => {
     background: #e6f7ff;
     color: #1890ff;
     box-shadow: none;
-    border-left: 3px solid #1890ff;
-    padding-left: 9px;
+    box-shadow: inset 3px 0 0 #1890ff;
 }
 
 .el-menu-vertical :deep(.el-sub-menu.is-active > .el-sub-menu__title) {

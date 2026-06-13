@@ -357,7 +357,8 @@ const method = {
         const { code, msg, data } = await axios.post('/api/article/save', {
             ...restStruct, 
             json: JSON.stringify(state.struct.json),
-            publish_time
+            publish_time,
+            status: 1
         })
 
         state.item.wait = false

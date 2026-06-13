@@ -70,85 +70,51 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 公 告</strong>
         </template>
         <template #default>
-            <el-row :gutter="20">
-                <el-col :span="12">
-                    <el-form-item label="标题" style="margin-bottom: 18px">
-                        <el-tooltip content="这个公告要不要显示标题" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">标题：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.title"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="类型" style="margin-bottom: 18px">
-                        <el-tooltip content="自定义公告类型场景，用不到到就默认即可" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">类型：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.type"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20">
-                <el-col :span="12">
-                    <el-form-item label="跳转链接" style="margin-bottom: 18px">
-                        <el-tooltip content="点击该公告是否需要打开一个网址" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">跳转链接：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.url"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="跳转方式" style="margin-bottom: 18px">
-                        <el-tooltip content="点击公告后，跳转链接的执行方式" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">跳转方式：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-select v-model="state.struct.target" placeholder="请选择方式" style="display: block; font-size: 13px" class="custom">
-                            <el-option v-for="item in state.select.target" :key="item.value" :label="item.value" :value="item.label">
-                                <span style="font-size: 13px">{{ item.value }}</span>
-                                <small style="float: right; color: var(--el-text-color-secondary)">{{ item.label }}</small>
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20">
-                <el-col :span="24">
-                    <el-form-item label="内容" style="margin-bottom: 18px">
-                        <el-tooltip content="公告的具体内容是什么" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">内容：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.content" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20">
-                <el-col :span="24">
-                    <el-form-item label="备注" style="margin-bottom: 18px">
-                        <el-tooltip content="备注而已，页面上不会显示此项" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">备注：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.remark" :autosize="{ minRows: 1, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
+            <el-form label-width="100px" label-position="left">
+                <el-row :gutter="20">
+                    <el-col :lg="12">
+                        <el-form-item label="标题">
+                            <el-input v-model="state.struct.title" placeholder="请输入公告标题" style="width: 100%"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="12">
+                        <el-form-item label="类型">
+                            <el-input v-model="state.struct.type" placeholder="请输入公告类型" style="width: 100%"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20">
+                    <el-col :lg="12">
+                        <el-form-item label="跳转链接">
+                            <el-input v-model="state.struct.url" placeholder="请输入跳转链接" style="width: 100%"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="12">
+                        <el-form-item label="跳转方式">
+                            <el-select v-model="state.struct.target" placeholder="请选择跳转方式" style="width: 100%" class="custom">
+                                <el-option v-for="item in state.select.target" :key="item.value" :label="item.value" :value="item.label">
+                                    <span style="font-size: 13px">{{ item.value }}</span>
+                                    <small style="float: right; color: var(--el-text-color-secondary)">{{ item.label }}</small>
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20">
+                    <el-col :lg="24">
+                        <el-form-item label="内容">
+                            <el-input v-model="state.struct.content" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="请输入公告内容" style="width: 100%"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20">
+                    <el-col :lg="24">
+                        <el-form-item label="备注">
+                            <el-input v-model="state.struct.remark" :autosize="{ minRows: 1, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea" style="width: 100%"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
         </template>
         <template #footer>
             <el-button v-on:click="state.item.dialog = false">取 消</el-button>

@@ -1,30 +1,36 @@
 <template>
-    <el-card style="margin-bottom: 1rem" v-loading="state.status.loading">
+    <el-card style="margin-bottom: 12px" v-loading="state.status.loading">
         <template #header>
-            <div class="card-header-content">
-                <i-svg name="register" color="rgb(var(--assist-color))" size="50px" style="position: absolute; right: 1.5rem; opacity: 0.25"></i-svg>
+            <div class="card-header-content" style="display: flex; align-items: center; gap: 8px">
                 <el-tooltip placement="top">
                     <template #content>
                         ● 是否允许用户自行注册账号（开放注册功能？）<br>
                         ● 如果不允许，那么只能通过管理员手动创建账号
                     </template>
-                    <span style="display: inline-flex; align-items: center">
-                        <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                        <span style="margin-left: 0.25rem">注 册</span>
-                    </span>
+                    <span style="font-weight: 600">注 册</span>
                 </el-tooltip>
+                <el-tag size="small" type="info">+0.1%</el-tag>
             </div>
         </template>
         <template #default>
             <div style="display: flex; align-items: center; justify-content: space-between">
-                <el-switch v-model="state.status.active" v-on:change="method.change" :disabled="!state.status.finish"
-                    active-text="允许" inactive-text="不允许">
-                </el-switch>
-                <div style="display: flex; align-items: center; gap: 0.5rem">
-                    <el-tag type="primary">+0.1%</el-tag>
-                    <span style="color: var(--el-text-color-secondary); margin-left: 0.25rem">
-                        安全性提升，<span v-on:click="method.show()" style="color: var(--el-text-color-primary); cursor: pointer">点我配置</span>
-                    </span>
+                <div style="display: flex; align-items: center; gap: 12px">
+                    <div style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 8px; background: var(--el-color-primary-light-9); color: var(--el-color-primary)">
+                        <i-svg name="register" size="20px"></i-svg>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px; line-height: 1.4">开放注册</div>
+                        <div style="font-size: 12px; color: var(--el-text-color-secondary); margin-top: 2px; line-height: 1.4">允许/禁止用户自行注册账号</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px">
+                    <el-switch v-model="state.status.active" v-on:change="method.change" :disabled="!state.status.finish"
+                        active-text="允许" inactive-text="不允许">
+                    </el-switch>
+                    <el-button text type="primary" v-on:click="method.show()">
+                        配置
+                        <el-icon style="margin-left: 2px"><ArrowRight /></el-icon>
+                    </el-button>
                 </div>
             </div>
         </template>
@@ -35,39 +41,29 @@
             <strong>配置</strong>
         </template>
         <template #default>
-            <el-row :gutter="20">
-                <el-col :lg="12">
-                    <el-form-item label="注册：">
-                        <el-tooltip placement="top">
-                            <template #content>
-                                <span>请选择是否允许注册</span>
-                            </template>
-                            <el-select v-model="state.struct.value" placeholder="请选择权限" style="display: block" class="custom" placeholder-class="font-13">
-                                <el-option v-for="item in state.select.value" :key="item.value" :label="item.label" :value="item.value" style="display: flex; align-items: center">
-                                    <i-svg name="dot" :color="item.color" size="20px"></i-svg>
-                                    <span style="font-size: 13px">{{ item.label }}</span>
+            <el-form label-width="100px" label-position="left">
+                <el-row :gutter="20">
+                    <el-col :lg="12">
+                        <el-form-item label="注册">
+                            <el-select v-model="state.struct.value" placeholder="请选择权限" style="width: 100%">
+                                <el-option v-for="item in state.select.value" :key="item.value" :label="item.label" :value="item.value">
+                                    <span>{{ item.label }}</span>
                                 </el-option>
                             </el-select>
-                        </el-tooltip>
-                    </el-form-item>
-                </el-col>
-                <el-col :lg="12">
-                    <el-form-item label="分配权限：">
-                        <el-tooltip content="为注册的用户分配默认的权限" placement="top">
-                            <el-select v-model="state.item.auth" :reserve-keyword="false" default-first-option collapse-tags-tooltip
-                                allow-create multiple filterable collapse-tags style="display: block" class="custom" placeholder="选择注册的默认权限" placeholder-class="font-13">
-                                <el-option v-for="item in state.select.auth" :key="item.id" :label="item.name" :value="item.id" style="display: flex; justify-content: space-between">
-                                    <span style="font-size: 13px; display: flex; align-items: center">
-                                        <i-svg name="dot" :color="item.color" size="20px"></i-svg>
-                                        {{ item.name }}
-                                    </span>
-                                    <small style="color: var(--el-text-color-secondary)">{{ item.key }}</small>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="12">
+                        <el-form-item label="分配权限">
+                            <el-select v-model="state.item.auth" multiple filterable collapse-tags placeholder="选择注册的默认权限" style="width: 100%">
+                                <el-option v-for="item in state.select.auth" :key="item.id" :label="item.name" :value="item.id">
+                                    <span>{{ item.name }}</span>
+                                    <small style="float: right; color: var(--el-text-color-secondary)">{{ item.key }}</small>
                                 </el-option>
                             </el-select>
-                        </el-tooltip>
-                    </el-form-item>
-                </el-col>
-            </el-row>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
         </template>
         <template #footer>
             <el-button v-on:click="state.status.dialog = false">取 消</el-button>

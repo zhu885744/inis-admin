@@ -62,50 +62,32 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 标 签</strong>
         </template>
         <template #default>
-            <el-row :gutter="20">
-                <el-col :span="12">
-                    <el-form-item label="名字" style="margin-bottom: 18px">
-                        <el-tooltip content="（必须）标签的名字" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">名字：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.name"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="头像地址" style="margin-bottom: 18px">
-                        <el-tooltip content="可以给标签设置一个头像" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">头像地址：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.avatar" class="custom" placeholder="填写图片地址或点击上传图片">
-                            <template #append>
-                                <el-button v-on:click="method.upload('avatar')" :loading="state.item.upload">
-                                    <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="15px"></i-svg>
-                                    <span style="margin-left: 4px">上传</span>
-                                </el-button>
-                            </template>
-                        </el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20">
-                <el-col :span="24">
-                    <el-form-item label="描述" style="margin-bottom: 18px">
-                        <el-tooltip content="这个标签的描述" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">描述：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.description" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
+            <el-form label-width="100px" label-position="left">
+                <el-row :gutter="20">
+                    <el-col :lg="12">
+                        <el-form-item label="名字">
+                            <el-input v-model="state.struct.name" placeholder="请输入标签名称" style="width: 100%"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="12">
+                        <el-form-item label="头像地址">
+                            <el-input v-model="state.struct.avatar" class="custom" placeholder="填写图片地址或点击上传图片" style="width: 100%">
+                                <template #append>
+                                    <el-button v-on:click="method.upload('avatar')" :loading="state.item.upload">
+                                        <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="15px"></i-svg>
+                                        <span style="margin-left: 4px">上传</span>
+                                    </el-button>
+                                </template>
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="24">
+                        <el-form-item label="描述">
+                            <el-input v-model="state.struct.description" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="请输入标签描述信息" style="width: 100%"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
         </template>
         <template #footer>
             <el-button v-on:click="state.item.dialog = false">取 消</el-button>

@@ -59,37 +59,27 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 接 口 密 钥</strong>
         </template>
         <template #default>
-            <el-row :gutter="20">
-                <el-col :span="24">
-                    <el-form-item label="密钥">
-                        <el-tooltip content="用于接口访问的密钥" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">密钥：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.value" class="custom" placeholder="为空自动生成32位密钥" style="width: 100%">
-                            <template #append>
-                                <el-button v-on:click="method.rand()" ref="verify-code">
-                                    <i-svg name="restore" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                                    <span style="margin-left: 4px">随机</span>
-                                </el-button>
-                            </template>
-                        </el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="24">
-                    <el-form-item label="备注">
-                        <el-tooltip content="备注而已，页面上不会显示此项" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">备注：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
+            <el-form label-width="100px" label-position="left">
+                <el-row :gutter="20">
+                    <el-col :lg="24">
+                        <el-form-item label="密钥">
+                            <el-input v-model="state.struct.value" class="custom" placeholder="为空自动生成32位密钥" style="width: 100%">
+                                <template #append>
+                                    <el-button v-on:click="method.rand()" ref="verify-code">
+                                        <i-svg name="restore" color="rgb(var(--icon-color))" size="14px"></i-svg>
+                                        <span style="margin-left: 4px">随机</span>
+                                    </el-button>
+                                </template>
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="24">
+                        <el-form-item label="备注">
+                            <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea" style="width: 100%"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
         </template>
         <template #footer>
             <el-button v-on:click="state.item.dialog = false">取 消</el-button>

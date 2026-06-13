@@ -111,6 +111,8 @@ const state  = reactive({
     },
     tabs: {
         all: false,
+        check: false,
+        audit: false,
         remove: false,
     }
 })
@@ -135,7 +137,9 @@ const method = {
         // 如果传参则过滤不允许的参数
         else args = args.filter(item => allow.includes(item))
         // 批量刷新
-        for (let item of args) proxy.$refs[item]['init']()
+        for (let item of args) {
+            if (proxy.$refs[item]) proxy.$refs[item]['init']()
+        }
     },
     // 切换 tab
     change: (name) => state.tabs[name] = true

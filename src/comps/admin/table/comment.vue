@@ -86,19 +86,15 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 评 论</strong>
         </template>
         <template #default>
-            <el-row :gutter="20">
-                <el-col :span="24">
-                    <el-form-item label="内容">
-                        <el-tooltip content="可在这里自定义评论内容" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">内容：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.content" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
+            <el-form label-width="100px" label-position="left">
+                <el-row :gutter="20">
+                    <el-col :lg="24">
+                        <el-form-item label="内容">
+                            <el-input v-model="state.struct.content" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="请输入评论内容" style="width: 100%"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
         </template>
         <template #footer>
             <el-button v-on:click="state.item.dialog = false">取 消</el-button>

@@ -1,31 +1,37 @@
 <template>
-    <el-card v-loading="state.status.loading" style="margin-bottom: 1rem">
+    <el-card v-loading="state.status.loading" style="margin-bottom: 12px">
         <template #header>
-            <div class="card-header-content">
-                <i-svg name="security-1" size="60px" color="rgb(var(--assist-color))" style="position: absolute; opacity: 0.25; right: 1.5rem"></i-svg>
+            <div class="card-header-content" style="display: flex; align-items: center; gap: 8px">
                 <el-tooltip placement="top">
                     <template #content>
                         <strong style="color: var(--el-color-danger)">风险操作！此功能不懂请勿开启！</strong><br>
                         ● 开启之后，所有的API均需要在请求头中提交 <strong style="color: var(--el-color-danger)">i-api-key=密钥</strong> 方能使用！<br>
                         ● 于此同时API安全性将提升90%，剩下10%取决于你的密钥复杂度和对手的能力强弱！
                     </template>
-                    <span style="display: inline-flex; align-items: center">
-                        <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                        <span style="margin-left: 4px">API KEY</span>
-                    </span>
+                    <span style="font-weight: 600">API KEY</span>
                 </el-tooltip>
+                <el-tag size="small" type="danger">密钥</el-tag>
             </div>
         </template>
         <template #default>
             <div style="display: flex; align-items: center; justify-content: space-between">
-                <el-switch v-model="state.status.active" v-on:change="method.change" :disabled="!state.status.finish"
-                           active-text="开启" inactive-text="关闭">
-                </el-switch>
+                <div style="display: flex; align-items: center; gap: 12px">
+                    <div style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 8px; background: var(--el-color-primary-light-9); color: var(--el-color-primary)">
+                        <i-svg name="key" size="20px"></i-svg>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px; line-height: 1.4">API密钥</div>
+                        <div style="font-size: 12px; color: var(--el-text-color-secondary); margin-top: 2px; line-height: 1.4">对外接口访问的身份凭证</div>
+                    </div>
+                </div>
                 <div style="display: flex; align-items: center; gap: 8px">
-                    <el-tag type="primary">+90%</el-tag>
-                    <span style="color: var(--el-text-color-secondary)">
-                        安全性提升，<span v-on:click="method.show()" style="color: var(--el-text-color-primary); cursor: pointer">点我查看</span>
-                    </span>
+                    <el-switch v-model="state.status.active" v-on:change="method.change" :disabled="!state.status.finish"
+                               active-text="开启" inactive-text="关闭">
+                    </el-switch>
+                    <el-button text type="primary" v-on:click="method.show()">
+                        配置
+                        <el-icon style="margin-left: 2px"><ArrowRight /></el-icon>
+                    </el-button>
                 </div>
             </div>
         </template>

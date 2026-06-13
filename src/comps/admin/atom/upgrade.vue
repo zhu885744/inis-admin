@@ -2,17 +2,13 @@
     <el-card style="margin-bottom: 1rem" v-loading="state.status.init">
         <template #header>
             <div class="card-header-content">
-                <i-svg name="upgrade" size="50px" color="rgb(var(--assist-color))" style="position: absolute; right: 1.5rem; opacity: 0.25"></i-svg>
                 <el-tooltip placement="top">
                     <template #content>
                         <strong style="color: var(--el-color-success)">inis-admin也就是当前您看到的后台界面</strong><br>
                         ● inis-admin一般情况下是自动升级的，在超级管理员权限下检查到新版本会自动升级<br>
                         ● 自动升级检查10分钟会检查一次，也可以通过当前卡片的功能手动检查并进行升级
                     </template>
-                    <span style="display: inline-flex; align-items: center">
-                        <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                        <span style="margin-left: 0.25rem">inis-admin「开发中...」</span>
-                    </span>
+                    <span>inis-admin「开发中...」</span>
                 </el-tooltip>
             </div>
         </template>
@@ -55,7 +51,7 @@
                 <el-alert type="success" :closable="false" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem">
                     <span>{{ state.struct.title }}</span>
                     <span style="display: flex; align-items: center">
-                        <i-svg name="dot" :color="method.color(state.struct.progress).color" size="20px"></i-svg>
+    
                         {{ method.color(state.struct.progress).text }}：{{ state.struct.version }}
                     </span>
                 </el-alert>

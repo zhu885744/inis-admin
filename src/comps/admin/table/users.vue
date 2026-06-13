@@ -102,55 +102,31 @@
 
     <el-dialog v-model="state.item.dialog" title="用户信息编辑" width="800px" class="custom" draggable :close-on-click-modal="false">
         <div style="padding: 10px 0;">
-            <el-row :gutter="20" style="margin-bottom: 18px; align-items: flex-end">
-                <el-col :span="8">
+            <el-form label-width="100px" label-position="left">
+            <el-row :gutter="20">
+                <el-col :lg="8">
                     <el-form-item label="昵称">
-                        <el-tooltip content="（必须）用户显示名称" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">昵称</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.nickname" placeholder="请输入用户昵称"></el-input>
+                        <el-input v-model="state.struct.nickname" placeholder="请输入用户昵称" style="width: 100%"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8">
+                <el-col :lg="8">
                     <el-form-item label="账号">
-                        <el-tooltip content="（必须）登录账号，不可重复" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">账号</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.account" placeholder="请输入登录账号"></el-input>
+                        <el-input v-model="state.struct.account" placeholder="请输入登录账号" style="width: 100%"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8">
+                <el-col :lg="8">
                     <el-form-item label="账号状态">
-                        <el-tooltip content="设置用户账号可用状态" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">账号状态</span>
-                            </span>
-                        </el-tooltip>
-                        <el-select v-model="state.struct.status" style="display: block; font-size: 13px" :disabled="state.struct.id === 1">
+                        <el-select v-model="state.struct.status" style="width: 100%" :disabled="state.struct.id === 1">
                             <el-option label="正常" :value="0"></el-option>
                             <el-option label="冻结" :value="1"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
             </el-row>
-
-            <el-row :gutter="20" style="margin-bottom: 18px">
-                <el-col :span="24">
+            <el-row :gutter="20">
+                <el-col :lg="24">
                     <el-form-item label="头像">
-                        <el-tooltip content="用户头像展示" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">头像</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.avatar" class="custom" placeholder="图片地址/点击上传">
+                        <el-input v-model="state.struct.avatar" class="custom" placeholder="图片地址/点击上传" style="width: 100%">
                             <template #append>
                                 <el-button @click="method.upload('avatar')" :loading="state.item.upload" class="upload-btn">
                                     <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
@@ -161,114 +137,63 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-
-            <el-row :gutter="20" style="margin-bottom: 18px">
-                <el-col :span="8">
+            <el-row :gutter="20">
+                <el-col :lg="8">
                     <el-form-item label="邮箱">
-                        <el-tooltip content="（必须）邮箱验证码登录使用" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">邮箱</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.email" type="email" placeholder="请输入邮箱地址"></el-input>
+                        <el-input v-model="state.struct.email" type="email" placeholder="请输入邮箱地址" style="width: 100%"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8">
+                <el-col :lg="8">
                     <el-form-item label="手机号">
-                        <el-tooltip content="手机号验证码登录使用" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">手机号</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.phone" placeholder="请输入手机号码"></el-input>
+                        <el-input v-model="state.struct.phone" placeholder="请输入手机号码" style="width: 100%"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8">
+                <el-col :lg="8">
                     <el-form-item label="密码">
-                        <el-tooltip content="为空则不修改，填写则更新密码" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">密码</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.password" type="password" placeholder="为空不修改密码"></el-input>
+                        <el-input v-model="state.struct.password" type="password" placeholder="为空不修改密码" style="width: 100%"></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
-
-            <el-row :gutter="20" style="margin-bottom: 18px">
-                <el-col :span="8">
+            <el-row :gutter="20">
+                <el-col :lg="8">
                     <el-form-item label="权限">
-                        <el-tooltip content="分配用户系统权限组" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">权限</span>
-                            </span>
-                        </el-tooltip>
-                        <el-select v-model="state.struct.result.auth.group.ids" multiple collapse-tags placeholder="请选择权限组" style="display: block; font-size: 13px">
+                        <el-select v-model="state.struct.result.auth.group.ids" multiple collapse-tags placeholder="请选择权限组" style="width: 100%">
                             <el-option v-for="item in state.select.auth_group" :key="item.value" :label="item.label" :value="item.value">
                                 <span style="font-size: 13px">{{ item.label }}</span>
                             </el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8">
+                <el-col :lg="8">
                     <el-form-item label="性别">
-                        <el-tooltip content="用户性别标识" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">性别</span>
-                            </span>
-                        </el-tooltip>
-                        <el-select v-model="state.struct.gender" style="display: block; font-size: 13px" placeholder="请选择性别">
+                        <el-select v-model="state.struct.gender" style="width: 100%" placeholder="请选择性别">
                             <el-option label="保密" :value="null"></el-option>
                             <el-option label="男" value="boy"></el-option>
                             <el-option label="女" value="girl"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8">
+                <el-col :lg="8">
                     <el-form-item label="专属头衔">
-                        <el-tooltip content="用户专属头衔展示" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">专属头衔</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.title" placeholder="请输入专属头衔"></el-input>
+                        <el-input v-model="state.struct.title" placeholder="请输入专属头衔" style="width: 100%"></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
-
-            <el-row :gutter="20" style="margin-bottom: 18px">
-                <el-col :span="24">
-                    <el-form-item label="个人简介">
-                        <el-tooltip content="用户个人介绍展示" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">个人简介</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.description" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" placeholder="请输入个人简介"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-
             <el-row :gutter="20">
-                <el-col :span="24">
-                    <el-form-item label="备注">
-                        <el-tooltip content="内部备注，不对外展示" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">备注</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.remark" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea" placeholder="请输入备注信息（仅内部可见）"></el-input>
+                <el-col :lg="24">
+                    <el-form-item label="个人简介">
+                        <el-input v-model="state.struct.description" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" placeholder="请输入个人简介" style="width: 100%"></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
+            <el-row :gutter="20">
+                <el-col :lg="24">
+                    <el-form-item label="备注">
+                        <el-input v-model="state.struct.remark" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea" placeholder="请输入备注信息（仅内部可见）" style="width: 100%"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            </el-form>
         </div>
 
         <template #footer>

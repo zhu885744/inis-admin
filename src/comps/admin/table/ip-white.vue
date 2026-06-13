@@ -37,35 +37,15 @@
             </el-table-column>
         </template>
 
-        <template #i-name="{ scope = {} }">
-            <span v-on:dblclick="method.edit(scope)" style="display: flex; align-items: center">
-                <el-tooltip v-if="parseInt(scope.common) === 1" content="公共权限，不需要登录即可使用的接口" placement="top">
-                    <i-svg color="rgb(var(--icon-color))" name="!" size="14px"></i-svg>
-                </el-tooltip>
-                <el-tooltip :content="scope.name" :disabled="utils.is.empty(scope.name)" placement="top">
-                    <span>{{ method.omit(scope?.name, 16, ' ...', 'end') }}</span>
-                </el-tooltip>
-            </span>
-        </template>
-
-        <template #i-route="{ scope = {} }">
-            <el-tooltip placement="top">
-                <template #content>
-                    <span v-if="scope.type === 'login'">登录类型</span>
-                    <span v-else-if="scope.type === 'common'">公共类型</span>
-                    <span v-else>默认类型</span>
-                </template>
-                <span style="margin-right: 4px">
-                            <i-svg color="rgb(var(--icon-color))" v-if="scope.type === 'login'" name="user" size="18px"></i-svg>
-                            <i-svg color="rgb(var(--icon-color))" v-else-if="scope.type === 'common'" name="common" size="18px"></i-svg>
-                            <i-svg color="rgb(var(--icon-color))" v-else name="!" size="16px"></i-svg>
-                        </span>
+        <template #i-ip="{ scope = {} }">
+            <el-tooltip v-if="!utils.is.empty(scope?.cause)" :content="'原因：' + scope?.cause" placement="top">
+                <i-svg color="rgb(var(--icon-color))" v-on:dblclick="method.copy(scope?.cause)" name="remark" size="16px" style="margin-right: 4px"></i-svg>
             </el-tooltip>
-            <el-tooltip :content="'双击复制：' + scope.route" :disabled="utils.is.empty(scope.route)" placement="top">
-                <span v-on:dblclick="method.copy(scope.route, '复制成功！')">
-                    <span :style="'color: ' + (method.color(scope.method))">[{{ scope?.method }}]</span>
-                    <span style="margin-left: 4px">{{ method.omit(scope?.route, 30, ' ...', 'end') }}</span>
-                </span>
+            <el-tooltip v-if="!utils.is.empty(scope?.agent)" :content="'双击复制 User-Agent：' + scope?.agent" placement="top">
+                <i-svg color="rgb(var(--icon-color))" v-on:dblclick="method.copy(scope?.agent)" name="user-agent" size="16px" style="margin-right: 4px"></i-svg>
+            </el-tooltip>
+            <el-tooltip :content="'双击复制：' + scope.ip" :disabled="utils.is.empty(scope?.ip)" placement="top">
+                <span v-on:dblclick="method.copy(scope?.ip)">{{ method.omit(scope?.ip, 15) }}</span>
             </el-tooltip>
         </template>
 
@@ -82,49 +62,19 @@
 
     <el-dialog v-model="state.item.dialog" class="custom" draggable :close-on-click-modal="false">
         <template #header>
-            <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 权 限 规 则</strong>
+            <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} IP 白 名 单</strong>
         </template>
         <template #default>
             <el-form label-width="100px" label-position="left">
                 <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="名称">
-                            <el-input v-model="state.struct.name" placeholder="请输入接口名称，如：【分组名】API名" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="费用">
-                            <el-input-number v-model="state.struct.cost" :min="0" style="width: 100%"></el-input-number>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="请求类型">
-                            <el-select v-model="state.struct.method" placeholder="请选择请求类型" style="width: 100%" class="custom">
-                                <el-option v-for="item in state.select.method" :key="item.value" :label="item.value" :value="item.label">
-                                    <span style="font-size: 13px" :style="'color: ' + method.color(item.value)">{{ item.value }}</span>
-                                    <small style="float: right">{{ item.label }} 请求</small>
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="API">
-                            <el-input v-model="state.struct.route" placeholder="请输入接口请求地址" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="接口类型">
-                            <el-select v-model="state.struct.type" placeholder="请选择接口类型" style="width: 100%" class="custom">
-                                <el-option v-for="item in state.select.type" :key="item.value" :label="item.label" :value="item.value">
-                                    <span>{{ item.label }}</span>
-                                    <small style="float: right">{{ item.value }}</small>
-                                </el-option>
-                            </el-select>
+                    <el-col :lg="24">
+                        <el-form-item label="IP">
+                            <el-input v-model="state.struct.ip" placeholder="例如：192.168.1.1" style="width: 100%"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :lg="24">
                         <el-form-item label="备注">
-                            <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea" style="width: 100%"></el-input>
+                            <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下" type="textarea" style="width: 100%"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -151,7 +101,7 @@ const props = defineProps({
     params: {
         type: Object,
         default: () => ({
-            order: 'hash asc',
+            order: 'id asc',
         }),
     },
     init: {
@@ -176,31 +126,22 @@ const right = computed(() => {
 const { ctx, proxy } = getCurrentInstance()
 const state  = reactive({
     item: {
-        table: 'auth-rules',
+        table: 'ip-white',
         dialog: false,
         wait: false,
     },
-    struct: {},
+    struct: {
+        ip: null
+    },
     opts: {
-        url: '/api/auth-rules/all',
+        url: '/api/ip-white/all',
         params: props.params,
         columns: [
-            { prop: 'name', label: '名称', slot: true, fixed: left },
-            { prop: 'route', label: 'API', slot: true },
+            { prop: 'ip', label: 'IP', slot: true, fixed: left },
             { prop: 'remark' , label: '备注', slot: true },
             { prop: 'update_time', label: '更新时间', width: 140, sortable: true },
             { prop: 'create_time', label: '创建时间', width: 140, sortable: true },
         ],
-    },
-    // 下拉框
-    select: {
-        method: [
-            { label: 'GET', value: 'GET' },
-            { label: 'PUT', value: 'PUT' },
-            { label: 'POST', value: 'POST' },
-            { label: 'DELETE', value: 'DELETE' },
-        ],
-        type: [{ value: 'default', label: '默认' },{ value: 'common', label: '公共' }, { value: 'login', label: '登录' }],
     },
 })
 
@@ -213,8 +154,8 @@ const method = {
     // 保存数据
     save: async (params = state.struct || {}) => {
 
-        if (utils.is.empty(params)) return ElMessage.warning('你在想什么？什么都不填！')
-        if (utils.is.empty(params.route)) return ElMessage.warning('API是必填项！')
+        if (utils.is.empty(params))    return ElMessage.warning('你在想什么？什么都不填！')
+        if (utils.is.empty(params.ip)) return ElMessage.warning('IP地址不能为空！')
 
         state.item.wait     = true
 
@@ -286,19 +227,12 @@ const method = {
 
         utils.set.copy.text(text)
 
-        if (!utils.is.empty(msg)) return ElMessage.info(msg)
+        if (!utils.is.empty(msg)) return ElMessage.success(msg)
     },
     // 省略文本
     omit  : (text = null, length = 10, omission = ' ... ', location = 'center') => {
         if (utils.is.empty(text)) return '空'
         return utils.string.omit(text, length, omission, location)
-    },
-    // 分配颜色
-    color : (value = 'GET') => {
-        // 强转大写
-        value = value.toUpperCase()
-        let opts = {'GET':'success', 'POST':'warning', 'PUT':'info', 'DELETE':'danger'}
-        return opts[value] || 'dark'
     },
 }
 

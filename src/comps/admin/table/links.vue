@@ -82,27 +82,16 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 友 链</strong>
         </template>
         <template #default>
+            <el-form label-width="100px" label-position="left">
             <el-row :gutter="20">
-                <el-col :span="8">
+                <el-col :lg="8">
                     <el-form-item label="昵称">
-                        <el-tooltip content="（必须）您朋友的昵称" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">昵称：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.nickname"></el-input>
+                        <el-input v-model="state.struct.nickname" placeholder="请输入好友昵称" style="width: 100%"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8">
+                <el-col :lg="8">
                     <el-form-item label="分组">
-                        <el-tooltip content="将友链进行分组" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">分组：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-select v-model="state.struct.group" filterable placeholder="请选择分组" style="display: block; font-size: 13px" class="custom">
+                        <el-select v-model="state.struct.group" filterable placeholder="请选择分组" style="width: 100%" class="custom">
                             <el-option v-for="item in state.select.group" :key="item.value" :label="item.label" :value="item.value">
                                 <div style="display: flex; align-items: center">
                                     <el-avatar shape="square" :src="method.imageSize(item?.avatar)" size="small" style="margin-right: 8px"></el-avatar>
@@ -112,15 +101,9 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8">
+                <el-col :lg="8">
                     <el-form-item label="头像">
-                        <el-tooltip content="设置一个头像，效果更好" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">头像：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.avatar" class="custom" placeholder="填写图片地址或点击上传图片">
+                        <el-input v-model="state.struct.avatar" class="custom" placeholder="填写图片地址或点击上传图片" style="width: 100%">
                             <template #append>
                                 <el-button v-on:click="method.upload('avatar')" :loading="state.item.upload">
                                     <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
@@ -130,40 +113,24 @@
                         </el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8">
+            </el-row>
+            <el-row :gutter="20">
+                <el-col :lg="8">
                     <el-form-item label="审核状态">
-                        <el-tooltip content="设置友链的审核状态" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">审核状态：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-select v-model="state.struct.audit" placeholder="请选择审核状态" style="display: block; font-size: 13px" class="custom">
+                        <el-select v-model="state.struct.audit" placeholder="请选择审核状态" style="width: 100%" class="custom">
                             <el-option label="待审核" value="0"></el-option>
                             <el-option label="已审核" value="1"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="12">
+                <el-col :lg="8">
                     <el-form-item label="跳转链接">
-                        <el-tooltip content="是否需要打开一个网址" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">跳转链接：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.url"></el-input>
+                        <el-input v-model="state.struct.url" placeholder="请输入跳转链接" style="width: 100%"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="12">
+                <el-col :lg="8">
                     <el-form-item label="跳转方式">
-                        <el-tooltip content="点击链接的执行方式" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">跳转方式：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-select v-model="state.struct.target" placeholder="请选择方式" style="display: block; font-size: 13px" class="custom">
+                        <el-select v-model="state.struct.target" placeholder="请选择方式" style="width: 100%" class="custom">
                             <el-option v-for="item in state.select.target" :key="item.value" :label="item.value" :value="item.label">
                                 <span style="font-size: 13px">{{ item.value }}</span>
                                 <small style="float: right; color: var(--el-text-color-secondary)">{{ item.label }}</small>
@@ -171,29 +138,22 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="24">
+            </el-row>
+            <el-row :gutter="20">
+                <el-col :lg="24">
                     <el-form-item label="描述">
-                        <el-tooltip content="您这位朋友经常说的话或座右铭" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">描述：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.description" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="24">
-                    <el-form-item label="备注">
-                        <el-tooltip content="备注而已，页面上不会显示此项" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">备注：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea"></el-input>
+                        <el-input v-model="state.struct.description" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="请输入描述内容" style="width: 100%"></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
+            <el-row :gutter="20">
+                <el-col :lg="24">
+                    <el-form-item label="备注">
+                        <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea" style="width: 100%"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            </el-form>
         </template>
         <template #footer>
             <el-button v-on:click="state.item.dialog = false">取 消</el-button>

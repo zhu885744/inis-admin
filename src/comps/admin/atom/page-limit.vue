@@ -1,8 +1,7 @@
 <template>
-    <el-card v-loading="state.status.loading" style="margin-bottom: 1rem">
+    <el-card v-loading="state.status.loading" style="margin-bottom: 12px">
         <template #header>
-            <div class="card-header-content">
-                <i-svg name="env" size="50px" color="rgb(var(--assist-color))" style="position: absolute; opacity: 0.25; right: 1.7rem"></i-svg>
+            <div class="card-header-content" style="display: flex; align-items: center; gap: 8px">
                 <el-tooltip placement="top">
                     <template #content>
                         <strong style="color: var(--el-color-success)">限制分页查询单次最大数据量，开启让系统毫无瑕疵！</strong><br>
@@ -10,23 +9,30 @@
                         导致服务器崩溃，分页限制可以限制每页最大请求数据量，超过则强制性=最大值<br>
                         注意：如果开启了缓存，此项可不开，因为缓存数据不会导致重复查询
                     </template>
-                    <span style="display: inline-flex; align-items: center">
-                        <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                        <span style="margin-left: 0.25rem">分页限制</span>
-                    </span>
+                    <span style="font-weight: 600">分页限制</span>
                 </el-tooltip>
+                <el-tag size="small" type="warning">限制</el-tag>
             </div>
         </template>
         <template #default>
             <div style="display: flex; align-items: center; justify-content: space-between">
-                <el-switch v-model="state.status.active" v-on:change="method.change" :disabled="!state.status.finish"
-                           active-text="我怂" inactive-text="无所畏惧">
-                </el-switch>
-                <div style="display: flex; align-items: center; gap: 0.5rem">
-                    <el-tag type="primary">+5%</el-tag>
-                    <span style="color: var(--text-color-secondary)">
-                        安全性提升，<span v-on:click="method.show()" style="color: var(--text-color); cursor: pointer">点我配置</span>
-                    </span>
+                <div style="display: flex; align-items: center; gap: 12px">
+                    <div style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 8px; background: var(--el-color-primary-light-9); color: var(--el-color-primary)">
+                        <i-svg name="lock" size="20px"></i-svg>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px; line-height: 1.4">分页限制</div>
+                        <div style="font-size: 12px; color: var(--el-text-color-secondary); margin-top: 2px; line-height: 1.4">限制列表分页的最大查询数量</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px">
+                    <el-switch v-model="state.status.active" v-on:change="method.change" :disabled="!state.status.finish"
+                               active-text="我怂" inactive-text="无所畏惧">
+                    </el-switch>
+                    <el-button text type="primary" v-on:click="method.show()">
+                        配置
+                        <el-icon style="margin-left: 2px"><ArrowRight /></el-icon>
+                    </el-button>
                 </div>
             </div>
         </template>
@@ -37,19 +43,15 @@
             <strong class="flex-center">配置</strong>
         </template>
         <template #default>
-            <el-row :gutter="20">
-                <el-col :span="24">
-                    <el-form-item label="最大值">
-                        <el-tooltip content="限制分页查询单次最大数据量，推荐：30" placement="top">
-                            <span>
-                                <i-svg name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">最大值：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input-number v-model="state.struct.text" :min="5" style="width: 100%"></el-input-number>
-                    </el-form-item>
-                </el-col>
-            </el-row>
+            <el-form label-width="100px" label-position="left">
+                <el-row :gutter="20">
+                    <el-col :lg="12">
+                        <el-form-item label="最大值">
+                            <el-input-number v-model="state.struct.text" :min="5" style="width: 100%"></el-input-number>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
         </template>
         <template #footer>
             <el-button v-on:click="state.status.dialog = false">取 消</el-button>

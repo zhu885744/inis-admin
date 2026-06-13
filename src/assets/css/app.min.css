@@ -1019,3 +1019,20 @@ select.customize:disabled:hover, select.customize:disabled:focus, select.customi
     margin: -1px;
     background: linear-gradient(120deg, hsla(0, 0%, 100%, .15), hsla(0, 0%, 100%, .01));
 }
+
+.card-header-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding-right: 50px;
+}
+
+.card-header-content > i-svg:first-of-type:not([size="14px"]) {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.25;
+}

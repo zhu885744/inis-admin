@@ -70,63 +70,35 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 等 级</strong>
         </template>
         <template #default>
-            <el-row :gutter="20">
-                <el-col :span="8">
-                    <el-form-item label="名称">
-                        <el-tooltip content="该等级对应的名称" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">名称：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.name" placeholder="名称"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                    <el-form-item label="等级">
-                        <el-tooltip content="等级：0 ~ ∞" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">等级：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input-number v-model="state.struct.value" :min="0" style="width: 100%" placeholder="等级"></el-input-number>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                    <el-form-item label="经验值">
-                        <el-tooltip content="达到该等级所需要的经验值为多少？" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">经验值：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input-number v-model="state.struct.exp" :min="0" style="width: 100%" placeholder="所需经验值"></el-input-number>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="24">
-                    <el-form-item label="描述">
-                        <el-tooltip content="针对这个等级的一句话描述" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">描述：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.description" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="一句话描述"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="24">
-                    <el-form-item label="备注">
-                        <el-tooltip content="备注而已，页面上不会显示此项" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">备注：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.remark" :autosize="{ minRows: 4, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
+            <el-form label-width="100px" label-position="left">
+                <el-row :gutter="20">
+                    <el-col :lg="8">
+                        <el-form-item label="名称">
+                            <el-input v-model="state.struct.name" placeholder="请输入等级名称" style="width: 100%"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="8">
+                        <el-form-item label="等级">
+                            <el-input-number v-model="state.struct.value" :min="0" style="width: 100%"></el-input-number>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="8">
+                        <el-form-item label="经验值">
+                            <el-input-number v-model="state.struct.exp" :min="0" style="width: 100%"></el-input-number>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="24">
+                        <el-form-item label="描述">
+                            <el-input v-model="state.struct.description" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="请输入等级描述信息" style="width: 100%"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="24">
+                        <el-form-item label="备注">
+                            <el-input v-model="state.struct.remark" :autosize="{ minRows: 4, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea" style="width: 100%"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
         </template>
         <template #footer>
             <el-button v-on:click="state.item.dialog = false">取 消</el-button>

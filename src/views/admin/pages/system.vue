@@ -108,9 +108,6 @@
                             <el-col :span="8">
                                 <atom-article ref="article" v-on:refresh="method.refresh"></atom-article>
                             </el-col>
-                            <el-col :span="8">
-                                <atom-site-info ref="site-info" v-on:refresh="method.refresh"></atom-site-info>
-                            </el-col>
                         </el-row>
                     </el-tab-pane>
 
@@ -124,7 +121,6 @@
                             </el-col>
                         </el-row>
                     </el-tab-pane>
-
                 </el-tabs>
             </el-col>
         </el-row>
@@ -152,7 +148,6 @@ import AtomStorageCos from '{src}/comps/admin/atom/storage-cos.vue'
 import AtomStorageKodo from '{src}/comps/admin/atom/storage-kodo.vue'
 import AtomPage from '{src}/comps/admin/atom/page.vue'
 import AtomArticle from '{src}/comps/admin/atom/article.vue'
-import AtomSiteInfo from '{src}/comps/admin/atom/site-info.vue'
 import AtomUpgrade from '{src}/comps/admin/atom/upgrade.vue'
 
 const { ctx, proxy } = getCurrentInstance()
@@ -166,7 +161,7 @@ const state  = reactive({
     },
     refresh: {
         inis    : ['device-bind','upgrade'],
-        other   : ['site-info','page','article'],
+        other   : ['page','article'],
         optimize: ['cache-redis','cache-file','cache-ram'],
         sms     : ['sms-email','sms-aliyun','sms-aliyun-verify','sms-tencent'],
         storage : ['storage-local','storage-oss','storage-cos','storage-kodo'],

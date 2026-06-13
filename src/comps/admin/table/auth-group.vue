@@ -84,43 +84,21 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 权 限 分 组</strong>
         </template>
         <template #default>
+            <el-form label-width="100px" label-position="left">
             <el-row :gutter="20">
-                <el-col :span="8">
+                <el-col :lg="8">
                     <el-form-item label="名称">
-                        <el-tooltip content="（必须）这个权限分组的名称叫什么？" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">名称：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.name"></el-input>
+                        <el-input v-model="state.struct.name" placeholder="请输入分组名称" style="width: 100%"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8">
+                <el-col :lg="8">
                     <el-form-item label="唯一识别码">
-                        <el-tooltip content="唯一的 key 值，方便区分权限分组" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">唯一识别码：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.key"></el-input>
+                        <el-input v-model="state.struct.key" placeholder="请输入唯一识别码" style="width: 100%"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8">
+                <el-col :lg="8">
                     <el-form-item label="权限">
-                        <el-tooltip placement="top">
-                            <template #content>
-                                <span>（可选）为该分组的用户分配更高级的权限</span><br>
-                                <span>● 默认：即便用户拥有了对应的权限，也只能操作自己的数据，适用于普通用户或会员</span><br>
-                                <span>● 管理：该权限适用于有管理权限的用户，比如管理员和编辑员等，对别人的数据有操作权限</span><br>
-                            </template>
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">权限：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-select v-model="state.struct.root" placeholder="请选择权限" style="display: block; font-size: 13px" class="custom">
+                        <el-select v-model="state.struct.root" placeholder="请选择权限" style="width: 100%" class="custom">
                             <el-option v-for="item in state.select.root" :key="item.value" :label="item.label" :value="item.value" style="display: flex; justify-content: space-between">
                                 <span style="font-size: 13px; display: flex; align-items: center">
                                     <i-svg name="dot" :color="item.color" size="20px"></i-svg>
@@ -131,26 +109,18 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="24">
+            </el-row>
+            <el-row :gutter="20">
+                <el-col :lg="24">
                     <el-form-item label="备注">
-                        <el-tooltip content="备注而已，页面上不会显示此项" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">备注：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea"></el-input>
+                        <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea" style="width: 100%"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="24">
+            </el-row>
+            <el-row :gutter="20">
+                <el-col :lg="24">
                     <el-form-item label="成员">
-                        <el-tooltip content="添加用户权限" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">成员：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-select v-model="state.selected.users" multiple filterable default-first-option placeholder="请选择权限" style="display: block; font-size: 13px" class="custom multiple">
+                        <el-select v-model="state.selected.users" multiple filterable default-first-option placeholder="请选择权限" style="width: 100%" class="custom multiple">
                             <el-option v-for="item in state.select.users" :key="item.id" :label="item.nickname" :value="item.id">
                                 <span style="display: flex; justify-content: space-between">
                                     <span style="display: flex; align-items: center">
@@ -163,15 +133,11 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="24">
+            </el-row>
+            <el-row :gutter="20">
+                <el-col :lg="24">
                     <el-form-item label="页面">
-                        <el-tooltip content="为用户分配后台的页面访问权限" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">页面：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-select v-model="state.selected.pages" multiple filterable default-first-option placeholder="请选择权限" style="display: block; font-size: 13px" class="custom multiple">
+                        <el-select v-model="state.selected.pages" multiple filterable default-first-option placeholder="请选择权限" style="width: 100%" class="custom multiple">
                             <el-option v-for="item in state.select.pages" :key="item.hash" :label="item.name" :value="item.hash">
                                 <span style="font-size: 13px">
                                     <span v-if="!utils.is.empty(item.svg)" v-html="item.svg"></span>
@@ -183,16 +149,12 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="24">
+            </el-row>
+            <el-row :gutter="20">
+                <el-col :lg="24">
                     <el-form-item label="规则">
-                        <el-tooltip content="该分组下拥有的权限" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">规则：</span>
-                            </span>
-                        </el-tooltip>
                         <el-cascader placeholder="试试搜索：文章" :options="state.select.rules" :props="{ multiple: true }" filterable
-                            class="custom multiple" style="display: block" v-model="state.rules.select" v-on:change="method.change">
+                            class="custom multiple" style="display: block; width: 100%" v-model="state.rules.select" v-on:change="method.change">
                             <template #default="{ node, data }">
                                 <span>{{ data.label }} </span>
                                 <span v-if="!node.isLeaf"> ({{ data.children.length }}) </span>
@@ -201,6 +163,7 @@
                     </el-form-item>
                 </el-col>
             </el-row>
+            </el-form>
         </template>
         <template #footer>
             <el-button v-on:click="state.item.dialog = false">取 消</el-button>

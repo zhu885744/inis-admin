@@ -144,6 +144,11 @@ const admin = {
         meta: { title: 'IP黑名单' },
         component: () => import('{src}/views/admin/pages/ip-black.vue'),
     },{
+        path: 'ip/white',
+        name: 'admin-ip-white',
+        meta: { title: 'IP白名单' },
+        component: () => import('{src}/views/admin/pages/ip-white.vue'),
+    },{
         path: 'qps/warn',
         name: 'admin-qps-warn',
         meta: { title: 'QPS预警' },

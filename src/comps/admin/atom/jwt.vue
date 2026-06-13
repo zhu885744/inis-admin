@@ -1,30 +1,36 @@
 <template>
-    <el-card v-loading="state.status.loading" style="margin-bottom: 1rem">
+    <el-card v-loading="state.status.loading" style="margin-bottom: 12px">
         <template #header>
-            <div class="card-header-content">
-                <i-svg name="crypt" size="55px" color="rgb(var(--assist-color))" style="position: absolute; opacity: 0.25; right: 1.5rem"></i-svg>
+            <div class="card-header-content" style="display: flex; align-items: center; gap: 8px">
                 <el-tooltip placement="top">
                     <template #content>
                         JWT（JSON Web Token）是一种在网络应用中传递声明信息的轻量级、安全的方式。<br>
                         JWT具有通用性和可扩展性，可以应用在很多场景，比如用户认证、单点登录、API访问授权等。
                     </template>
-                    <span style="display: inline-flex; align-items: center">
-                        <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                        <span style="margin-left: 0.25rem">JWT</span>
-                    </span>
+                    <span style="font-weight: 600">JWT</span>
                 </el-tooltip>
+                <el-tag size="small" type="primary">+5%</el-tag>
             </div>
         </template>
         <template #default>
             <div style="display: flex; align-items: center; justify-content: space-between">
-                <el-switch v-model="state.status.active" v-on:change="method.change" :disabled="!state.status.finish"
-                           active-text="开始" inactive-text="关闭">
-                </el-switch>
-                <div style="display: flex; align-items: center; gap: 0.5rem">
-                    <el-tag type="primary">+5%</el-tag>
-                    <span style="color: var(--text-color-secondary)">
-                        安全性提升，<span v-on:click="method.show()" style="color: var(--text-color); cursor: pointer">点我配置</span>
-                    </span>
+                <div style="display: flex; align-items: center; gap: 12px">
+                    <div style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 8px; background: var(--el-color-primary-light-9); color: var(--el-color-primary)">
+                        <i-svg name="key" size="20px"></i-svg>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px; line-height: 1.4">JWT认证</div>
+                        <div style="font-size: 12px; color: var(--el-text-color-secondary); margin-top: 2px; line-height: 1.4">JSON Web Token 用户认证服务</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px">
+                    <el-switch v-model="state.status.active" v-on:change="method.change" :disabled="!state.status.finish"
+                               active-text="开始" inactive-text="关闭">
+                    </el-switch>
+                    <el-button text type="primary" v-on:click="method.show()">
+                        配置
+                        <el-icon style="margin-left: 2px"><ArrowRight /></el-icon>
+                    </el-button>
                 </div>
             </div>
         </template>
@@ -35,59 +41,34 @@
             <strong class="flex-center">配置 JSON Web Token</strong>
         </template>
         <template #default>
-            <el-row :gutter="20">
-                <el-col :span="12">
-                    <el-form-item label="签发者">
-                        <el-tooltip content="可填写你的昵称" placement="top">
-                            <span>
-                                <i-svg name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">签发者：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.issuer"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="主题">
-                        <el-tooltip content="可填写站点名称" placement="top">
-                            <span>
-                                <i-svg name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">主题：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.subject"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="密钥">
-                        <el-tooltip content="生成JWT的密钥，建议复杂度高一些" placement="top">
-                            <span>
-                                <i-svg name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 0.25rem">密钥：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.key" class="custom" placeholder="请输入验证码">
-                            <template #append>
-                                <el-button v-on:click="method.rand()">
-                                    <i-svg name="restore" color="rgb(var(--vice-color))" size="14px"></i-svg>
-                                    <span style="margin-left: 4px">随机</span>
-                                </el-button>
-                            </template>
-                        </el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="过期时间(秒)">
-                        <el-tooltip content="签名有效期，可以用乘法，如：7 * 24 * 60 * 60 表示7天" placement="top">
-                            <span>
-                                <i-svg name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 0.25rem">过期时间(秒)：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.expire"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
+            <el-form label-width="100px" label-position="left">
+                <el-row :gutter="20">
+                    <el-col :lg="12">
+                        <el-form-item label="签发者">
+                            <el-input v-model="state.struct.issuer" placeholder="请输入签发者"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="12">
+                        <el-form-item label="主题">
+                            <el-input v-model="state.struct.subject" placeholder="请输入主题"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="12">
+                        <el-form-item label="密钥">
+                            <el-input v-model="state.struct.key" placeholder="请输入密钥">
+                                <template #append>
+                                    <el-button v-on:click="method.rand()">随机</el-button>
+                                </template>
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="12">
+                        <el-form-item label="过期时间">
+                            <el-input v-model="state.struct.expire" placeholder="7 * 24 * 60 * 60"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
         </template>
         <template #footer>
             <el-button v-on:click="state.status.dialog = false">取 消</el-button>

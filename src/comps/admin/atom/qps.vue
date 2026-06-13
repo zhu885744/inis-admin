@@ -1,31 +1,37 @@
 <template>
-    <el-card v-loading="state.status.loading" style="margin-bottom: 1rem">
+    <el-card v-loading="state.status.loading" style="margin-bottom: 12px">
         <template #header>
-            <div class="card-header-content">
-                <i-svg name="qps" size="60px" color="rgb(var(--assist-color))" style="position: absolute; right: 1.5rem; opacity: 0.25"></i-svg>
+            <div class="card-header-content" style="display: flex; align-items: center; gap: 8px">
                 <el-tooltip placement="top">
                     <template #content>
                         <strong style="color: var(--el-color-success)">开启后让DDOS和CC等异常流量无懈可击！</strong><br>
                         ● QPS俗称限流器，是一种作用于网络层的中间件，主要用于拦截异常流量，如DDOS和CC等<br>
                         ● QPS会将每个IP的请求次数限制在每秒的指定次数，超过则拒绝访问，从而保护服务器安全
                     </template>
-                    <span style="display: inline-flex; align-items: center">
-                        <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                        <span style="margin-left: 0.25rem">QPS</span>
-                    </span>
+                    <span style="font-weight: 600">QPS</span>
                 </el-tooltip>
+                <el-tag size="small" type="warning">+30%</el-tag>
             </div>
         </template>
         <template #default>
             <div style="display: flex; align-items: center; justify-content: space-between">
-                <el-switch v-model="state.status.active" v-on:change="method.change" :disabled="!state.status.finish"
-                           active-text="我怂" inactive-text="无所畏惧">
-                </el-switch>
-                <div style="display: flex; align-items: center; gap: 0.5rem">
-                    <el-tag type="primary">+90%</el-tag>
-                    <span style="color: var(--el-text-color-secondary)">
-                        安全性提升，<span v-on:click="method.show()" style="color: var(--el-text-color-primary); cursor: pointer">点我配置</span>
-                    </span>
+                <div style="display: flex; align-items: center; gap: 12px">
+                    <div style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 8px; background: var(--el-color-primary-light-9); color: var(--el-color-primary)">
+                        <i-svg name="qps" size="20px"></i-svg>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px; line-height: 1.4">QPS限制</div>
+                        <div style="font-size: 12px; color: var(--el-text-color-secondary); margin-top: 2px; line-height: 1.4">限制接口每秒查询率</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px">
+                    <el-switch v-model="state.status.active" v-on:change="method.change" :disabled="!state.status.finish"
+                               active-text="我怂" inactive-text="无所畏惧">
+                    </el-switch>
+                    <el-button text type="primary" v-on:click="method.show()">
+                        配置
+                        <el-icon style="margin-left: 2px"><ArrowRight /></el-icon>
+                    </el-button>
                 </div>
             </div>
         </template>
@@ -36,30 +42,20 @@
             <strong style="display: flex; align-items: center; justify-content: center">配置</strong>
         </template>
         <template #default>
-            <el-row :gutter="20">
-                <el-col :span="12">
-                    <el-form-item label="全局限制">
-                        <el-tooltip content="根据 IP 全局每秒限制的访问频率，推荐：50" placement="top">
-                            <span>
-                                <i-svg name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 0.25rem">全局限制：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input-number v-model="state.struct.json.global" :min="10" style="width: 100%; display: flex"></el-input-number>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="单接口限制">
-                        <el-tooltip content="根据 IP + API 每秒限制的访问频率，推荐：15" placement="top">
-                            <span>
-                                <i-svg name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 0.25rem">单接口限制：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input-number v-model="state.struct.json.point" :min="5" style="width: 100%; display: flex"></el-input-number>
-                    </el-form-item>
-                </el-col>
-            </el-row>
+            <el-form label-width="100px" label-position="left">
+                <el-row :gutter="20">
+                    <el-col :lg="12">
+                        <el-form-item label="全局限制">
+                            <el-input-number v-model="state.struct.json.global" :min="10" style="width: 100%"></el-input-number>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="12">
+                        <el-form-item label="单接口限制">
+                            <el-input-number v-model="state.struct.json.point" :min="5" style="width: 100%"></el-input-number>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
         </template>
         <template #footer>
             <el-button v-on:click="state.status.dialog = false">取 消</el-button>

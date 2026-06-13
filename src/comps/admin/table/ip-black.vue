@@ -65,30 +65,20 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} IP 黑 名 单</strong>
         </template>
         <template #default>
-            <el-row :gutter="20">
-                <el-col :span="24">
-                    <el-form-item label="IP">
-                        <el-tooltip content="（必须）需要被拉黑的 IP" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">IP：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.ip" placeholder="客户端 IP"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="24">
-                    <el-form-item label="备注">
-                        <el-tooltip content="备注而已，页面上不会显示此项" placement="top">
-                            <span>
-                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                <span style="margin-left: 4px">备注：</span>
-                            </span>
-                        </el-tooltip>
-                        <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
+            <el-form label-width="100px" label-position="left">
+                <el-row :gutter="20">
+                    <el-col :lg="24">
+                        <el-form-item label="IP">
+                            <el-input v-model="state.struct.ip" placeholder="例如：192.168.1.1" style="width: 100%"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :lg="24">
+                        <el-form-item label="备注">
+                            <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下" type="textarea" style="width: 100%"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
         </template>
         <template #footer>
             <el-button v-on:click="state.item.dialog = false">取 消</el-button>
