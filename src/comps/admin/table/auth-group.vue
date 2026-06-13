@@ -19,7 +19,7 @@
                 </template>
             </el-table-column>
         </template>
-        <template v-if="props.type === 'remove'" #end>
+        <template v-if="props.type === 'remove'">
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
                     <span style="display: flex; justify-content: flex-end">
@@ -120,7 +120,7 @@
             <el-row :gutter="20">
                 <el-col :lg="24">
                     <el-form-item label="成员">
-                        <el-select v-model="state.selected.users" multiple filterable default-first-option placeholder="请选择权限" style="width: 100%" class="custom multiple">
+                        <el-select v-model="state.selected.users" multiple filterable default-first-option placeholder="请选择成员" style="width: 100%" class="custom multiple">
                             <el-option v-for="item in state.select.users" :key="item.id" :label="item.nickname" :value="item.id">
                                 <span style="display: flex; justify-content: space-between">
                                     <span style="display: flex; align-items: center">
@@ -211,7 +211,7 @@ const right = computed(() => {
     return result
 })
 
-const { ctx, proxy } = getCurrentInstance()
+const { proxy } = getCurrentInstance()
 const store  = {
     users: useUsersStore(),
     authRules: useAuthRulesStore(),
@@ -433,7 +433,8 @@ const method = {
         await method.init()
     },
     // 显示盒子
-    show: () => {
+    async show() {
+        await method.users()
         state.struct = {}
         state.rules.select   = []
         state.selected.users = []
@@ -455,12 +456,12 @@ const method = {
             return
         }
 
-        const { code, data } = await axios.get('/api/users/column')
+        const { code, data } = await axios.get('/api/users/all?limit=99999&field=id,nickname,account,avatar')
 
         if (code !== 200) return
 
-        store.users.column = data
-        state.select.users = fn(data)
+        store.users.column = data.data
+        state.select.users = fn(data.data)
     }
 }
 
