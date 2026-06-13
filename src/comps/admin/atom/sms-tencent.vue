@@ -1,153 +1,143 @@
 <template>
-    <div v-loading="state.status.loading" class="card mb-3">
-        <div class="card-body">
-            <i-svg name="tencent" color="rgb(var(--assist-color))" size="60px" class="position-absolute opacity-25" style="right: 1.5rem"></i-svg>
-            <h6 class="text-muted text-uppercase mt-0">
+    <el-card style="margin-bottom: 1rem" v-loading="state.status.loading">
+        <template #header>
+            <div class="card-header-content">
+                <i-svg name="tencent" color="rgb(var(--assist-color))" size="60px" style="position: absolute; right: 1.5rem; opacity: 0.25"></i-svg>
                 <el-tooltip placement="top">
                     <template #content>
                         ● 用于发送验证码相关的服务<br>
                         ● 注册、登录、找回密码、通知等功能都需要依赖此服务
                     </template>
-                    <span class="d-inline-flex align-items-center">
+                    <span style="display: inline-flex; align-items: center">
                         <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                        <span class="ms-1">腾讯云短信</span>
+                        <span style="margin-left: 0.25rem">腾讯云短信</span>
                     </span>
                 </el-tooltip>
-            </h6>
-            <h2 class="m-b-20">
+            </div>
+        </template>
+        <template #default>
+            <div style="display: flex; align-items: center; justify-content: space-between">
                 <el-switch v-model="state.status.active" v-on:change="method.change" :disabled="!state.status.finish"
                            active-text="开启" inactive-text="关闭">
                 </el-switch>
-            </h2>
-            <span class="badge bg-primary font-white"> 企业 </span>
-            <span class="text-muted">
-                也可以用这个，<span v-on:click="method.show()" class="text-dark pointer">点我配置</span>
-            </span>
-        </div>
-    </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem">
+                    <el-tag type="primary">企业</el-tag>
+                    <span style="color: var(--el-text-color-secondary)">
+                        也可以用这个，<span v-on:click="method.show()" style="color: var(--el-text-color-primary); cursor: pointer">点我配置</span>
+                    </span>
+                </div>
+            </div>
+        </template>
+    </el-card>
 
     <el-dialog v-model="state.status.dialog" class="custom" draggable :close-on-click-modal="false">
         <template #header>
-            <strong class="flex-center">配置腾讯云短信服务</strong>
+            <strong>配置腾讯云短信服务</strong>
         </template>
         <template #default>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="腾讯云 SecretId" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">SecretId：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-input v-model="state.struct.secret_id" show-password></el-input>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="腾讯云 SecretKey" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">SecretKey：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-input v-model="state.struct.secret_key" show-password></el-input>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="腾讯云短信服务 endpoint" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">endpoint：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-input v-model="state.struct.endpoint"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="腾讯云短信服务 appid" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">appid：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-input v-model="state.struct.sms_sdk_app_id"></el-input>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="短信签名，如：萌卜兔" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">短信签名：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-input v-model="state.struct.sign_name"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="验证码模板 id，如：146XXX" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">验证码模板 id：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-input v-model="state.struct.verify_code"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="短信服务所属区域，如：ap-guangzhou" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">区域：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-input v-model="state.struct.region"></el-input>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="用于腾讯云短信测试接收测试信息的手机号" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">接收者手机号：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-input v-model="state.struct.phone" v-on:keydown.enter="method.test()" class="custom" placeholder="请输入手机号">
-                            <template #append>
-                                <el-button v-on:click="method.test()" :loading="state.status.test">
-                                    <i-svg v-if="!state.status.test" name="phone" size="14px"></i-svg>
-                                    <span class="ms-1">腾讯云短信测试</span>
-                                </el-button>
+            <el-row :gutter="20">
+                <el-col :span="12">
+                    <el-form-item label="SecretId：">
+                        <el-tooltip content="腾讯云 SecretId" placement="top">
+                            <template #content>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">SecretId：</span>
                             </template>
-                        </el-input>
-                    </div>
-                </div>
-            </div>
+                            <el-input v-model="state.struct.secret_id" show-password></el-input>
+                        </el-tooltip>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="SecretKey：">
+                        <el-tooltip content="腾讯云 SecretKey" placement="top">
+                            <template #content>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">SecretKey：</span>
+                            </template>
+                            <el-input v-model="state.struct.secret_key" show-password></el-input>
+                        </el-tooltip>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20">
+                <el-col :span="12">
+                    <el-form-item label="endpoint：">
+                        <el-tooltip content="腾讯云短信服务 endpoint" placement="top">
+                            <template #content>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">endpoint：</span>
+                            </template>
+                            <el-input v-model="state.struct.endpoint"></el-input>
+                        </el-tooltip>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="appid：">
+                        <el-tooltip content="腾讯云短信服务 appid" placement="top">
+                            <template #content>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">appid：</span>
+                            </template>
+                            <el-input v-model="state.struct.sms_sdk_app_id"></el-input>
+                        </el-tooltip>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20">
+                <el-col :span="8">
+                    <el-form-item label="短信签名：">
+                        <el-tooltip content="短信签名，如：萌卜兔" placement="top">
+                            <template #content>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">短信签名：</span>
+                            </template>
+                            <el-input v-model="state.struct.sign_name"></el-input>
+                        </el-tooltip>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="验证码模板 id：">
+                        <el-tooltip content="验证码模板 id，如：146XXX" placement="top">
+                            <template #content>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">验证码模板 id：</span>
+                            </template>
+                            <el-input v-model="state.struct.verify_code"></el-input>
+                        </el-tooltip>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="区域：">
+                        <el-tooltip content="短信服务所属区域，如：ap-guangzhou" placement="top">
+                            <template #content>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">区域：</span>
+                            </template>
+                            <el-input v-model="state.struct.region"></el-input>
+                        </el-tooltip>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20">
+                <el-col :span="24">
+                    <el-form-item label="接收者手机号：">
+                        <el-tooltip content="用于腾讯云短信测试接收测试信息的手机号" placement="top">
+                            <template #content>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">接收者手机号：</span>
+                            </template>
+                            <el-input v-model="state.struct.phone" v-on:keydown.enter="method.test()" class="custom" placeholder="请输入手机号">
+                                <template #append>
+                                    <el-button v-on:click="method.test()" :loading="state.status.test">
+                                        <i-svg v-if="!state.status.test" name="phone" size="14px"></i-svg>
+                                        <span style="margin-left: 0.25rem">腾讯云短信测试</span>
+                                    </el-button>
+                                </template>
+                            </el-input>
+                        </el-tooltip>
+                    </el-form-item>
+                </el-col>
+            </el-row>
         </template>
         <template #footer>
             <el-button v-on:click="state.status.dialog = false">取 消</el-button>

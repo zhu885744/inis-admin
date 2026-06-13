@@ -5,9 +5,6 @@
 </template>
 
 <script setup>
-import '{src}/assets/css/app.min.css'
-import '{src}/assets/css/media.min.css'
-import '{src}/assets/css/theme.min.css'
 import iIndex from '{src}/views/install/pages/index.vue'
 
 nextTick(()=>{

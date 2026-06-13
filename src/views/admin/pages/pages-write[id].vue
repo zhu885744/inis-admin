@@ -1,151 +1,140 @@
 <template>
-    <div class="container-fluid container-box px-1 px-lg-0">
-        <div class="row">
-            <div class="col-lg-9">
-                <div class="card mb-2">
-                    <div v-loading="utils.is.empty(state.struct.editor)" class="card-body custom" style="min-height: 485px">
+    <div class="container-box" style="padding-left: 4px; padding-right: 4px;">
+        <el-row :gutter="20">
+            <el-col :span="18">
+                <el-card style="margin-bottom: 8px">
+                    <div v-loading="utils.is.empty(state.struct.editor)" style="min-height: 485px">
                         <span>
                             <i-vditor ref="vditor" v-model="state.struct.content" :opts="{ height: 600 }"></i-vditor>
                         </span>
                     </div>
-                    <div class="card-footer">
-                        <el-button v-on:click="method.save()" :loading="state.item.wait" class="float-end">发布文章</el-button>
-                        <el-button>保存草稿</el-button>
-                    </div>
-                </div>
-            </div>
-            <div v-loading="state.item.loading" class="col-lg-3 custom" id="page-header-title">
+                    <template #footer>
+                        <el-button v-on:click="method.save()" :loading="state.item.wait" style="float: right">发布页面</el-button>
+                        <el-button v-on:click="method.saveDraft()" :loading="state.item.wait">保存草稿</el-button>
+                    </template>
+                </el-card>
+            </el-col>
+            <el-col :span="6" v-loading="state.item.loading" id="page-header-title">
                 <el-collapse accordion v-model="state.item.active">
-                    <div class="card mb-2">
-                        <div class="card-body px-2 py-0">
+                    <el-card style="margin-bottom: 8px">
+                        <div style="padding-left: 8px; padding-right: 8px; padding-top: 0; padding-bottom: 0">
                             <el-collapse-item name="1">
                                 <template #title>
                                     展示信息
                                 </template>
-                                <div class="form-group mb-3">
+                                <el-form-item style="margin-bottom: 12px">
                                     <el-tooltip content="（必须）页面的标题" placement="top">
                                         <span>
                                             <i-svg name="hint" size="14px"></i-svg>
-                                            <span class="ms-1 required">标题：</span>
+                                            <span style="margin-left: 4px" class="required">标题：</span>
                                         </span>
                                     </el-tooltip>
                                     <el-input v-model="state.struct.title" placeholder="页面标题"></el-input>
-                                </div>
-                                <!-- 新增：日期时间选择器待后端更新自定义日期接口 -->
-                                <div class="form-group mb-3">
-                                    <label class="form-label">
-                                        <el-tooltip content="文章的发布时间，留空则为当前时间" placement="top">
-                                            <span>
-                                                <i-svg name="hint" size="14px"></i-svg>
-                                                <span class="ms-1">发布时间：</span>
-                                            </span>
-                                        </el-tooltip>
-                                    </label>
+                                </el-form-item>
+                                <el-form-item style="margin-bottom: 12px">
+                                    <el-tooltip content="文章的发布时间，留空则为当前时间" placement="top">
+                                        <span>
+                                            <i-svg name="hint" size="14px"></i-svg>
+                                            <span style="margin-left: 4px">发布时间：</span>
+                                        </span>
+                                    </el-tooltip>
                                     <el-date-picker
                                         v-model="state.struct.publishTime"
                                         type="datetime"
                                         placeholder="选择发布时间"
                                         format="YYYY-MM-DD HH:mm:ss"
                                         value-format="YYYY-MM-DD HH:mm:ss"
-                                        class="w-100"
+                                        style="width: 100%"
                                     />
-                                </div>
-                                <div v-if="store.comm.login.user.result.auth.all === true" class="form-group mb-3">
-                                    <label class="form-label">
-                                        <el-tooltip content="审核状态" placement="top">
-                                            <span>
-                                                <i-svg name="hint" size="14px"></i-svg>
-                                                <span class="ms-1">审核状态：</span>
-                                            </span>
-                                        </el-tooltip>
-                                    </label>
-                                    <el-select v-model="state.struct.audit" class="d-block custom font-13" placeholder="请选择">
+                                </el-form-item>
+                                <el-form-item v-if="store.comm.login.user.result.auth.all === true" style="margin-bottom: 12px">
+                                    <el-tooltip content="审核状态" placement="top">
+                                        <span>
+                                            <i-svg name="hint" size="14px"></i-svg>
+                                            <span style="margin-left: 4px">审核状态：</span>
+                                        </span>
+                                    </el-tooltip>
+                                    <el-select v-model="state.struct.audit" style="display: block; font-size: 13px" placeholder="请选择">
                                         <el-option v-for="item in state.select.audit" :key="item.value" :label="item.label" :value="item.value">
-                                            <span class="font-13">{{ item.label }}</span>
-                                            <small class="text-muted float-end">{{ item.value }}</small>
+                                            <span style="font-size: 13px">{{ item.label }}</span>
+                                            <small style="color: #999; float: right">{{ item.value }}</small>
                                         </el-option>
                                     </el-select>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label class="form-label">
-                                        <el-tooltip content="可同时选择多个标签" placement="top">
-                                            <span>
-                                                <i-svg name="hint" size="14px"></i-svg>
-                                                <span class="ms-1">标签：</span>
-                                            </span>
-                                        </el-tooltip>
-                                    </label>
+                                </el-form-item>
+                                <el-form-item style="margin-bottom: 12px">
+                                    <el-tooltip content="可同时选择多个标签" placement="top">
+                                        <span>
+                                            <i-svg name="hint" size="14px"></i-svg>
+                                            <span style="margin-left: 4px">标签：</span>
+                                        </span>
+                                    </el-tooltip>
                                     <el-select v-model="state.item.tags" v-on:change="method.change.tags"
-                                        multiple collapse-tags filterable allow-create default-first-option class="d-block custom" placeholder="请选择">
+                                        multiple collapse-tags filterable allow-create default-first-option style="display: block" placeholder="请选择">
                                         <el-option v-for="item in state.select.tags" :key="item.value" :label="item.label" :value="item.value">
                                         </el-option>
                                     </el-select>
-                                </div>
-                                <div class="form-group mb-3">
+                                </el-form-item>
+                                <el-form-item style="margin-bottom: 12px">
                                     <el-tooltip content="（必须）可以用做页面的唯一识别码或页面入口" placement="top">
                                         <span>
                                             <i-svg name="hint" size="14px"></i-svg>
-                                            <span class="ms-1 required">唯一键：</span>
+                                            <span style="margin-left: 4px" class="required">唯一键：</span>
                                         </span>
                                     </el-tooltip>
                                     <el-input v-model="state.struct.key" autocomplete="new-password" placeholder="唯一识别码"></el-input>
-                                </div>
-                                <div class="form-group">
+                                </el-form-item>
+                                <el-form-item>
                                     <el-tooltip content="备注一下" placement="top">
                                         <span>
                                             <i-svg name="hint" size="14px"></i-svg>
-                                            <span class="ms-1">备注：</span>
+                                            <span style="margin-left: 4px">备注：</span>
                                         </span>
                                     </el-tooltip>
                                     <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea"></el-input>
-                                </div>
+                                </el-form-item>
                             </el-collapse-item>
                         </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body px-2 py-0">
+                    </el-card>
+                    <el-card>
+                        <div style="padding-left: 8px; padding-right: 8px; padding-top: 0; padding-bottom: 0">
                             <el-collapse-item name="2">
                                 <template #title>
                                     高级选项
                                 </template>
-                                <div class="form-group mb-3">
-                                    <label class="form-label">
-                                        <el-tooltip content="可同时选择多个分类" placement="top">
-                                            <span>
-                                                <i-svg name="hint" size="14px"></i-svg>
-                                                <span class="ms-1">允许评论：</span>
-                                            </span>
-                                        </el-tooltip>
-                                    </label>
-                                    <el-select v-model="state.struct.json.comment.allow" class="d-block custom font-13" placeholder="请选择">
+                                <el-form-item style="margin-bottom: 12px">
+                                    <el-tooltip content="可同时选择多个分类" placement="top">
+                                        <span>
+                                            <i-svg name="hint" size="14px"></i-svg>
+                                            <span style="margin-left: 4px">允许评论：</span>
+                                        </span>
+                                    </el-tooltip>
+                                    <el-select v-model="state.struct.json.comment.allow" style="display: block; font-size: 13px" placeholder="请选择">
                                         <el-option v-for="item in state.select.comment.allow" :key="item.value" :label="item.label" :value="item.value">
-                                            <span class="font-13">{{ item.label }}</span>
-                                            <small class="text-muted float-end">{{ item.value }}</small>
+                                            <span style="font-size: 13px">{{ item.label }}</span>
+                                            <small style="color: #999; float: right">{{ item.value }}</small>
                                         </el-option>
                                     </el-select>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <label class="form-label">
-                                        <el-tooltip content="可同时选择多个分类" placement="top">
-                                            <span>
-                                                <i-svg name="hint" size="14px"></i-svg>
-                                                <span class="ms-1">显示评论：</span>
-                                            </span>
-                                        </el-tooltip>
-                                    </label>
-                                    <el-select v-model="state.struct.json.comment.show" class="d-block custom font-13" placeholder="请选择">
+                                </el-form-item>
+                                <el-form-item style="margin-bottom: 12px">
+                                    <el-tooltip content="可同时选择多个分类" placement="top">
+                                        <span>
+                                            <i-svg name="hint" size="14px"></i-svg>
+                                            <span style="margin-left: 4px">显示评论：</span>
+                                        </span>
+                                    </el-tooltip>
+                                    <el-select v-model="state.struct.json.comment.show" style="display: block; font-size: 13px" placeholder="请选择">
                                         <el-option v-for="item in state.select.comment.show" :key="item.value" :label="item.label" :value="item.value">
-                                            <span class="font-13">{{ item.label }}</span>
-                                            <small class="text-muted float-end">{{ item.value }}</small>
+                                            <span style="font-size: 13px">{{ item.label }}</span>
+                                            <small style="color: #999; float: right">{{ item.value }}</small>
                                         </el-option>
                                     </el-select>
-                                </div>
+                                </el-form-item>
                             </el-collapse-item>
                         </div>
-                    </div>
+                    </el-card>
                 </el-collapse>
-            </div>
-        </div>
+            </el-col>
+        </el-row>
     </div>
 </template>
 
@@ -174,6 +163,7 @@ const state  = reactive({
     struct: {
         content: '',
         editor: 'vditor',
+        publishTime: '',
         json: { comment: { allow: 0, show: 0 } }
     },
     select: {
@@ -233,6 +223,12 @@ const method = {
         // 合并 json 项默认数据
         state.struct = {...data, json: Object.assign({}, data.json, state.struct.json), editor: 'vditor'}
 
+        // 处理发布时间 - 转换时间戳为日期格式
+        if (!utils.is.empty(data.publish_time)) {
+            const date = new Date(data.publish_time * 1000)
+            state.struct.publishTime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
+        }
+
         // 封面图 - 字符串转数组 - name 正则出文件名部分
         if (!utils.is.empty(data.covers)) {
             state.item.fileList = data.covers.split(',').map(item => ({
@@ -276,8 +272,13 @@ const method = {
 
         state.item.wait = true
 
+        const { publishTime, ...restStruct } = state.struct
+        const publish_time = !utils.is.empty(publishTime) ? Math.floor(new Date(publishTime).getTime() / 1000) : null
+
         const { code, msg, data } = await axios.post('/api/pages/save', {
-            ...state.struct, json: JSON.stringify(state.struct.json)
+            ...restStruct,
+            json: JSON.stringify(state.struct.json),
+            publish_time
         })
 
         state.item.wait = false
@@ -290,6 +291,36 @@ const method = {
         state.struct.id = data.id
 
         await router.push({path: '/admin/pages/write/' + parseInt(data.id)})
+    },
+    // 保存草稿
+    saveDraft: async () => {
+        // 获取Vditor内容
+        state.struct.content = proxy.$refs['vditor'].getValue()
+
+        if (utils.is.empty(state.struct?.title)) return ElMessage.warning('你可能忘记写标题了')
+
+        state.struct.tags = !utils.is.empty(state.item.tags) ? `|${state.item.tags.join('|')}|` : ''
+
+        state.item.wait = true
+
+        const { publishTime, ...restStruct } = state.struct
+        const publish_time = !utils.is.empty(publishTime) ? Math.floor(new Date(publishTime).getTime() / 1000) : null
+
+        const { code, msg, data } = await axios.post('/api/pages/save', {
+            ...restStruct,
+            json: JSON.stringify(state.struct.json),
+            publish_time,
+            status: 0
+        })
+
+        state.item.wait = false
+
+        if (code !== 200) return ElMessage.error(msg)
+
+        ElMessage.success(msg)
+
+        state.item.id   = data.id
+        state.struct.id = data.id
     },
     // 数据变化
     change: {

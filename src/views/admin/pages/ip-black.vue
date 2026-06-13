@@ -1,8 +1,8 @@
 <template>
-    <div class="container-fluid container-box">
-        <div class="row d-none d-lg-flex">
-            <div class="col-lg-6 d-flex">
-                <el-dropdown v-if="!state.item.tabs.includes('setting')" class="me-2" trigger="click">
+    <div class="container-box">
+        <el-row :gutter="20" style="display: flex;">
+            <el-col :span="12" style="display: flex;">
+                <el-dropdown v-if="!state.item.tabs.includes('setting')" style="margin-right: 8px" trigger="click">
                     <el-button>
                         {{ state.item.sort }}
                         <i-svg name="down"></i-svg>
@@ -12,39 +12,39 @@
                         <el-dropdown-item v-on:click="method.order('create_time asc', '最早')">最早</el-dropdown-item>
                     </template>
                 </el-dropdown>
-                <div class="me-1">
+                <div style="margin-right: 4px">
                     <el-input v-model="state.item.search" style="width: 200px" autocomplete="new-password" type="text" placeholder="IP | 备注" />
                 </div>
-                <el-button v-on:click="method.refresh()" type="button">刷新</el-button>
-                <el-button v-on:click="method.add()" v-if="state.item.tabs.includes('all')" type="button">添加</el-button>
-            </div>
-            <div class="col-lg-6 d-flex justify-content-end" style="z-index: -1">
-                <el-button disabled type="button">
+                <el-button v-on:click="method.refresh()">刷新</el-button>
+                <el-button v-on:click="method.add()" v-if="state.item.tabs.includes('all')">添加</el-button>
+            </el-col>
+            <el-col :span="12" style="display: flex; justify-content: flex-end; z-index: -1">
+                <el-button disabled>
                     {{ state.item.title }}
                 </el-button>
-            </div>
-        </div>
-        <div class="row mt-3">
-            <div class="col-12">
-                <el-tabs v-model="state.item.tabs" v-on:tab-change="method.change" id="tabs-area" type="border-card">
+            </el-col>
+        </el-row>
+        <el-row :gutter="20" style="margin-top: 12px">
+            <el-col :span="24">
+                <el-tabs v-model="state.item.tabs" v-on:tab-change="method.change" id="tabs-area">
 
                     <el-tab-pane name="all">
                         <template #label>
-                            <span class="fw-bolder font-12">全部</span>
+                            <span style="font-weight: bold; font-size: 12px">全部</span>
                         </template>
                         <table-ip-black :params="state.params.all" v-model:init="state.tabs.all" v-on:refresh="method.refresh" ref="all"></table-ip-black>
                     </el-tab-pane>
 
                     <el-tab-pane name="remove">
                         <template #label>
-                            <span class="fw-bolder font-12">回收站</span>
+                            <span style="font-weight: bold; font-size: 12px">回收站</span>
                         </template>
                         <table-ip-black :params="state.params.remove" v-model:init="state.tabs.remove" v-on:refresh="method.refresh" ref="remove" type="remove"></table-ip-black>
                     </el-tab-pane>
 
                 </el-tabs>
-            </div>
-        </div>
+            </el-col>
+        </el-row>
     </div>
 </template>
 

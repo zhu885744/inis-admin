@@ -8,11 +8,11 @@
         <template v-if="props.type === 'all'" #end>
             <el-table-column :fixed="right" label="操作" width="100" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.edit(scope.row)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -22,14 +22,14 @@
         <template v-if="props.type === 'remove'" #end>
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.restore(scope.row.id)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="restore" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.edit(scope.row)" size="small" class="ms-0">
+                        <el-button v-on:click="method.edit(scope.row)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -38,8 +38,8 @@
         </template>
 
         <template #i-name="{ scope = {} }">
-            <span v-on:dblclick="method.edit(scope)" class="d-flex align-items-center">
-                <el-avatar v-if="!utils.is.empty(scope?.avatar)" :src="method.imageSize(scope?.avatar)" shape="square" :size="20" class="me-1"></el-avatar>
+            <span v-on:dblclick="method.edit(scope)" style="display: flex; align-items: center">
+                <el-avatar v-if="!utils.is.empty(scope?.avatar)" :src="method.imageSize(scope?.avatar)" shape="square" :size="20" style="margin-right: 4px"></el-avatar>
                 <el-tooltip :content="scope.name" :disabled="utils.is.empty(scope.name)" placement="top">
                     <span>{{ method.omit(scope?.name, 10, ' ...', 'end') }}</span>
                 </el-tooltip>
@@ -62,56 +62,48 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 友 链 分 组</strong>
         </template>
         <template #default>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="（必须）这个友链分组的名称" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">名称：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+            <el-row :gutter="20">
+                <el-col :span="12">
+                    <el-form-item label="名称">
+                        <el-tooltip content="（必须）这个友链分组的名称" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">名称：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.name"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="要不要给这个分组设置一个头像" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">头像：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="头像">
+                        <el-tooltip content="要不要给这个分组设置一个头像" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">头像：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.avatar" class="custom" placeholder="填写图片地址或点击上传图片">
                             <template #append>
                                 <el-button v-on:click="method.upload('avatar')" :loading="state.item.upload">
                                     <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                                    <span class="ms-1">上传</span>
+                                    <span style="margin-left: 4px">上传</span>
                                 </el-button>
                             </template>
                         </el-input>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="这个分组的描述信息" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">描述：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                    <el-form-item label="描述">
+                        <el-tooltip content="这个分组的描述信息" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">描述：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.description" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea"></el-input>
-                    </div>
-                </div>
-            </div>
+                    </el-form-item>
+                </el-col>
+            </el-row>
         </template>
         <template #footer>
             <el-button v-on:click="state.item.dialog = false">取 消</el-button>
@@ -169,8 +161,8 @@ const state  = reactive({
         url: '/api/links-group/all',
         params: props.params,
         columns: [
-            { prop: 'name', label: '名称', width: 150, slot: true, fixed: left },
-            { prop: 'description' , label: '描述', width: 200, slot: true },
+            { prop: 'name', label: '名称', slot: true, fixed: left },
+            { prop: 'description' , label: '描述', slot: true },
             { prop: 'update_time', label: '更新时间', width: 140, sortable: true },
             { prop: 'create_time', label: '创建时间', width: 140, sortable: true },
         ],

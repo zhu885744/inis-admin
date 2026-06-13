@@ -8,11 +8,11 @@
         <template v-if="props.type === 'all'" #end>
             <el-table-column :fixed="right" label="操作" width="100" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.edit(scope.row)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -22,14 +22,14 @@
         <template v-if="props.type === 'remove'" #end>
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.restore(scope.row.id)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="restore" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.edit(scope.row)" size="small" class="ms-0">
+                        <el-button v-on:click="method.edit(scope.row)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -39,7 +39,7 @@
 
         <template #i-name="{ scope = {} }">
             <el-tooltip :content="scope.name" :disabled="utils.is.empty(scope.name)" placement="top">
-                <div class="d-flex align-items-center">
+                <div style="display: flex; align-items: center">
                     <span class="limit-1-line">{{ scope?.name || '-' }}</span>
                 </div>
             </el-tooltip>
@@ -70,77 +70,63 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 等 级</strong>
         </template>
         <template #default>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="该等级对应的名称" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">名称：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+            <el-row :gutter="20">
+                <el-col :span="8">
+                    <el-form-item label="名称">
+                        <el-tooltip content="该等级对应的名称" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">名称：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.name" placeholder="名称"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="等级：0 ~ ∞" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">等级：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-input-number v-model="state.struct.value" :min="0" class="w-100 d-flex" placeholder="等级"></el-input-number>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="达到该等级所需要的经验值为多少？" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">经验值：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-input-number v-model="state.struct.exp" :min="0" class="w-100 d-flex" placeholder="所需经验值"></el-input-number>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="针对这个等级的一句话描述" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">描述：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="等级">
+                        <el-tooltip content="等级：0 ~ ∞" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">等级：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-input-number v-model="state.struct.value" :min="0" style="width: 100%" placeholder="等级"></el-input-number>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="经验值">
+                        <el-tooltip content="达到该等级所需要的经验值为多少？" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">经验值：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-input-number v-model="state.struct.exp" :min="0" style="width: 100%" placeholder="所需经验值"></el-input-number>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                    <el-form-item label="描述">
+                        <el-tooltip content="针对这个等级的一句话描述" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">描述：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.description" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="一句话描述"></el-input>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="备注而已，页面上不会显示此项" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">备注：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                    <el-form-item label="备注">
+                        <el-tooltip content="备注而已，页面上不会显示此项" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">备注：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.remark" :autosize="{ minRows: 4, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea"></el-input>
-                    </div>
-                </div>
-            </div>
+                    </el-form-item>
+                </el-col>
+            </el-row>
         </template>
         <template #footer>
             <el-button v-on:click="state.item.dialog = false">取 消</el-button>
@@ -202,8 +188,8 @@ const state  = reactive({
             { prop: 'name'  , label: '名称', width: 100, slot: true, fixed: left },
             { prop: 'value', label: '等级', width: 80, align: 'center' },
             { prop: 'exp', label: '经验值', width: 80, align: 'center' },
-            { prop: 'description', label: '描述', width: 180, slot: true },
-            { prop: 'remark' , label: '备注', width: 180, slot: true },
+            { prop: 'description', label: '描述', slot: true },
+            { prop: 'remark' , label: '备注', slot: true },
             { prop: 'update_time', label: '更新时间', width: 140, sortable: true },
             { prop: 'create_time', label: '创建时间', width: 140, sortable: true },
         ],

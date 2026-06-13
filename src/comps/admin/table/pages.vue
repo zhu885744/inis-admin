@@ -8,11 +8,11 @@
         <template v-if="props.type === 'all'" #end>
             <el-table-column :fixed="right" label="操作" width="100" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.edit(scope.row)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -22,14 +22,14 @@
         <template v-if="props.type === 'remove'" #end>
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.restore(scope.row.id)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="restore" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.edit(scope.row)" size="small" class="ms-0">
+                        <el-button v-on:click="method.edit(scope.row)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -60,9 +60,9 @@
         </template>
 
         <template #i-title="{ scope = {} }">
-            <span v-on:dblclick="method.edit(scope)" class="d-flex align-items-center">
+            <span v-on:dblclick="method.edit(scope)" style="display: flex; align-items: center">
                 <el-tooltip v-if="scope.audit === 1" content="已审核" placement="top">
-                    <i-svg name="audit" size="20px" class="me-1"></i-svg>
+                    <i-svg name="audit" size="20px" style="margin-right: 4px"></i-svg>
                 </el-tooltip>
                 <el-tooltip :content="scope.title" :disabled="utils.is.empty(scope.title)" placement="top">
                     <span class="limit-1-line">{{ scope?.title }}</span>
@@ -131,9 +131,9 @@ const state  = reactive({
         url: '/api/pages/all',
         params: props.params,
         columns: [
-            { prop: 'title',  label: '标题', width: 150, slot: true, fixed: left },
-            { prop: 'key',    label: '唯一键', width: 100 },
-            { prop: 'remark', label: '备注', width: 200, slot: true },
+            { prop: 'title',  label: '标题', slot: true, fixed: left },
+            { prop: 'key',    label: '唯一键' },
+            { prop: 'remark', label: '备注', slot: true },
             { prop: 'create_time', label: '创建时间', width: 180, slot: true, sortable: true },
             { prop: 'update_time', label: '更新时间', width: 180, slot: true, sortable: true },
         ],

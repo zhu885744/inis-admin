@@ -76,7 +76,6 @@ export const externals = () => {
 ### 3. 打包输出
 打包完成后，所有静态资源（HTML/CSS/JS/图片等）会输出到 `dist` 文件夹，可直接用于部署。
 
-
 ## 四、技术栈与框架
 
 ### 1. 核心框架
@@ -90,8 +89,6 @@ export const externals = () => {
 
 ### 3. UI 组件库
 - **Element Plus**：基于 Vue 3 的企业级 UI 组件库
-- **Bootstrap 5**：CSS 框架，用于基础样式和响应式布局
-- **BootstrapVue**：Bootstrap 的 Vue 适配组件库
 
 ### 4. 网络与数据交互
 - **Axios**：HTTP 客户端，处理 API 请求
@@ -117,11 +114,3 @@ export const externals = () => {
 - **lscache**：本地存储管理工具
 - **animejs**：动画库
 - **colorthief**：提取图片主色调工具
-
-## 版本更新日志
-[1.0.0]更新内容如下
-- 新增：文章发布，独立页面发布，支持自定义发布日期
-- 新增：短信登录方式增加了阿里云号码验证
-- 去除：前端博文相关，仅保留基础引导单页
-- 优化：大量 UI 显示细节
-- 修复：大量bug

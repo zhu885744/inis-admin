@@ -1,131 +1,121 @@
 <template>
-    <div v-loading="state.status.loading" class="card mb-3">
-        <div class="card-body">
-            <i-svg name="redis" color="rgb(var(--assist-color))" size="56px" class="position-absolute opacity-25" style="right: 1.5rem"></i-svg>
-            <h6 class="text-muted mt-0">
+    <el-card v-loading="state.status.loading" style="margin-bottom: 1rem">
+        <template #header>
+            <div class="card-header-content">
+                <i-svg name="redis" color="rgb(var(--assist-color))" size="56px" style="position: absolute; opacity: 0.25; right: 1.5rem"></i-svg>
                 <el-tooltip placement="top">
                     <template #content>
-                        <strong class="text-success">推荐开启，有利于减少数据库和服务器的负担！</strong><br>
+                        <strong style="color: var(--el-color-success)">推荐开启，有利于减少数据库和服务器的负担！</strong><br>
                         开启后会对API数据进行缓存，减少重复执行数据库操作以及对数据的运算，<br>
                         从而提高API的响应速度，减少服务器的负担。<br>
                         PS：缓存数据会存储在专门的缓存数据库Redis中。
                     </template>
-                    <span class="d-inline-flex align-items-center">
+                    <span style="display: inline-flex; align-items: center">
                         <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                        <span class="ms-1">Redis 缓存</span>
+                        <span style="margin-left: 0.25rem">Redis 缓存</span>
                     </span>
                 </el-tooltip>
-            </h6>
-            <h2 class="m-b-20">
+            </div>
+        </template>
+        <template #default>
+            <div style="display: flex; align-items: center; justify-content: space-between">
                 <el-switch v-model="state.status.active" v-on:change="method.change" :disabled="!state.status.finish"
                            active-text="开启" inactive-text="关闭">
                 </el-switch>
-            </h2>
-            <span class="badge bg-success font-white"> +30% </span>
-            <span class="text-muted">
-                综合提升，<span v-on:click="method.show()" class="text-dark pointer">点我配置</span>
-            </span>
-        </div>
-    </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem">
+                    <el-tag type="success">+30%</el-tag>
+                    <span style="color: var(--text-color-secondary)">
+                        综合提升，<span v-on:click="method.show()" style="color: var(--text-color); cursor: pointer">点我配置</span>
+                    </span>
+                </div>
+            </div>
+        </template>
+    </el-card>
 
     <el-dialog v-model="state.status.dialog" class="custom" draggable :close-on-click-modal="false">
         <template #header>
             <strong class="flex-center">配置 Redis 缓存服务</strong>
         </template>
         <template #default>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="主机地址，如：localhost" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">主机：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+            <el-row :gutter="20">
+                <el-col :span="8">
+                    <el-form-item label="主机">
+                        <el-tooltip content="主机地址，如：localhost" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">主机：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.host"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="端口号，如：6379" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">端口：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-input-number v-model="state.struct.port" :min="1" :max="65535" class="w-100 d-flex" style="height: 28px" controls-position="right">
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="端口">
+                        <el-tooltip content="端口号，如：6379" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">端口：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-input-number v-model="state.struct.port" :min="1" :max="65535" style="width: 100%; display: flex; height: 28px" controls-position="right">
                         </el-input-number>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="数据库索引，如：0" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">数据库：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-select v-model="state.struct.database" placeholder="请选择方式" class="d-block custom font-13">
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="数据库">
+                        <el-tooltip content="数据库索引，如：0" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">数据库：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-select v-model="state.struct.database" placeholder="请选择方式" style="display: block; font-size: 13px" class="custom">
                             <el-option v-for="(_, index) in 16" :key="index" :label="index" :value="index">
-                                <span class="font-13">{{ index }}</span>
+                                <span style="font-size: 13px">{{ index }}</span>
                             </el-option>
                         </el-select>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="Redis密码，无密码为空即可" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">密码：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="密码">
+                        <el-tooltip content="Redis密码，无密码为空即可" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">密码：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.password" show-password placeholder="无密码为空即可"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="缓存有效时间，建议2小时，即7200秒，0表示永不过期" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">过期时间（秒）：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="过期时间（秒）">
+                        <el-tooltip content="缓存有效时间，建议2小时，即7200秒，0表示永不过期" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">过期时间（秒）：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.expire"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="每个Key固定的前缀，如：inis:" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">前缀：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="前缀">
+                        <el-tooltip content="每个Key固定的前缀，如：inis:" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">前缀：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.prefix"></el-input>
-                    </div>
-                </div>
-            </div>
+                    </el-form-item>
+                </el-col>
+            </el-row>
         </template>
         <template #footer>
             <el-button v-on:click="state.status.dialog = false">取 消</el-button>
             <el-button v-on:click="method.test()" :loading="state.status.test">
                 <i-svg v-if="!state.status.test" name="connect" size="14px"></i-svg>
-                <span class="ms-1">测试连接</span>
+                <span style="margin-left: 0.25rem">测试连接</span>
             </el-button>
             <el-button v-on:click="method.save()" :loading="state.status.wait">保 存</el-button>
         </template>

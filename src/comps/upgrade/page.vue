@@ -24,9 +24,9 @@ const method = {
                     title: '主题更新完成！',
                     duration: 0,
                     dangerouslyUseHTMLString: true,
-                    message: `<div class="d-flex">
-                        <span class="me-2">刷新页面体验新功能？</span>
-                        <button onclick="location.reload()" type="button" class="btn btn-outline-info btn-sm rounded-pill py-0">刷 新</button>
+                    message: `<div class="notify-content">
+                        <span style="margin-right: 8px">刷新页面体验新功能？</span>
+                        <el-button onclick="location.reload()" type="outline" size="small" class="refresh-btn">刷 新</el-button>
                     </so>`,
                     position: 'bottom-right',
                 })

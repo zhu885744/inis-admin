@@ -1,13 +1,13 @@
 <template>
-    <div class="row my-3">
+    <div class="row-text" style="margin-top: 12px; margin-bottom: 12px">
         <div :class="'col-' + props.row[0]">
             <slot name="title">
-                <span class="font-14">{{ props.title }}</span>
+                <span style="font-size: 14px">{{ props.title }}</span>
             </slot>
         </div>
-        <div :class="'d-flex align-items-center col-' + props.row[1]">
+        <div :class="'value-col col-' + props.row[1]">
             <slot name="value">
-                <span class="font-14">{{ props.value || '无' }}</span>
+                <span style="font-size: 14px">{{ props.value || '无' }}</span>
             </slot>
         </div>
     </div>
@@ -29,3 +29,25 @@ const props = defineProps({
     },
 })
 </script>
+
+<style lang="css" scoped>
+.row-text {
+    display: flex;
+    margin: 0.75rem 0;
+}
+.row-text > div {
+    display: flex;
+    align-items: center;
+}
+.value-col {
+    display: flex;
+    align-items: center;
+}
+.font-14 {
+    font-size: 14px;
+}
+.my-3 {
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+</style>

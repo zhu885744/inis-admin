@@ -8,11 +8,11 @@
         <template v-if="props.type === 'all'" #end>
             <el-table-column :fixed="right" label="操作" width="100" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.edit(scope.row)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -22,14 +22,14 @@
         <template v-if="props.type === 'remove'" #end>
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.restore(scope.row.id)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="restore" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.edit(scope.row)" size="small" class="ms-0">
+                        <el-button v-on:click="method.edit(scope.row)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -38,15 +38,15 @@
         </template>
 
         <template #i-user="{ scope = {} }">
-            <span v-on:dblclick="method.edit(scope)" class="d-flex align-items-center">
+            <span v-on:dblclick="method.edit(scope)" style="display: flex; align-items: center">
                 <el-tooltip :disabled="utils.is.empty(scope?.result?.author?.description)" placement="top">
                     <template #content>
                         <span v-html="method.autoWrap(scope?.result?.author?.nickname + '：' + scope?.result?.author?.description)"></span>
                     </template>
-                    <el-avatar shape="square" :src="method.imageSize(scope?.result?.author?.avatar)" size="small" class="me-2"></el-avatar>
+                    <el-avatar shape="square" :src="method.imageSize(scope?.result?.author?.avatar)" size="small" style="margin-right: 8px"></el-avatar>
                 </el-tooltip>
                 <el-tooltip v-if="!utils.is.empty(scope.url)" :content="`链接：${scope.url}`" placement="top">
-                    <i-svg color="rgb(var(--icon-color))" v-on:click="method.window(scope.url)" name="link" size="12px" class="me-1"></i-svg>
+                    <i-svg color="rgb(var(--icon-color))" v-on:click="method.window(scope.url)" name="link" size="12px" style="margin-right: 4px"></i-svg>
                 </el-tooltip>
                 <el-tooltip :content="scope?.result?.author?.nickname" :disabled="utils.is.empty(scope?.result?.author?.nickname)" placement="top">
                     <span>{{ method.omit(scope?.result?.author?.nickname, 4, ' ...', 'end') }}</span>
@@ -86,21 +86,19 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 评 论</strong>
         </template>
         <template #default>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="可在这里自定义评论内容" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">内容：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+            <el-row :gutter="20">
+                <el-col :span="24">
+                    <el-form-item label="内容">
+                        <el-tooltip content="可在这里自定义评论内容" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">内容：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.content" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea"></el-input>
-                    </div>
-                </div>
-            </div>
+                    </el-form-item>
+                </el-col>
+            </el-row>
         </template>
         <template #footer>
             <el-button v-on:click="state.item.dialog = false">取 消</el-button>
@@ -158,9 +156,9 @@ const state  = reactive({
         url: '/api/comment/all',
         params: props.params,
         columns: [
-            { prop: 'user', label: '用户', width: 150, slot: true, fixed: left },
-            { prop: 'content', label: '内容', width: 200, slot: true },
-            { prop: 'source' , label: '源文章', width: 200, slot: true },
+            { prop: 'user', label: '用户', slot: true, fixed: left },
+            { prop: 'content', label: '内容', slot: true },
+            { prop: 'source' , label: '源文章', slot: true },
             { prop: 'update_time', label: '更新时间', width: 140, sortable: true },
             { prop: 'create_time', label: '创建时间', width: 140, sortable: true },
         ],

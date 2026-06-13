@@ -104,6 +104,15 @@ const list = async () => {
         children = children.map(item => {
             item.label = item.name
             item.fn = () => push(item.path)
+            // 优先使用 svg 字段
+            if (item.svg) {
+                item.icon = item.svg
+                item.isSvg = true
+            }
+            // 如果 icon 是 SVG 字符串，标记为 SVG
+            if (item.icon && typeof item.icon === 'string' && item.icon.includes('<svg')) {
+                item.isSvg = true
+            }
             return item
         })
         // 把 children 赋值给 list[index].children

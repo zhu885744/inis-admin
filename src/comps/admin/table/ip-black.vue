@@ -8,11 +8,11 @@
         <template v-if="props.type === 'all'" #end>
             <el-table-column :fixed="right" label="操作" width="100" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.edit(scope.row)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -22,14 +22,14 @@
         <template v-if="props.type === 'remove'" #end>
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.restore(scope.row.id)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="restore" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.edit(scope.row)" size="small" class="ms-0">
+                        <el-button v-on:click="method.edit(scope.row)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -39,10 +39,10 @@
 
         <template #i-ip="{ scope = {} }">
             <el-tooltip v-if="!utils.is.empty(scope?.cause)" :content="'原因：' + scope?.cause" placement="top">
-                <i-svg color="rgb(var(--icon-color))" v-on:dblclick="method.copy(scope?.cause)" name="remark" size="16px" class="me-1"></i-svg>
+                <i-svg color="rgb(var(--icon-color))" v-on:dblclick="method.copy(scope?.cause)" name="remark" size="16px" style="margin-right: 4px"></i-svg>
             </el-tooltip>
             <el-tooltip v-if="!utils.is.empty(scope?.agent)" :content="'双击复制 User-Agent：' + scope?.agent" placement="top">
-                <i-svg color="rgb(var(--icon-color))" v-on:dblclick="method.copy(scope?.agent)" name="user-agent" size="16px" class="me-1"></i-svg>
+                <i-svg color="rgb(var(--icon-color))" v-on:dblclick="method.copy(scope?.agent)" name="user-agent" size="16px" style="margin-right: 4px"></i-svg>
             </el-tooltip>
             <el-tooltip :content="'双击复制：' + scope.ip" :disabled="utils.is.empty(scope?.ip)" placement="top">
                 <span v-on:dblclick="method.copy(scope?.ip)">{{ method.omit(scope?.ip, 15) }}</span>
@@ -65,36 +65,30 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} IP 黑 名 单</strong>
         </template>
         <template #default>
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="（必须）需要被拉黑的 IP" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">IP：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+            <el-row :gutter="20">
+                <el-col :span="24">
+                    <el-form-item label="IP">
+                        <el-tooltip content="（必须）需要被拉黑的 IP" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">IP：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.ip" placeholder="客户端 IP"></el-input>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="备注而已，页面上不会显示此项" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">备注：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                    <el-form-item label="备注">
+                        <el-tooltip content="备注而已，页面上不会显示此项" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">备注：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea"></el-input>
-                    </div>
-                </div>
-            </div>
+                    </el-form-item>
+                </el-col>
+            </el-row>
         </template>
         <template #footer>
             <el-button v-on:click="state.item.dialog = false">取 消</el-button>
@@ -153,8 +147,8 @@ const state  = reactive({
         url: '/api/ip-black/all',
         params: props.params,
         columns: [
-            { prop: 'ip', label: 'IP', width: 150, slot: true, fixed: left },
-            { prop: 'remark' , label: '备注', width: 200, slot: true },
+            { prop: 'ip', label: 'IP', slot: true, fixed: left },
+            { prop: 'remark' , label: '备注', slot: true },
             { prop: 'update_time', label: '更新时间', width: 140, sortable: true },
             { prop: 'create_time', label: '创建时间', width: 140, sortable: true },
         ],

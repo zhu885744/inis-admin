@@ -1,133 +1,133 @@
 <template>
-    <div class="container-fluid container-box">
-        <div class="row d-none d-lg-flex">
-            <div class="col-lg-6 d-flex">
-                <el-button v-on:click="method.refresh()" type="button">刷新</el-button>
-            </div>
-            <div class="col-lg-6 d-flex justify-content-end" style="z-index: -1">
-                <el-button disabled type="button">
+    <div class="container-box">
+        <el-row :gutter="20" style="display: flex;">
+            <el-col :span="12" style="display: flex;">
+                <el-button v-on:click="method.refresh()">刷新</el-button>
+            </el-col>
+            <el-col :span="12" style="display: flex; justify-content: flex-end; z-index: -1">
+                <el-button disabled>
                     {{ state.item.title }}
                 </el-button>
-            </div>
-        </div>
-        <div class="row mt-3">
-            <div class="col-12">
-                <el-tabs v-model="state.item.tabs" id="tabs-area" type="border-card">
+            </el-col>
+        </el-row>
+        <el-row :gutter="20" style="margin-top: 12px">
+            <el-col :span="24">
+                <el-tabs v-model="state.item.tabs" id="tabs-area">
 
                     <el-tab-pane name="security">
                         <template #label>
-                            <span class="fw-bolder font-12">安全</span>
+                            <span style="font-weight: bold; font-size: 12px">安全</span>
                         </template>
-                        <div class="row">
-                            <div class="col-md-4">
+                        <el-row :gutter="20">
+                            <el-col :span="8">
                                 <atom-api-key ref="api-key"></atom-api-key>
-                            </div>
-                            <div class="col-md-4">
+                            </el-col>
+                            <el-col :span="8">
                                 <atom-qps ref="qps"></atom-qps>
-                            </div>
-                            <div class="col-md-4">
+                            </el-col>
+                            <el-col :span="8">
                                 <atom-qps-black ref="qps-black"></atom-qps-black>
-                            </div>
-                            <div class="col-md-4">
+                            </el-col>
+                            <el-col :span="8">
                                 <atom-page-limit ref="page-limit"></atom-page-limit>
-                            </div>
-                            <div class="col-md-4">
+                            </el-col>
+                            <el-col :span="8">
                                 <atom-jwt ref="jwt"></atom-jwt>
-                            </div>
-                            <div class="col-md-4">
+                            </el-col>
+                            <el-col :span="8">
                                 <atom-allow-register ref="allow-register"></atom-allow-register>
-                            </div>
-                        </div>
+                            </el-col>
+                        </el-row>
                     </el-tab-pane>
 
                     <el-tab-pane name="optimize">
                         <template #label>
-                            <span class="fw-bolder font-12">缓存</span>
+                            <span style="font-weight: bold; font-size: 12px">缓存</span>
                         </template>
-                        <div class="row">
-                            <div class="col-md-4">
+                        <el-row :gutter="20">
+                            <el-col :span="8">
                                 <atom-cache-redis ref="cache-redis" v-on:refresh="method.refresh"></atom-cache-redis>
-                            </div>
-                            <div class="col-md-4">
+                            </el-col>
+                            <el-col :span="8">
                                 <atom-cache-file ref="cache-file" v-on:refresh="method.refresh"></atom-cache-file>
-                            </div>
-                            <div class="col-md-4">
+                            </el-col>
+                            <el-col :span="8">
                                 <atom-cache-ram ref="cache-ram" v-on:refresh="method.refresh"></atom-cache-ram>
-                            </div>
-                        </div>
+                            </el-col>
+                        </el-row>
                     </el-tab-pane>
 
                     <el-tab-pane name="storage">
                         <template #label>
-                            <span class="fw-bolder font-12">存储</span>
+                            <span style="font-weight: bold; font-size: 12px">存储</span>
                         </template>
-                        <div class="row">
-                            <div class="col-md-4">
+                        <el-row :gutter="20">
+                            <el-col :span="8">
                                 <atom-storage-local ref="storage-local" v-on:refresh="method.refresh"></atom-storage-local>
-                            </div>
-                            <div class="col-md-4">
+                            </el-col>
+                            <el-col :span="8">
                                 <atom-storage-oss ref="storage-oss" v-on:refresh="method.refresh"></atom-storage-oss>
-                            </div>
-                            <div class="col-md-4">
+                            </el-col>
+                            <el-col :span="8">
                                 <atom-storage-cos ref="storage-cos" v-on:refresh="method.refresh"></atom-storage-cos>
-                            </div>
-                            <div class="col-md-4">
+                            </el-col>
+                            <el-col :span="8">
                                 <atom-storage-kodo ref="storage-kodo" v-on:refresh="method.refresh"></atom-storage-kodo>
-                            </div>
-                        </div>
+                            </el-col>
+                        </el-row>
                     </el-tab-pane>
 
                     <el-tab-pane name="sms">
                         <template #label>
-                            <span class="fw-bolder font-12">短信</span>
+                            <span style="font-weight: bold; font-size: 12px">短信</span>
                         </template>
-                        <div class="row">
-                            <div class="col-md-4">
+                        <el-row :gutter="20">
+                            <el-col :span="8">
                                 <atom-sms-email ref="sms-email" v-on:refresh="method.refresh"></atom-sms-email>
-                            </div>
-                            <div class="col-md-4">
+                            </el-col>
+                            <el-col :span="8">
                                 <atom-sms-aliyun ref="sms-aliyun" v-on:refresh="method.refresh"></atom-sms-aliyun>
-                            </div>
-                            <div class="col-md-4">
+                            </el-col>
+                            <el-col :span="8">
                                 <atom-sms-aliyun-verify ref="sms-aliyun-verify" v-on:refresh="method.refresh"></atom-sms-aliyun-verify>
-                            </div>
-                            <div class="col-md-4">
+                            </el-col>
+                            <el-col :span="8">
                                 <atom-sms-tencent ref="sms-tencent" v-on:refresh="method.refresh"></atom-sms-tencent>
-                            </div>
-                        </div>
+                            </el-col>
+                        </el-row>
                     </el-tab-pane>
 
                     <el-tab-pane name="other">
                         <template #label>
-                            <span class="fw-bolder font-12">配置</span>
+                            <span style="font-weight: bold; font-size: 12px">配置</span>
                         </template>
-                        <div class="row">
-                            <div class="col-md-4">
+                        <el-row :gutter="20">
+                            <el-col :span="8">
                                 <atom-page ref="page" v-on:refresh="method.refresh"></atom-page>
-                            </div>
-                            <div class="col-md-4">
+                            </el-col>
+                            <el-col :span="8">
                                 <atom-article ref="article" v-on:refresh="method.refresh"></atom-article>
-                            </div>
-                            <div class="col-md-4">
+                            </el-col>
+                            <el-col :span="8">
                                 <atom-site-info ref="site-info" v-on:refresh="method.refresh"></atom-site-info>
-                            </div>
-                        </div>
+                            </el-col>
+                        </el-row>
                     </el-tab-pane>
 
                     <el-tab-pane name="inis">
                         <template #label>
-                            <span class="fw-bolder font-12">更新</span>
+                            <span style="font-weight: bold; font-size: 12px">更新</span>
                         </template>
-                        <div class="row">
-                            <div class="col-md-4">
+                        <el-row :gutter="20">
+                            <el-col :span="8">
                                 <atom-upgrade ref="upgrade" v-on:refresh="method.refresh"></atom-upgrade>
-                            </div>
-                        </div>
+                            </el-col>
+                        </el-row>
                     </el-tab-pane>
 
                 </el-tabs>
-            </div>
-        </div>
+            </el-col>
+        </el-row>
     </div>
 </template>
 

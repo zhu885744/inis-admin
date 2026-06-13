@@ -1,15 +1,15 @@
 <template>
-    <span v-if="state.lottie.show" class="wh-30px position-relative upgrade-system">
+    <span v-if="state.lottie.show" class="upgrade-system">
 <!--        <i v-if="state.lottie.play" class="red-dot">.</i>-->
         <i-lottie name="bell" v-model="state.lottie.play" v-on:click="state.item.dialog = true" class="lottie"></i-lottie>
     </span>
     <teleport to="body">
-        <el-dialog v-model="state.item.dialog" class="custom pt-0 pb-0" :close-on-click-modal="false" v-on:close="method.close">
+        <el-dialog v-model="state.item.dialog" class="custom" style="padding-top: 0; padding-bottom: 0" :close-on-click-modal="false" v-on:close="method.close">
             <template #header>
-                <strong class="font-14">
+                <strong class="dialog-title">
                     <span>{{ state.struct.title }}：</span>
-                    <span class="me-1">{{ state.struct.result?.theme?.title }}</span>
-                    <span class="me-1">{{ method.progress(state.struct.progress) }}版本</span>
+                    <span style="margin-right: 4px">{{ state.struct.result?.theme?.title }}</span>
+                    <span style="margin-right: 4px">{{ method.progress(state.struct.progress) }}版本</span>
                     <span>{{ state.struct.version }}</span>
                 </strong>
             </template>
@@ -18,48 +18,48 @@
                     <el-alert type="success" :closable="false" center class="box-shadow-light">
                         <template #title>
                             <i-svg name="!" size="15px" color="var(--el-color-success)"></i-svg>
-                            <span class="ms-1">发现新的 inis 版本，是否立即更新？</span>
+                            <span style="margin-left: 4px">发现新的 inis 版本，是否立即更新？</span>
                         </template>
                     </el-alert>
-                    <div v-if="!utils.is.empty(state.struct.content)" class="container-xxl mt-2 markdown">
+                    <div v-if="!utils.is.empty(state.struct.content)" class="container-xxl markdown" style="margin-top: 8px">
                         <el-scrollbar max-height="400px">
                             <div v-html="method.markdown(state.struct.content)" class="white-space-line"></div>
                         </el-scrollbar>
                     </div>
                 </div>
                 <div v-else>
-                    <el-alert type="success" :closable="false" center class="mb-3 box-shadow-light">
+                    <el-alert type="success" :closable="false" center style="margin-bottom: 12px; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05)">
                         <template #title>
                             <i-svg name="!" size="15px" color="var(--el-color-success)"></i-svg>
-                            <span class="ms-1">更新已完成，但还需要等待后续操作</span>
+                            <span style="margin-left: 4px">更新已完成，但还需要等待后续操作</span>
                         </template>
                     </el-alert>
                     <el-tabs v-model="state.item.tabs" id="tabs-area" class="tag">
 
                         <el-tab-pane name="wait">
                             <template #label>
-                                <span class="fw-bolder font-12">宝塔用户等两分钟</span>
+                                <span style="font-weight: 600; font-size: 12px">宝塔用户等两分钟</span>
                             </template>
-                            <div class="card radius-10">
-                                <div class="card-body p-2">
+                            <div style="border-radius: 10px; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
+                                <div style="padding: 0.5rem">
                                     <p>如果您是宝塔用户，且满足以下条件，只需要等待两分钟即可</p>
                                     <p>1、【次要】使用了 Go项目 部署的本程序</p>
                                     <p>2、【重要】勾选了 开机启动（默认守护进程2分钟）</p>
-                                    <el-image src="/assets/imgs/png/upgrade-1.png" class="w-100"></el-image>
+                                    <el-image src="/assets/imgs/png/upgrade-1.png" style="width: 100%"></el-image>
                                 </div>
                             </div>
                         </el-tab-pane>
 
                         <el-tab-pane name="worry">
                             <template #label>
-                                <span class="fw-bolder font-12">急！一刻都不想等</span>
+                                <span style="font-weight: 600; font-size: 12px">急！一刻都不想等</span>
                             </template>
-                            <div class="card radius-10">
-                                <div class="card-body p-2">
+                            <div style="border-radius: 10px; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)">
+                                <div style="padding: 0.5rem">
                                     <p>如果您比较着急，希望马上启动本程序，按照以下步骤操作即可</p>
                                     <p>1、找到本程序的启动按钮（windows系统双击可执行程序）</p>
                                     <p>2、点击启动项目</p>
-                                    <el-image src="/assets/imgs/png/upgrade-2.png" class="w-100"></el-image>
+                                    <el-image src="/assets/imgs/png/upgrade-2.png" style="width: 100%"></el-image>
                                 </div>
                             </div>
                         </el-tab-pane>
@@ -67,7 +67,7 @@
                 </div>
             </template>
             <template #footer>
-                <div v-if="!state.loading.finish" class="modal-footer d-flex justify-content-center">
+                <div v-if="!state.loading.finish" class="dialog-footer">
                     <el-button v-on:click="method.ignore()" :disabled="state.loading.upgrade">忽略本次更新</el-button>
                     <el-button v-on:click="method.upgrade()" :loading="state.loading.upgrade">
                         {{ state.loading.upgrade ? '正在更新' : '立即更新' }}
@@ -224,3 +224,60 @@ const method = {
     },
 }
 </script>
+
+<style lang="css" scoped>
+.upgrade-system {
+    width: 30px;
+    height: 30px;
+    position: relative;
+    display: inline-block;
+}
+.dialog-title {
+    font-size: 14px;
+    font-weight: bold;
+}
+.me-1 {
+    margin-right: 0.375rem;
+}
+.ms-1 {
+    margin-left: 0.375rem;
+}
+.font-12 {
+    font-size: 12px;
+}
+.fw-bolder {
+    font-weight: bolder;
+}
+.upgrade-card {
+    border-radius: 10px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+.upgrade-card-body {
+    padding: 0.5rem;
+}
+.p-2 {
+    padding: 0.5rem;
+}
+.w-100 {
+    width: 100%;
+}
+.mb-3 {
+    margin-bottom: 1rem;
+}
+.mt-2 {
+    margin-top: 0.5rem;
+}
+.dialog-footer {
+    display: flex;
+    justify-content: center;
+}
+.box-shadow-light {
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
+}
+.pt-0 {
+    padding-top: 0;
+}
+.pb-0 {
+    padding-bottom: 0;
+}
+</style>

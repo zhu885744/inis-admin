@@ -7,11 +7,6 @@ import { createPinia } from 'pinia'
 import 'virtual:svg-icons-register'
 import svg from '{src}/comps/custom/i-svg.vue'
 import lottie from '{src}/comps/custom/i-lottie.vue'
-
-// 默认的bootstrap样式
-// import 'bootstrap'                                  // 待删除
-// import 'bootstrap/dist/css/bootstrap.min.css'       // 待删除
-
 import directives from '{src}/utils/directives'
 import socket from '{src}/utils/socket'
 import ElementPlus from 'element-plus'
@@ -20,6 +15,13 @@ import 'element-plus/dist/index.css'
 const pinia = createPinia()
 
 const app = createApp(App)
+
+// 全局注册 Element Plus Icons
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+    app.component(key, component)
+}
+
 app.use(route).use(directives).use(ElementPlus).use(pinia)
 app.component('i-svg', svg)
 app.component('i-lottie', lottie)

@@ -8,8 +8,8 @@
         <template v-if="props.type === 'all'" #end>
             <el-table-column :fixed="right" label="操作" width="100" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
-                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" class="ms-0">
+                    <span style="display: flex; justify-content: flex-end">
+                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -19,11 +19,11 @@
         <template v-if="props.type === 'remove'" #end>
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.restore(scope.row.id)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="restore" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -41,7 +41,7 @@
             <el-tooltip :content="`双击复制：[${scope.method}] ${scope.path}`" :disabled="utils.is.empty(scope.path)" placement="top">
                 <span v-on:dblclick="method.copy(`[${scope.method}] ${scope.path}`, '复制成功！')">
                     <span :class="'text-' + method.color(scope.method)">[{{ scope?.method }}]</span>
-                    <span class="ms-1">{{ method.omit(scope?.path, 30, ' ...', 'end') }}</span>
+                    <span style="margin-left: 4px">{{ method.omit(scope?.path, 30, ' ...', 'end') }}</span>
                 </span>
             </el-tooltip>
         </template>
@@ -105,8 +105,8 @@ const state  = reactive({
         params: props.params,
         columns: [
             { prop: 'ip', label: 'IP', width: 120, slot: true, fixed: left },
-            { prop: 'route', label: '路由', width: 150, slot: true },
-            { prop: 'agent' , label: 'User-Agent', width: 250, slot: true },
+            { prop: 'route', label: '路由', slot: true },
+            { prop: 'agent' , label: 'User-Agent', slot: true },
             { prop: 'update_time', label: '更新时间', width: 140, sortable: true },
             { prop: 'create_time', label: '创建时间', width: 140, sortable: true },
         ],

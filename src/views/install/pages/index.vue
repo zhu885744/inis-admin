@@ -1,53 +1,53 @@
 <template>
-    <div class="container-fluid mt-5">
+    <div style="margin-top: 24px">
         <el-steps :active="state.item.active" simple>
             <el-step title="配置数据库"></el-step>
             <el-step title="创建管理员"></el-step>
             <el-step title="完成"></el-step>
         </el-steps>
-        <div class="card mt-3">
-            <div v-if="state.item.active === 1" class="card-body">
-                <div class="row my-2">
-                    <div class="col-md-6">
-                        <div class="form-group mb-3">
+        <el-card style="margin-top: 12px">
+            <div v-if="state.item.active === 1">
+                <el-row :gutter="20" style="margin-top: 8px; margin-bottom: 8px">
+                    <el-col :span="12">
+                        <div style="margin-bottom: 12px">
                             <label class="form-label">
                                 <el-tooltip content="数据库的类型，目前只支持MySQL" placement="top">
                                     <span>
                                         <i-svg name="hint" size="14px"></i-svg>
-                                        <span class="ms-1">类型：</span>
+                                        <span style="margin-left: 4px">类型：</span>
                                     </span>
                                 </el-tooltip>
                             </label>
-                            <el-select v-model="state.struct.type" placeholder="请选择方式" class="d-block custom font-13">
+                            <el-select v-model="state.struct.type" placeholder="请选择方式" style="width: 100%; font-size: 13px" class="custom">
                                 <el-option v-for="item in state.select.db" :key="item.value" :label="item.label" :value="item.value">
-                                    <span class="font-13">{{ item.label }}</span>
-                                    <small class="text-muted float-end">{{ item.value }}</small>
+                                    <span style="font-size: 13px">{{ item.label }}</span>
+                                    <small style="float: right; color: var(--el-text-color-secondary)">{{ item.value }}</small>
                                 </el-option>
                             </el-select>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group mb-3">
+                    </el-col>
+                    <el-col :span="12">
+                        <div style="margin-bottom: 12px">
                             <label class="form-label">
                                 <el-tooltip content="推荐用默认的 utf8mb4" placement="top">
                                     <span>
                                         <i-svg name="hint" size="14px"></i-svg>
-                                        <span class="ms-1">字符集：</span>
+                                        <span style="margin-left: 4px">字符集：</span>
                                     </span>
                                 </el-tooltip>
                             </label>
-                            <el-select v-model="state.struct.charset" placeholder="请选择方式" class="d-block custom font-13">
+                            <el-select v-model="state.struct.charset" placeholder="请选择方式" style="width: 100%; font-size: 13px" class="custom">
                                 <el-option v-for="item in state.select.charset" :key="item.value" :label="item.value" :value="item.value">
-                                    <span class="font-13">{{ item.value }}</span>
-                                    <small class="text-muted float-end">{{ item.label }}</small>
+                                    <span style="font-size: 13px">{{ item.value }}</span>
+                                    <small style="float: right; color: var(--el-text-color-secondary)">{{ item.label }}</small>
                                 </el-option>
                             </el-select>
                         </div>
-                    </div>
-                </div>
-                <div class="row my-2">
-                    <div class="col-md-4">
-                        <div class="form-group mb-3">
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20" style="margin-top: 8px; margin-bottom: 8px">
+                    <el-col :span="8">
+                        <div style="margin-bottom: 12px">
                             <label class="form-label required">
                                 <el-tooltip placement="top">
                                     <template #content>
@@ -55,93 +55,93 @@
                                     </template>
                                     <span>
                                         <i-svg name="hint" size="14px"></i-svg>
-                                        <span class="ms-1">地址：</span>
+                                        <span style="margin-left: 4px">地址：</span>
                                     </span>
                                 </el-tooltip>
                             </label>
                             <el-input v-model="state.struct.hostname" placeholder="如：localhost"></el-input>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group mb-3">
+                    </el-col>
+                    <el-col :span="8">
+                        <div style="margin-bottom: 12px">
                             <label class="form-label required">
                                 <el-tooltip content="（必须）默认端口是：3306，如果修改过端口，请填写正确的端口号" placement="top">
                                     <span>
                                         <i-svg name="hint" size="14px"></i-svg>
-                                        <span class="ms-1">端口号：</span>
+                                        <span style="margin-left: 4px">端口号：</span>
                                     </span>
                                 </el-tooltip>
                             </label>
                             <el-input v-model="state.struct.hostport"></el-input>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group mb-3">
+                    </el-col>
+                    <el-col :span="8">
+                        <div style="margin-bottom: 12px">
                             <label class="form-label required">
                                 <el-tooltip content="（必须）数据库表前缀" placement="top">
                                     <span>
                                         <i-svg name="hint" size="14px"></i-svg>
-                                        <span class="ms-1">表前缀：</span>
+                                        <span style="margin-left: 4px">表前缀：</span>
                                     </span>
                                 </el-tooltip>
                             </label>
                             <el-input v-model="state.struct.prefix" disabled></el-input>
                         </div>
-                    </div>
-                </div>
-                <div class="row my-2">
-                    <div class="col-md-4">
-                        <div class="form-group mb-3">
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20" style="margin-top: 8px; margin-bottom: 8px">
+                    <el-col :span="8">
+                        <div style="margin-bottom: 12px">
                             <label class="form-label required">
                                 <el-tooltip content="（必须）数据库的名称" placement="top">
                                     <span>
                                         <i-svg name="hint" size="14px"></i-svg>
-                                        <span class="ms-1">数据库名：</span>
+                                        <span style="margin-left: 4px">数据库名：</span>
                                     </span>
                                 </el-tooltip>
                             </label>
                             <el-input v-model="state.struct.database"></el-input>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group mb-3">
+                    </el-col>
+                    <el-col :span="8">
+                        <div style="margin-bottom: 12px">
                             <label class="form-label required">
                                 <el-tooltip content="（必须）数据库用户名称" placement="top">
                                     <span>
                                         <i-svg name="hint" size="14px"></i-svg>
-                                        <span class="ms-1">用户名：</span>
+                                        <span style="margin-left: 4px">用户名：</span>
                                     </span>
                                 </el-tooltip>
                             </label>
                             <el-input v-model="state.struct.username"></el-input>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group mb-3">
+                    </el-col>
+                    <el-col :span="8">
+                        <div style="margin-bottom: 12px">
                             <label class="form-label required">
                                 <el-tooltip content="（必须）数据库的密码" placement="top">
                                     <span>
                                         <i-svg name="hint" size="14px"></i-svg>
-                                        <span class="ms-1">密码：</span>
+                                        <span style="margin-left: 4px">密码：</span>
                                     </span>
                                 </el-tooltip>
                             </label>
                             <el-input v-model="state.struct.password" show-password></el-input>
                         </div>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-center">
-                    <el-button v-on:click="method.connect()" :loading="state.load.connect" class="mx-2">
+                    </el-col>
+                </el-row>
+                <div style="display: flex; justify-content: center">
+                    <el-button v-on:click="method.connect()" :loading="state.load.connect" style="margin: 8px">
                         <i-svg v-if="!state.item.connect" name="connect" size="14px"></i-svg>
-                        <span class="ms-1">测试连接</span>
+                        <span style="margin-left: 4px">测试连接</span>
                     </el-button>
-                    <el-button v-on:click="method.next(2)" type="primary" class="mx-2">下一步</el-button>
+                    <el-button v-on:click="method.next(2)" type="primary" style="margin: 8px">下一步</el-button>
                 </div>
             </div>
-            <div v-else-if="state.item.active === 2" class="card-body">
-                <div class="row my-2">
-                    <div class="col-md-4">
-                        <div class="form-group mb-3">
+            <div v-else-if="state.item.active === 2">
+                <el-row :gutter="20" style="margin-top: 8px; margin-bottom: 8px">
+                    <el-col :span="8">
+                        <div style="margin-bottom: 12px">
                             <label class="form-label required">
                                 <el-tooltip placement="top">
                                     <template #content>
@@ -149,43 +149,43 @@
                                     </template>
                                     <span>
                                         <i-svg name="hint" size="14px"></i-svg>
-                                        <span class="ms-1">帐号：</span>
+                                        <span style="margin-left: 4px">帐号：</span>
                                     </span>
                                 </el-tooltip>
                             </label>
                             <el-input v-model="state.user.account"></el-input>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group mb-3">
+                    </el-col>
+                    <el-col :span="8">
+                        <div style="margin-bottom: 12px">
                             <label class="form-label required">
                                 <el-tooltip content="（必须）推荐大于8位，且包含数字、字母和特殊符号" placement="top">
                                     <span>
                                         <i-svg name="hint" size="14px"></i-svg>
-                                        <span class="ms-1">密码：</span>
+                                        <span style="margin-left: 4px">密码：</span>
                                     </span>
                                 </el-tooltip>
                             </label>
                             <el-input v-model="state.user.password1" show-password></el-input>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group mb-3">
+                    </el-col>
+                    <el-col :span="8">
+                        <div style="margin-bottom: 12px">
                             <label class="form-label required">
                                 <el-tooltip content="（必须）推荐大于8位，且包含数字、字母和特殊符号" placement="top">
                                     <span>
                                         <i-svg name="hint" size="14px"></i-svg>
-                                        <span class="ms-1">确认密码：</span>
+                                        <span style="margin-left: 4px">确认密码：</span>
                                     </span>
                                 </el-tooltip>
                             </label>
                             <el-input v-model="state.user.password2" show-password></el-input>
                         </div>
-                    </div>
-                </div>
-                <div class="row my-2">
-                    <div class="col-md-6">
-                        <div class="form-group mb-3">
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20" style="margin-top: 8px; margin-bottom: 8px">
+                    <el-col :span="12">
+                        <div style="margin-bottom: 12px">
                             <label class="form-label">
                                 <el-tooltip placement="top">
                                     <template #content>
@@ -193,58 +193,60 @@
                                     </template>
                                     <span>
                                         <i-svg name="hint" size="14px"></i-svg>
-                                        <span class="ms-1">昵称：</span>
+                                        <span style="margin-left: 4px">昵称：</span>
                                     </span>
                                 </el-tooltip>
                             </label>
                             <el-input v-model="state.user.nickname"></el-input>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group mb-3">
+                    </el-col>
+                    <el-col :span="12">
+                        <div style="margin-bottom: 12px">
                             <label class="form-label required">
                                 <el-tooltip content="（必须）开启短信服务之后，用来登录或找回密码" placement="top">
                                     <span>
                                         <i-svg name="hint" size="14px"></i-svg>
-                                        <span class="ms-1">邮箱：</span>
+                                        <span style="margin-left: 4px">邮箱：</span>
                                     </span>
                                 </el-tooltip>
                             </label>
                             <el-input v-model="state.user.email"></el-input>
                         </div>
-                    </div>
-                </div>
-                <div class="row my-2">
-                    <div class="col-lg-12">
-                        <div class="form-group mb-3">
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20" style="margin-top: 8px; margin-bottom: 8px">
+                    <el-col :span="24">
+                        <div style="margin-bottom: 12px">
                             <label class="form-label">
                                 <el-tooltip content="简单的介绍一下" placement="top">
                                     <span>
                                         <i-svg name="hint" size="14px"></i-svg>
-                                        <span class="ms-1">个人简介：</span>
+                                        <span style="margin-left: 4px">个人简介：</span>
                                     </span>
                                 </el-tooltip>
                             </label>
                             <el-input v-model="state.user.description" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="写点什么吧 ..." type="textarea"></el-input>
                         </div>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-center">
-                    <el-button v-on:click="method.prev(1)" class="mx-2">上一步</el-button>
-                    <el-button v-on:click="method.createAdmin()" type="primary" class="mx-2">下一步</el-button>
+                    </el-col>
+                </el-row>
+                <div style="display: flex; justify-content: center">
+                    <el-button v-on:click="method.prev(1)" style="margin: 8px">上一步</el-button>
+                    <el-button v-on:click="method.createAdmin()" type="primary" style="margin: 8px">下一步</el-button>
                 </div>
             </div>
-            <div v-else class="card-body">
-                <div class="alert alert-primary pb-0" role="alert">
-                    <h3 class="alert-heading">恭喜您！</h3>
+            <div v-else>
+                <el-alert type="primary" :closable="false">
+                    <template #title>
+                        <h3>恭喜您！</h3>
+                    </template>
                     <p>当你看到我的时候，就表示你已经成功的安装 inis 程序，感谢你的使用。</p>
                     <hr>
-                    <p class="d-flex justify-content-center my-3">
-                        <el-button v-on:click="method.window()" type="primary" class="mx-2">回 到 首 页</el-button>
-                    </p>
-                </div>
+                    <div style="display: flex; justify-content: center; margin-top: 12px; margin-bottom: 12px">
+                        <el-button v-on:click="method.window()" type="primary" style="margin: 8px">回 到 首 页</el-button>
+                    </div>
+                </el-alert>
             </div>
-        </div>
+        </el-card>
     </div>
 </template>
 

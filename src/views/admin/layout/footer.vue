@@ -1,112 +1,62 @@
 <template>
-  <footer id="footer" class="text-dark user-select-none footer-container">
-    <!-- 版权信息行 -->
-    <div class="footer-row">
-      <div>Copyright © {{ state.year.start }} ~ {{ state.year.end }} 管理后台 版权所有</div>
-      <div><a :href="state.site.struct?.copy?.link" target="_blank" class="text-dark">{{ state.site.struct?.copy?.code || '请在后台填写备案号' }}</a></div>
-      <div><a :href="state.site.struct?.police?.link" target="_blank" class="text-dark">{{ state.site.struct?.police?.code || '请在后台填写公安备案备案号' }}</a></div>
-      <div class="footer__item" aria-label="技术支持">
-        <span>Powered by </span>
-        <a href="https://github.com/zhu885744/inisv1" target="_blank" rel="noopener noreferrer"class="footer__tech-link"title="inisv1">
-        inis v{{ state.version.system }}
-      </a>
-      <span> | Theme by </span>
-      <a href="https://github.com/zhu885744/inis-admin" target="_blank" rel="noopener noreferrer"class="footer__tech-link" title="inis-admin">
-        inis-admin v{{ state.version.theme }}
-      </a>
-      </div>
-    </div>
-  </footer>
+    <el-footer class="footer-wrapper">
+        <div class="footer-content">
+            <span>Copyright © {{ currentYear }} 管理后台 版权所有</span>
+            <span class="footer-divider">|</span>
+            <span>Powered by inis v{{ state.version }}</span>
+        </div>
+    </el-footer>
 </template>
 
 <script setup>
-import utils from '{src}/utils/utils'
+import { reactive, onMounted } from 'vue'
 import cache from '{src}/utils/cache'
 import axios from '{src}/utils/request'
 
+const currentYear = new Date().getFullYear()
+
 const state = reactive({
-    year: {
-        start: null,
-        end  : new Date().getFullYear()
-    },
-    site: {
-        show: false,
-        struct: {
-            copy: {}
-        }
-    },
-    version: {
-        theme: inis.version,
-        system: '1.0.0',
-    },
+    version: '1.0.0',
 })
-
-const method = {
-    // 获取站点信息
-    site: async () => {
-
-        // 缓存名称
-        const cacheName = 'site-info'
-
-        if (cache.has(cacheName)) {
-            state.site.struct = cache.get(cacheName)
-            return
-        }
-
-        // 缓存不存在
-        const { code, data } = await axios.get('/api/config/one', {
-            key: 'SITE_INFO',
-        })
-
-        if (code !== 200) return
-
-        state.site.struct = data.json
-        // 缓存10分钟 - 防止频繁请求
-        cache.set(cacheName, data.json, inis.cache)
-    },
-    // 获取系统版本
-    version: async () => {
-
-        // 缓存名称
-        const cacheName = 'system-version-local'
-
-        if (cache.has(cacheName)) {
-            state.version.system = cache.get(cacheName)
-            return
-        }
-
-        // 缓存不存在
-        const { code, data } = await axios.get('/dev/info/version')
-
-        if (code !== 200) return
-
-        state.version.system = data?.inis
-        // 缓存10分钟 - 防止频繁请求
-        cache.set(cacheName, data?.inis, inis.cache)
-    },
-    // 给一个时间戳，返回年份
-    year: (timestamp = Math.round(new Date() / 1000)) => {
-
-        // 将时间戳转换为毫秒数
-        const milliseconds = parseInt(timestamp) * 1000
-        // 创建一个新的Date对象，并传入毫秒数
-        const date = new Date(milliseconds)
-
-        // 使用Date对象的getFullYear方法获取年份
-        return date.getFullYear()
-    }
-}
 
 onMounted(async () => {
-    await method.site()
-    await method.version()
+    await fetchVersion()
 })
 
-watch(() => state.site.struct, (value) => {
-    state.site.show = !utils.is.empty(value)
-})
-
-watch(() => state.site.struct, (value) => {
-    if (!utils.is.empty(value?.date)) state.year.start = method.year(value?.date)
-})
+const fetchVersion = async () => {
+    const cacheName = 'system-version-local'
+    if (cache.has(cacheName)) {
+        state.version = cache.get(cacheName)
+        return
+    }
+    const { code, data } = await axios.get('/dev/info/version')
+    if (code === 200) {
+        state.version = data?.inis
+        cache.set(cacheName, data?.inis, inis.cache)
+    }
+}
 </script>
+
+<style lang="scss" scoped>
+.footer-wrapper {
+    background: #ffffff;
+    border-top: 1px solid #e8e8e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    padding: 0 20px;
+}
+
+.footer-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #8c8c8c;
+}
+
+.footer-divider {
+    color: #d9d9d9;
+}
+</style>

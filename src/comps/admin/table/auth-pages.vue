@@ -8,11 +8,11 @@
         <template v-if="props.type === 'all'" #end>
             <el-table-column :fixed="right" label="操作" width="100" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.edit(scope.row)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <!--<el-button v-on:click="method.delete(scope.row.id, true)" size="small" class="ms-0">
+                        <!--<el-button v-on:click="method.delete(scope.row.id, true)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>-->
                     </span>
@@ -22,14 +22,14 @@
         <template v-if="props.type === 'remove'" #end>
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.restore(scope.row.id)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="restore" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.edit(scope.row)" size="small" class="ms-0">
+                        <el-button v-on:click="method.edit(scope.row)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -38,11 +38,11 @@
         </template>
 
         <template #i-name="{ scope = {} }">
-            <span v-on:dblclick="method.edit(scope)" class="d-flex align-items-center">
+            <span v-on:dblclick="method.edit(scope)" style="display: flex; align-items: center">
                 <span v-if="!utils.is.empty(scope.svg)" v-html="scope.svg"></span>
                 <i-svg color="rgb(var(--icon-color))" v-else-if="!utils.is.empty(scope.icon)" :name="scope.icon" :size="scope.size"></i-svg>
                 <el-tooltip :content="scope.name" :disabled="utils.is.empty(scope.name)" placement="top">
-                    <span class="ms-1">{{ method.omit(scope?.name, 16, ' ...', 'end') }}</span>
+                    <span style="margin-left: 4px">{{ method.omit(scope?.name, 16, ' ...', 'end') }}</span>
                 </el-tooltip>
             </span>
         </template>
@@ -63,97 +63,81 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 管 理 页 面</strong>
         </template>
         <template #default>
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="（必须）页面名称" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">名称：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+            <el-row :gutter="20">
+                <el-col :span="6">
+                    <el-form-item label="名称">
+                        <el-tooltip content="（必须）页面名称" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">名称：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.name"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="（必须）页面路径，也可以理解为页面的路由" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">路径：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                    <el-form-item label="路径">
+                        <el-tooltip content="（必须）页面路径，也可以理解为页面的路由" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">路径：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.path" disabled></el-input>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="内置的SVG图标" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">内置图标：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-select v-model="state.struct.icon" placeholder="可选内置图标" class="d-block custom font-13">
+                    </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                    <el-form-item label="内置图标">
+                        <el-tooltip content="内置的SVG图标" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">内置图标：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-select v-model="state.struct.icon" placeholder="可选内置图标" style="display: block; font-size: 13px" class="custom">
                             <el-option v-for="item in state.select.icons" :key="item.value" :label="item.value" :value="item.label">
-                                <span class="font-13">
+                                <span style="font-size: 13px">
                                     <i-svg color="rgb(var(--icon-color))" :name="item.value" size="16px"></i-svg>
                                 </span>
-                                <small class="text-muted float-end">{{ item.label }}</small>
+                                <small style="float: right">{{ item.label }}</small>
                             </el-option>
                         </el-select>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="内置图标的大小，如：16px" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">大小：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                    <el-form-item label="大小">
+                        <el-tooltip content="内置图标的大小，如：16px" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">大小：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.size"></el-input>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="自定义选项" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">自定义图标 - SVG代码：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                    <el-form-item label="自定义图标 - SVG代码">
+                        <el-tooltip content="自定义选项" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">自定义图标 - SVG代码：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.svg" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea"></el-input>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="备注一下" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">备注：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                    <el-form-item label="备注">
+                        <el-tooltip content="备注一下" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">备注：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea"></el-input>
-                    </div>
-                </div>
-            </div>
+                    </el-form-item>
+                </el-col>
+            </el-row>
         </template>
         <template #footer>
             <el-button v-on:click="state.item.dialog = false">取 消</el-button>
@@ -210,8 +194,8 @@ const state  = reactive({
         url: '/api/auth-pages/all',
         params: props.params,
         columns: [
-            { prop: 'name', label: '名称', width: 250, slot: true, fixed: left },
-            { prop: 'remark' , label: '备注', width: 200, slot: true },
+            { prop: 'name', label: '名称', slot: true, fixed: left },
+            { prop: 'remark' , label: '备注', slot: true },
             { prop: 'update_time', label: '更新时间', width: 140, sortable: true },
             { prop: 'create_time', label: '创建时间', width: 140, sortable: true },
         ],

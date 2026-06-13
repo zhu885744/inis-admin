@@ -1,114 +1,108 @@
 <template>
-    <div v-loading="state.status.loading" class="card mb-3">
-        <div class="card-body">
-            <el-image src="/assets/imgs/png/qiniu.png" class="position-absolute opacity-25" style="right: 1.5rem; height: 65px" />
-            <h6 class="text-muted text-uppercase mt-0">
+    <el-card v-loading="state.status.loading" style="margin-bottom: 1rem">
+        <template #header>
+            <div class="card-header-content">
+                <el-image src="/assets/imgs/png/qiniu.png" style="position: absolute; right: 1.5rem; opacity: 0.25; height: 65px" />
                 <el-tooltip placement="top">
                     <template #content>
                         ● 七牛云对象存储KODO可以替代传统的本地存储<br>
                         ● 开启后，后续上传的文件将会自动上传到KODO，不会占用服务器的空间和带宽
                     </template>
-                    <span class="d-inline-flex align-items-center">
+                    <span style="display: inline-flex; align-items: center">
                         <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                        <span class="ms-1">七牛云对象存储</span>
+                        <span style="margin-left: 0.25rem">七牛云对象存储</span>
                     </span>
                 </el-tooltip>
-            </h6>
-            <h2 class="m-b-20">
+            </div>
+        </template>
+        <template #default>
+            <div style="display: flex; align-items: center; justify-content: space-between">
                 <el-switch v-model="state.status.active" v-on:change="method.change" :disabled="!state.status.finish"
                            active-text="开始" inactive-text="关闭">
                 </el-switch>
-            </h2>
-            <span class="badge bg-info font-white"> 还行 </span>
-            <span class="text-muted ms-1">
-                不是很好用，<span v-on:click="method.show()" class="text-dark pointer">点我配置</span>
-            </span>
-        </div>
-    </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem">
+                    <el-tag type="info">还行</el-tag>
+                    <span style="color: var(--el-text-color-secondary)">
+                        不是很好用，<span v-on:click="method.show()" style="color: var(--el-text-color-primary); cursor: pointer">点我配置</span>
+                    </span>
+                </div>
+            </div>
+        </template>
+    </el-card>
 
     <el-dialog v-model="state.status.dialog" class="custom" draggable :close-on-click-modal="false">
         <template #header>
-            <strong class="flex-center">配置 七牛云KODO 存储</strong>
+            <strong style="display: flex; align-items: center; justify-content: center">配置 七牛云KODO 存储</strong>
         </template>
         <template #default>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="七牛云AccessKey" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">AccessKey：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+            <el-row :gutter="20">
+                <el-col :span="12">
+                    <el-form-item label="AccessKey">
+                        <el-tooltip content="七牛云AccessKey" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">AccessKey：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.access_key" show-password></el-input>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="七牛云SecretKey" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">SecretKey：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="SecretKey">
+                        <el-tooltip content="七牛云SecretKey" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">SecretKey：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.secret_key" show-password></el-input>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="存储桶名称" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">Bucket：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="Bucket">
+                        <el-tooltip content="存储桶名称" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">Bucket：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.bucket"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="KODO 所在地区" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">Region：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-select v-model="state.struct.region" placeholder="请选择所在地区" class="d-block custom font-13">
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="Region">
+                        <el-tooltip content="KODO 所在地区" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">Region：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-select v-model="state.struct.region" placeholder="请选择所在地区" style="display: block" class="custom" placeholder-class="font-13">
                             <el-option v-for="item in state.select.region" :key="item.value" :label="item.label" :value="item.value">
-                                <span class="font-13">{{ item.label }}</span>
-                                <small class="text-muted float-end">{{ item.value }}</small>
+                                <span style="font-size: 13px">{{ item.label }}</span>
+                                <small style="color: var(--el-text-color-secondary); float: right">{{ item.value }}</small>
                             </el-option>
                         </el-select>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="（必须）外网域名 - 用于访问" placement="top">
-                                <span>
-                                    <i-svg name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">外网域名：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                    <el-form-item label="外网域名">
+                        <el-tooltip content="（必须）外网域名 - 用于访问" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">外网域名：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.domain"></el-input>
-                    </div>
-                </div>
-            </div>
+                    </el-form-item>
+                </el-col>
+            </el-row>
         </template>
         <template #footer>
             <el-button v-on:click="state.status.dialog = false">取 消</el-button>
             <el-button v-on:click="method.test()" :loading="state.status.test">
                 <i-svg v-if="!state.status.test" name="connect" size="14px"></i-svg>
-                <span class="ms-1">测试连接</span>
+                <span style="margin-left: 0.25rem">测试连接</span>
             </el-button>
             <el-button v-on:click="method.save()" :loading="state.status.wait">保 存</el-button>
         </template>

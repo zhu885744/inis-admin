@@ -8,11 +8,11 @@
         <template v-if="props.type === 'all'" #end>
             <el-table-column :fixed="right" label="操作" width="100" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.edit(scope.row)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -22,14 +22,14 @@
         <template v-if="props.type === 'remove'" #end>
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.restore(scope.row.id)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="restore" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.edit(scope.row)" size="small" class="ms-0">
+                        <el-button v-on:click="method.edit(scope.row)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -38,7 +38,7 @@
         </template>
 
         <template #i-title="{ scope = {} }">
-            <span v-on:dblclick="method.edit(scope)" class="d-flex align-items-center">
+            <span v-on:dblclick="method.edit(scope)" style="display: flex; align-items: center">
                 <el-tooltip placement="top" effect="light">
                     <template #content>
                         <el-image v-on:click="method.window(scope?.image)" :src="method.imageSize(scope?.image, '300x160')" fit="cover" :lazy="true" style="width: 300px; height: 160px">
@@ -47,10 +47,10 @@
                             </template>
                         </el-image>
                     </template>
-                    <el-avatar shape="square" :src="method.imageSize(scope?.image)" size="small" class="me-2"></el-avatar>
+                    <el-avatar shape="square" :src="method.imageSize(scope?.image)" size="small" style="margin-right: 8px"></el-avatar>
                 </el-tooltip>
                 <el-tooltip v-if="!utils.is.empty(scope.url)" :content="`链接：${scope.url}`" placement="top">
-                    <i-svg color="rgb(var(--icon-color))" v-on:click="method.window(scope.url)" name="link" size="12px" class="me-1"></i-svg>
+                    <i-svg color="rgb(var(--icon-color))" v-on:click="method.window(scope.url)" name="link" size="12px" style="margin-right: 4px"></i-svg>
                 </el-tooltip>
                 <el-tooltip :content="scope.title" :disabled="utils.is.empty(scope.title)" placement="top">
                     <span>{{ method.omit(scope?.title, 4, ' ...', 'end') }}</span>
@@ -83,118 +83,98 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 轮 播</strong>
         </template>
         <template #default>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="这个轮播要不要显示标题" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">标题：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+            <el-row :gutter="20">
+                <el-col :span="12">
+                    <el-form-item label="标题">
+                        <el-tooltip content="这个轮播要不要显示标题" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">标题：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.title" placeholder="为空不显示"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="轮播图展示的时间周期" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">时间：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-date-picker v-model="state.struct.time" type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间" class="w-100">
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="时间">
+                        <el-tooltip content="轮播图展示的时间周期" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">时间：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-date-picker v-model="state.struct.time" type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间" style="width: 100%">
                         </el-date-picker>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="点击该轮播图是否需要打开一个网址" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">跳转链接：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="跳转链接">
+                        <el-tooltip content="点击该轮播图是否需要打开一个网址" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">跳转链接：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.url" placeholder="如：https://inis.cn"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="点击轮播后，跳转链接的执行方式" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">跳转方式：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-select v-model="state.struct.target" placeholder="请选择方式" class="d-block custom font-13">
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="跳转方式">
+                        <el-tooltip content="点击轮播后，跳转链接的执行方式" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">跳转方式：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-select v-model="state.struct.target" placeholder="请选择方式" style="display: block; font-size: 13px" class="custom">
                             <el-option v-for="item in state.select.target" :key="item.value" :label="item.value" :value="item.label">
-                                <span class="font-13">{{ item.value }}</span>
-                                <small class="text-muted float-end">{{ item.label }}</small>
+                                <span style="font-size: 13px">{{ item.value }}</span>
+                                <small style="float: right">{{ item.label }}</small>
                             </el-option>
                         </el-select>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="（必须）轮播图图片，无图不可为轮播" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">图片地址：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="图片地址">
+                        <el-tooltip content="（必须）轮播图图片，无图不可为轮播" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">图片地址：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.image" class="custom" placeholder="填写图片地址或点击上传图片">
                             <template #append>
                                 <el-button v-on:click="method.upload()" :loading="state.item.upload">
                                     <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="15px"></i-svg>
-                                    <span class="ms-1">上传</span>
+                                    <span style="margin-left: 4px">上传</span>
                                 </el-button>
                             </template>
                         </el-input>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="轮播图上面的文案，可以不设置" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">内容：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                    <el-form-item label="内容">
+                        <el-tooltip content="轮播图上面的文案，可以不设置" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">内容：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.content" :autosize="{ minRows: 1, maxRows: 10 }" type="textarea" placeholder="为空不显示"></el-input>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="备注而已，页面上不会显示此项" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">备注：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                    <el-form-item label="备注">
+                        <el-tooltip content="备注而已，页面上不会显示此项" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">备注：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.remark" :autosize="{ minRows: 1, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea"></el-input>
-                    </div>
-                </div>
-            </div>
+                    </el-form-item>
+                </el-col>
+            </el-row>
         </template>
         <template #footer>
             <el-button v-on:click="state.item.dialog = false">取 消</el-button>
@@ -255,9 +235,9 @@ const state  = reactive({
         url: '/api/banner/all',
         params: props.params,
         columns: [
-            { prop: 'title'  , label: '标题', width: 150, slot: true, fixed: left },
-            { prop: 'content', label: '内容', width: 200, slot: true },
-            { prop: 'remark' , label: '备注', width: 200, slot: true },
+            { prop: 'title'  , label: '标题', slot: true, fixed: left },
+            { prop: 'content', label: '内容', slot: true },
+            { prop: 'remark' , label: '备注', slot: true },
             { prop: 'update_time', label: '更新时间', width: 140, sortable: true },
             { prop: 'create_time', label: '创建时间', width: 140, sortable: true },
         ],

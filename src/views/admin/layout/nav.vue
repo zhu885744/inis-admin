@@ -1,184 +1,332 @@
 <template>
-    <div class="topnav">
-        <div class="container-fluid user-select-none">
-            <nav class="navbar navbar-dark navbar-expand-lg topnav-menu py-1">
-                <div class="collapse navbar-collapse justify-content-between">
-                    <el-menu class="navbar-nav w-100 custom" :unique-opened="true" menu-trigger="hover" mode="horizontal" background-color="transparent">
-                        <el-menu-item index="/admin">
-                            <el-image v-on:click="method.push('/admin')" :src="`/assets/imgs/logo.png`" style="width: 70px;" class="d-flex flex-center"></el-image>
-                        </el-menu-item>
-                        <el-menu-item index="home" v-on:click="push('/admin')">
-                            <i-svg name="all" size="14px"></i-svg>
-                            <span class="ms-1">控制台</span>
-                        </el-menu-item>
-                        <el-sub-menu v-for="(item, index) in state.menu" :key="index" :index="index.toString()" show-timeout="50" hide-timeout="50">
-                            <template #title>
-                                <span class="d-flex align-items-center">
-                                    <i v-html="item.icon" style="margin-top: -2px" class="nav-icon"></i>
-                                    <span class="ms-1">{{ item.label }}</span>
-                                </span>
-                            </template>
-                            <el-menu-item v-for="(val, key) in item.children" :key="key" :index="key.toString()" v-on:click="val.fn()">
-                                <i-svg :name="val.icon" :size="val.size" class="me-1"></i-svg>
-                                {{ val.label }}
-                            </el-menu-item>
-                        </el-sub-menu>
-                    </el-menu>
-                    <el-menu :unique-opened="true" mode="horizontal" class="navbar-nav d-flex align-items-center justify-content-end w-100" background-color="transparent">
-                        <el-menu-item index="1">
-                            <upgrade-system></upgrade-system>
-                        </el-menu-item>
-                        <el-sub-menu show-timeout="50" hide-timeout="50" index="login-user" class="icon-none">
-                            <template #title>
-                                <div class="d-flex flex-column align-items-end user-select-text me-2">
-                                    <span v-if="!utils.is.empty(store.comm.getLogin.user?.title)" class="font-14 scale-90">
-                                        <strong class="badge item left bg-dark px-2 py-1" style="color: #fff">
-                                            {{ store.comm.getLogin.user?.nickname }}
-                                        </strong>
-                                        <span class="badge item right bg-warning px-2 py-1">
-                                            {{ store.comm.getLogin.user?.title }}
-                                        </span>
-                                    </span>
-                                    <strong v-else>
-                                        {{ store.comm.getLogin.user?.nickname }}
-                                    </strong>
-                                    <small>{{store.comm.getLogin.user?.email}}</small>
-                                </div>
-                                <el-avatar :src="store.comm.getLogin.user?.avatar" shape="square" size="medium"></el-avatar>
-                            </template>
-                            <el-menu-item>
-                                <i-svg name="logout" size="16px" class="me-1"></i-svg>
-                                <span v-on:click="store.comm.logout('/')" class="w-100">退出登录</span>
-                            </el-menu-item>
-                        </el-sub-menu>
-                    </el-menu>
-                </div>
-            </nav>
-            <nav class="d-lg-none d-black">
-                <div class="d-flex justify-content-between">
-                    <span v-on:click="state.drawer.show = true" class="wh-24px d-block ms-2">
-                        <i-svg name="side" size="22px" color="rgb(var(--assist-color))"></i-svg>
-                    </span>
-                    <small class="font-14">{{ store.comm.nav.title }}</small>
-                     <span v-if="!store.comm.getLogin.finish" class="mx-2">
-                        <i-svg name="user" size="26px" color="rgb(var(--assist-color))"></i-svg>
-                    </span>
-                    <div v-else v-on:click="push({ path: '/admin' })" class="d-flex align-items-center justify-content-center" style="margin-top: -8px">
-                        <span class="d-block wh-30px">
-                            <upgrade-system></upgrade-system>
-                        </span>
-                        <el-avatar :src="store.comm.getLogin.user?.avatar" :size="26" class="mx-2 mirror-scan"></el-avatar>
+    <div class="mobile-nav">
+        <el-drawer
+            v-model="state.drawer.show"
+            direction="ltr"
+            size="80%"
+            :show-close="false"
+            class="mobile-drawer"
+        >
+            <template #header>
+                <div class="drawer-header">
+                    <div class="logo-section">
+                        <div class="logo">
+                            <el-icon :size="24" class="logo-icon">
+                                <component :is="componentMap['LayoutDashboard']" />
+                            </el-icon>
+                            <span class="logo-title">管理后台</span>
+                        </div>
+                        <button @click="state.drawer.show = false" class="close-btn">
+                            <el-icon :size="18">
+                                <component :is="componentMap['X']" />
+                            </el-icon>
+                        </button>
                     </div>
-                </div>
-            </nav>
-        </div>
-    </div>
-
-    <el-drawer v-model="state.drawer.show" direction="ltr" size="75%" :show-close="false" class="custom side">
-        <template #header>
-            <div class="d-flex flex-column">
-                <div v-if="store.comm.getLogin.finish" class="d-flex flex-column">
-                    <p class="mb-2 fw-medium font-14 d-flex align-items-center">
-                        <span class="me-1 w-2px h-16px bg-info radius-4"></span>
-                        个人信息
-                    </p>
-                    <el-image src="https://img1.zhuxu.asia/2025/12/17/694228ed6e402.jpg" style="height: 120px; border-radius: 6px 6px 0 0" fit="cover"></el-image>
-                    <div class="card card-body position-relative mb-0 nav-bg">
-                        <div class="d-flex">
-                            <el-avatar :src="store.comm.getLogin.user?.avatar" :size="50" class="position-absolute avatar-shadow mirror-scan" style="top: -25px" shape="square"></el-avatar>
-                            <div class="d-flex align-items-center position-absolute" style="top: 5px; left: 70px">
-                                <span class="text-dark font-15 fw-bolder">{{ store.comm.getLogin.user?.nickname }}</span>
-                                <span class="badge badge-outline-warning item right ms-1 scale-90">
-                                    {{ store.comm.getLogin.user?.title }}
-                                </span>
-                            </div>
-                            <p class="mt-2 pt-1 mb-0 font-13">{{ store.comm.getLogin.user?.description || '这个人很懒，什么都没留下！' }}</p>
+                    <div v-if="store.comm.getLogin.finish" class="user-section">
+                        <el-avatar :src="store.comm.getLogin.user?.avatar" :size="48" class="user-avatar" />
+                        <div class="user-info">
+                            <span class="user-nickname">{{ store.comm.getLogin.user?.nickname }}</span>
+                            <span class="user-title">{{ store.comm.getLogin.user?.title || '管理员' }}</span>
                         </div>
                     </div>
                 </div>
-            </div>
-        </template>
-        <template #default>
-            <p class="fw-medium font-14 d-flex align-items-center mb-0">
-                <span class="me-1 w-2px h-16px bg-info radius-4"></span>
-                导航菜单
-            </p>
-            <el-menu class="nav-bg my-1 custom" unique-opened>
-                <el-sub-menu v-for="(item, index) in state.menu" :key="index" :index="item.name.toString()" show-timeout="50" hide-timeout="50">
-                    <template #title>
-                        <span class="d-flex align-items-center">
-                            <i v-html="item.icon" style="margin-top: -2px;" class="nav-icon"></i>
-                            <span class="ms-1" :style="(index === 1 ? 'margin-left: 1px !important' : '')">
-                                {{ item.label }}
-                            </span>
-                        </span>
+            </template>
+            <template #default>
+                <el-menu
+                    class="drawer-menu"
+                    :default-active="activeMenu"
+                    unique-opened
+                >
+                    <template v-for="(item, index) in state.menu" :key="index">
+                        <el-sub-menu v-if="item.children?.length" :index="item.name">
+                            <template #title>
+                                <span v-if="item.icon" class="nav-svg-icon" v-html="item.icon" />
+                                <el-icon :size="18" class="menu-icon" v-else>
+                                    <component :is="getIcon(item)" />
+                                </el-icon>
+                                <span>{{ item.label }}</span>
+                            </template>
+                            <el-menu-item
+                                v-for="(child, key) in item.children"
+                                :key="key"
+                                :index="child.path"
+                                @click="handleNavClick(child.fn())"
+                            >
+                                <span v-if="child.icon" class="nav-svg-icon" v-html="child.icon" />
+                                <el-icon :size="14" class="submenu-icon" v-else>
+                                    <component :is="componentMap['Circle']" />
+                                </el-icon>
+                                <span>{{ child.label }}</span>
+                            </el-menu-item>
+                        </el-sub-menu>
                     </template>
-                    <el-menu-item v-for="(val, key) in item.children" :key="key" :index="val.path.toString()" v-on:click="method.fn(val.fn())">
-                        <span class="font-14 fw-medium">{{ val.label }}</span>
-                    </el-menu-item>
-                </el-sub-menu>
-            </el-menu>
-        </template>
-        <template #footer>
-            <span class="flex-center">
-                <span v-on:click="method.push({ path: '/admin' })" class="flex-center mx-1">
-                    <i-svg color="rgb(var(--assist-color))" name="console" size="18px" class="me-1"></i-svg>
-                </span>
-                <span v-on:click="store.comm.logout('/')" class="flex-center mx-1">
-                    <i-svg color="rgb(var(--assist-color))" name="logout" size="17px" class="me-1"></i-svg>
-                </span>
-            </span>
-        </template>
-  </el-drawer>
+                </el-menu>
+            </template>
+            <template #footer>
+                <div class="drawer-footer">
+                    <el-button text class="logout-btn" @click="store.comm.logout('/')">
+                        <el-icon :size="16" class="mr-1">
+                            <component :is="componentMap['LogOut']" />
+                        </el-icon>
+                        <span>退出登录</span>
+                    </el-button>
+                </div>
+            </template>
+        </el-drawer>
+
+        <el-header class="mobile-header">
+            <button @click="state.drawer.show = true" class="menu-btn">
+                <el-icon :size="22">
+                    <component :is="componentMap['Menu']" />
+                </el-icon>
+            </button>
+            <span class="header-title">{{ store.comm.nav.title }}</span>
+            <div class="header-right">
+                <el-avatar
+                    v-if="store.comm.getLogin.finish"
+                    :src="store.comm.getLogin.user?.avatar"
+                    :size="28"
+                    class="user-avatar-sm"
+                />
+            </div>
+        </el-header>
+    </div>
 </template>
 
 <script setup>
-import utils from '{src}/utils/utils'
-import { push } from '{src}/utils/route'
+import { reactive, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { list as MenuList } from '{src}/utils/menu'
-import UpgradeSystem from '{src}/comps/upgrade/system.vue'
 import { useCommStore } from '{src}/store/comm'
-
-const { ctx, proxy } = getCurrentInstance()
-const router = useRouter()
-const store  = {
+const route = useRoute()
+const store = {
     comm: useCommStore(),
 }
-const state  = reactive({
-    theme: 'white',
+
+const state = reactive({
     drawer: {
         show: false,
-        menu: true,
     },
     menu: [],
 })
 
+const componentMap = new Proxy({}, { get: (_, name) => name })
+
+const activeMenu = computed(() => route.path)
+
+const getIcon = (item) => {
+    const iconMap = {
+        'create': 'Edit',
+        'manage': 'Grid3x3',
+        'security': 'Shield',
+    }
+    return componentMap[iconMap[item.name] || 'Menu']
+}
+
+const handleNavClick = (fn) => {
+    state.drawer.show = false
+    fn
+}
+
 onMounted(async () => {
     state.menu = await MenuList()
 })
-
-nextTick(async () => {
-    await method.getTheme()
-})
-
-const method = {
-    async getTheme() {
-        let theme = document.querySelector('body').getAttribute('inis-theme')
-        if (!utils.is.empty(theme)) {
-            if (theme.indexOf('white') !== -1) state.theme = 'white'
-            else state.theme = 'dark'
-        }
-    },
-    fn: fn => {
-        state.drawer.show = false
-        fn()
-    },
-    push: params => {
-        state.drawer.show = false
-        push(params)
-    },
-    // 是否为空
-    empty: value => utils.is.empty(value),
-    router: (params = {}) => router.push(params),
-}
 </script>
+
+<style lang="scss" scoped>
+.mobile-nav {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-nav {
+        display: block;
+    }
+}
+
+.mobile-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: #fff;
+    border-bottom: 1px solid #e8e8e8;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    z-index: 100;
+}
+
+.menu-btn {
+    background: transparent;
+    border: none;
+    padding: 8px;
+    color: #595959;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.menu-btn:hover {
+    background: #f5f5f5;
+}
+
+.header-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #262626;
+}
+
+.mobile-header .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar-sm {
+    cursor: pointer;
+    border: none;
+}
+
+.mobile-drawer :deep(.el-drawer__body) {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #fff;
+    padding: 0;
+}
+
+.drawer-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.logo-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon {
+    color: #1890ff;
+}
+
+.logo-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #262626;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    padding: 8px;
+    color: #8c8c8c;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.close-btn:hover {
+    background: #f5f5f5;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #f5f5f5;
+    border-radius: 4px;
+}
+
+.user-avatar {
+    border: none;
+}
+
+.user-section .user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-nickname {
+    font-size: 15px;
+    font-weight: 600;
+    color: #262626;
+}
+
+.user-title {
+    font-size: 12px;
+    color: #8c8c8c;
+}
+
+.drawer-menu {
+    flex: 1;
+    border-right: none;
+    padding: 8px 0;
+}
+
+.drawer-menu :deep(.el-menu-item),
+.drawer-menu :deep(.el-sub-menu__title) {
+    color: #595959;
+    height: 44px;
+    line-height: 44px;
+    padding: 0 20px;
+    font-size: 14px;
+}
+
+.drawer-menu :deep(.el-menu-item:hover),
+.drawer-menu :deep(.el-sub-menu__title:hover) {
+    background: #f5f5f5;
+    color: #262626;
+}
+
+.drawer-menu :deep(.el-menu-item.is-active) {
+    background: #e6f7ff;
+    color: #1890ff;
+    border-left: 3px solid #1890ff;
+    padding-left: 17px;
+}
+
+.menu-icon {
+    margin-right: 12px;
+}
+
+.nav-svg-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-right: 12px;
+}
+
+.nav-svg-icon :deep(svg) {
+    width: 18px;
+    height: 18px;
+}
+
+.submenu-icon {
+    margin-right: 10px;
+    color: #bfbfbf;
+}
+
+.drawer-footer {
+    padding: 12px 20px;
+    border-top: 1px solid #e8e8e8;
+}
+
+.logout-btn {
+    width: 100%;
+    justify-content: center;
+    color: #ff4d4f;
+}
+</style>

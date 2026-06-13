@@ -33,11 +33,11 @@
         <slot name="end"></slot>
         <!-- 自定义列 - 结束位置 -->
     </el-table>
-    <div class="mt-2">
-        <div v-if="state.item.count > 0" class="float-start">
+    <div class="table-footer">
+        <div v-if="state.item.count > 0" class="total-count">
             总计 {{ state.item.count }} 条数据
         </div>
-        <div class="float-end custom">
+        <div class="pagination-wrapper">
             <el-pagination :background="state.config.pagination.background"
                v-on:size-change="handle.sizeChange"
                v-on:current-change="handle.currentChange"
@@ -74,34 +74,35 @@ const props = defineProps({
         required: true
     },
     table: {
-        type: Object,
-        default: {
-            defaultSort: {
-                prop: 'id',
-                order: 'descending'
-            },
-            rowStyle: {
-                backgroundColor: `rgba(var(--theme-color), calc(var(--theme-opacity) * 0.8))`,
-            },
-            cellStyle: {
-                backgroundColor: 'transparent',
-                border: 'unset',
-                padding: '10px 0'
-            },
-            headerRowStyle: {
-                backgroundColor: 'transparent !important',
-            },
-            headerCellStyle: {
-                backgroundColor: `rgba(var(--theme-color), var(--theme-opacity))`,
-                border: 'unset',
-            },
-            style: {
-                background: `rgba(var(--theme-color), calc(var(--theme-opacity) * 0.15))`,
-                backdropFilter: 'blur(10px)',
-                borderRadius: '8px',
-            },
-        }
-    },
+            type: Object,
+            default: {
+                defaultSort: {
+                    prop: 'id',
+                    order: 'descending'
+                },
+                rowStyle: {
+                    backgroundColor: 'transparent',
+                },
+                cellStyle: {
+                    backgroundColor: 'transparent',
+                    borderBottom: '1px solid var(--el-border-color-light)',
+                },
+                headerRowStyle: {
+                    backgroundColor: 'var(--el-bg-color-page)',
+                },
+                headerCellStyle: {
+                    backgroundColor: 'var(--el-bg-color)',
+                    borderBottom: '2px solid var(--el-color-primary)',
+                    fontWeight: '600',
+                    color: 'var(--el-text-color-primary)',
+                },
+                style: {
+                    background: 'var(--el-bg-color)',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+                },
+            }
+        },
     pagination: {
         type: Object,
         default: {
@@ -139,22 +140,25 @@ const state = reactive({
                 order: 'descending'
             },
             rowStyle: {
-                backgroundColor: `rgba(var(--theme-color), calc(var(--theme-opacity) * 0.8))`,
+                backgroundColor: 'transparent',
             },
             cellStyle: {
                 backgroundColor: 'transparent',
-                border: 'unset',
+                borderBottom: '1px solid var(--el-border-color-light)',
             },
             headerRowStyle: {
-                backgroundColor: 'transparent !important',
+                backgroundColor: 'var(--el-bg-color-page)',
             },
             headerCellStyle: {
-                backgroundColor: `rgba(var(--theme-color), var(--theme-opacity))`,
-                border: 'unset',
+                backgroundColor: 'var(--el-bg-color)',
+                borderBottom: '2px solid var(--el-color-primary)',
+                fontWeight: '600',
+                color: 'var(--el-text-color-primary)',
             },
             style: {
-                background: `rgba(var(--theme-color), calc(var(--theme-opacity) * 0.65))`,
-                backdropFilter: 'var(--theme-blur)',
+                background: 'var(--el-bg-color)',
+                borderRadius: '8px',
+                boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
             },
             ...props.table
         },
@@ -185,8 +189,13 @@ const method = {
         // 数据加载中
         state.item.loading.data = true
 
+        // 过滤掉空数组参数
+        const params = { ...state.config.opts.params }
+        if (params.where && params.where.length === 0) delete params.where
+        if (params.like && params.like.length === 0) delete params.like
+
         const { data, code, msg } = await axios[state.config.opts.method](state.config.opts.url, {
-            page, limit, order: state.item.order, ...state.config.opts.params
+            page, limit, order: state.item.order, ...params
         })
 
         // 数据加载失败
@@ -234,3 +243,18 @@ defineExpose({
     init: method.init,
 })
 </script>
+
+<style lang="css" scoped>
+.table-footer {
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.total-count {
+    float: left;
+}
+.pagination-wrapper {
+    float: right;
+}
+</style>

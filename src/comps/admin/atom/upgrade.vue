@@ -1,70 +1,74 @@
 <template>
-    <div v-loading="state.status.init" class="card mb-3">
-        <div class="card-body">
-            <i-svg name="upgrade" size="50px" color="rgb(var(--assist-color))" class="position-absolute opacity-25" style="right: 1.5rem"></i-svg>
-            <h6 class="text-muted text-uppercase mt-0">
+    <el-card style="margin-bottom: 1rem" v-loading="state.status.init">
+        <template #header>
+            <div class="card-header-content">
+                <i-svg name="upgrade" size="50px" color="rgb(var(--assist-color))" style="position: absolute; right: 1.5rem; opacity: 0.25"></i-svg>
                 <el-tooltip placement="top">
                     <template #content>
-                        <strong class="text-success">inis-admin也就是当前您看到的后台界面</strong><br>
+                        <strong style="color: var(--el-color-success)">inis-admin也就是当前您看到的后台界面</strong><br>
                         ● inis-admin一般情况下是自动升级的，在超级管理员权限下检查到新版本会自动升级<br>
                         ● 自动升级检查10分钟会检查一次，也可以通过当前卡片的功能手动检查并进行升级
                     </template>
-                    <span class="d-inline-flex align-items-center">
+                    <span style="display: inline-flex; align-items: center">
                         <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                        <span class="ms-1">inis-admin「开发中...」</span>
+                        <span style="margin-left: 0.25rem">inis-admin「开发中...」</span>
                     </span>
                 </el-tooltip>
-            </h6>
-            <h2 class="m-b-20">
-                <el-button v-on:click="method.init(false)" :loading="state.status.loading" type="primary" size="small" round plain style="margin: 4px 0">
-                    <span>检 查 更 新</span>
-                </el-button>
-                <el-button v-if="state.show.upgrade" v-on:click="method.upgrade" :loading="state.status.upgrade" type="primary" size="small" round plain class="ms-2" style="margin: 4px 0">
-                    <span>升 级</span>
-                </el-button>
-                <el-button v-on:click="method.show" type="primary" size="small" round class="ms-2" style="margin: 4px 0">
-                    <span>日 志</span>
-                </el-button>
-            </h2>
-            <div class="d-flex justify-content-between">
+            </div>
+        </template>
+        <template #default>
+            <div style="display: flex; align-items: center; justify-content: space-between">
+                <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap">
+                    <el-button v-on:click="method.init(false)" :loading="state.status.loading" type="primary" size="small" round plain>
+                        <span>检 查 更 新</span>
+                    </el-button>
+                    <el-button v-if="state.show.upgrade" v-on:click="method.upgrade" :loading="state.status.upgrade" type="primary" size="small" round plain style="margin-left: 0.5rem">
+                        <span>升 级</span>
+                    </el-button>
+                    <el-button v-on:click="method.show" type="primary" size="small" round style="margin-left: 0.5rem">
+                        <span>日 志</span>
+                    </el-button>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 0.5rem">
                 <span>当前版本：{{ state.version }}</span>
                 <span>最新版本：{{ state.struct.version || '∞' }}</span>
             </div>
-        </div>
-    </div>
+        </template>
+    </el-card>
 
     <el-dialog v-model="state.status.dialog" class="custom" draggable :close-on-click-modal="false">
         <template #header>
-            <strong class="flex-center">更新日志</strong>
+            <strong>更新日志</strong>
         </template>
         <template #default>
-            <div v-if="!utils.is.empty(state.struct)" class="container-xxl">
-                <div class="d-flex justify-content-between align-items-center px-2 mb-2">
+            <div v-if="!utils.is.empty(state.struct)" style="width: 100%">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 0.5rem; margin-bottom: 0.5rem">
                     <el-tooltip :content="`${state.struct.result?.author?.nickname}：${state.struct.result?.author?.description}`" placement="top">
-                        <div class="d-flex align-items-center pointer">
-                            <el-avatar :src="state.struct.result?.author?.avatar" :size="25" class="avatar-shadow mirror-scan"></el-avatar>
-                            <span class="font-13 ms-1">{{ state.struct.result?.author?.nickname }}</span>
+                        <div style="display: flex; align-items: center; cursor: pointer">
+                            <el-avatar :src="state.struct.result?.author?.avatar" :size="25" style="box-shadow: var(--el-box-shadow-light); transform: scaleX(-1)"></el-avatar>
+                            <span style="font-size: 13px; margin-left: 0.25rem">{{ state.struct.result?.author?.nickname }}</span>
                         </div>
                     </el-tooltip>
-                    <span class="font-13">时间：{{ utils.time.to.date(state.struct?.create_time) }}</span>
+                    <span style="font-size: 13px">时间：{{ utils.time.to.date(state.struct?.create_time) }}</span>
                 </div>
-                <div class="el-alert el-alert--success is-light box-shadow-light d-flex justify-content-between">
+                <el-alert type="success" :closable="false" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem">
                     <span>{{ state.struct.title }}</span>
-                    <span class="d-flex align-items-center">
+                    <span style="display: flex; align-items: center">
                         <i-svg name="dot" :color="method.color(state.struct.progress).color" size="20px"></i-svg>
                         {{ method.color(state.struct.progress).text }}：{{ state.struct.version }}
                     </span>
-                </div>
-                <div v-if="!utils.is.empty(state.struct.content)" class="mt-2 markdown">
+                </el-alert>
+                <div v-if="!utils.is.empty(state.struct.content)" style="margin-top: 0.5rem" class="markdown">
                     <el-scrollbar max-height="400px">
                         <div v-html="method.markdown(state.struct.content)" class="white-space-line"></div>
                     </el-scrollbar>
                 </div>
             </div>
-            <div v-else class="container-xxl">
-                <div class="el-alert el-alert--success is-light box-shadow-light flex-center">
+            <div v-else style="width: 100%">
+                <el-alert type="success" :closable="false" style="text-align: center">
                     无更新日志
-                </div>
+                </el-alert>
             </div>
         </template>
         <template #footer>
@@ -79,6 +83,7 @@
 import MarkdownIt from 'markdown-it'
 import utils from '{src}/utils/utils'
 
+const emit = defineEmits(['refresh'])
 const { ctx, proxy } = getCurrentInstance()
 const state = reactive({
     // 清空所有模拟数据，仅保留空结构

@@ -8,28 +8,28 @@
         <template v-if="props.type === 'all'" #end>
             <el-table-column :fixed="right" label="操作" width="100" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.edit(scope.row)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
                 </template>
             </el-table-column>
         </template>
-        <template v-if="props.type === 'remove'" #end>
+        <template v-if="props.type === 'remove'">
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.restore(scope.row.id)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="restore" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.edit(scope.row)" size="small" class="ms-0">
+                        <el-button v-on:click="method.edit(scope.row)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -59,43 +59,37 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 接 口 密 钥</strong>
         </template>
         <template #default>
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="用于接口访问的密钥" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">密钥：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-input v-model="state.struct.value" class="custom" placeholder="为空自动生成32位密钥">
+            <el-row :gutter="20">
+                <el-col :span="24">
+                    <el-form-item label="密钥">
+                        <el-tooltip content="用于接口访问的密钥" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">密钥：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-input v-model="state.struct.value" class="custom" placeholder="为空自动生成32位密钥" style="width: 100%">
                             <template #append>
                                 <el-button v-on:click="method.rand()" ref="verify-code">
                                     <i-svg name="restore" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                                    <span class="ms-1">随机</span>
+                                    <span style="margin-left: 4px">随机</span>
                                 </el-button>
                             </template>
                         </el-input>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="备注而已，页面上不会显示此项" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">备注：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                    <el-form-item label="备注">
+                        <el-tooltip content="备注而已，页面上不会显示此项" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">备注：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea"></el-input>
-                    </div>
-                </div>
-            </div>
+                    </el-form-item>
+                </el-col>
+            </el-row>
         </template>
         <template #footer>
             <el-button v-on:click="state.item.dialog = false">取 消</el-button>
@@ -152,8 +146,8 @@ const state  = reactive({
         url: '/api/api-keys/all',
         params: props.params,
         columns: [
-            { prop: 'value'  , label: '密钥', width: 150, slot: true, fixed: left },
-            { prop: 'remark' , label: '备注', width: 200, slot: true },
+            { prop: 'value'  , label: '密钥', slot: true, fixed: left },
+            { prop: 'remark' , label: '备注', slot: true },
             { prop: 'update_time', label: '更新时间', width: 140, sortable: true },
             { prop: 'create_time', label: '创建时间', width: 140, sortable: true },
         ],

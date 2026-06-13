@@ -1,187 +1,167 @@
 <template>
-    <div v-on:click="method.show()" v-loading="state.status.loading" class="card pointer mb-3">
-        <div class="card-body">
-            <i-svg name="site" color="rgb(var(--assist-color))" size="50px" class="position-absolute opacity-25" style="right: 2rem"></i-svg>
-            <h6 class="text-muted text-uppercase mt-0">
+    <el-card v-loading="state.status.loading" style="margin-bottom: 1rem; cursor: pointer" v-on:click="method.show()">
+        <template #header>
+            <div class="card-header-content">
+                <i-svg name="site" color="rgb(var(--assist-color))" size="50px" style="position: absolute; right: 2rem; opacity: 0.25"></i-svg>
                 <el-tooltip content="（点击卡片配置）站点信息，如：备案号、头像、favicon、关键词和描述等" placement="top">
-                    <span class="d-inline-flex align-items-center">
+                    <span style="display: inline-flex; align-items: center">
                         <i-svg name="hint" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                        <span class="ms-1">站点信息</span>
+                        <span style="margin-left: 0.25rem">站点信息</span>
                     </span>
                 </el-tooltip>
-            </h6>
-            <div class="d-flex">
-                <span class="d-flex align-items-center justify-content-center position-relative" style="width: 60px; height: 60px">
-                    <i-lottie name="avatar/crane" v-model="state.item.avatar" width="65px" height="65px" class="z-index-9"></i-lottie>
-                    <el-avatar :src="state.struct.json.avatar" :size="52" style="top: 7px; left: 2px" class="avatar-shadow position-absolute"></el-avatar>
+            </div>
+        </template>
+        <template #default>
+            <div style="display: flex">
+                <span style="display: flex; align-items: center; justify-content: center; position: relative; width: 60px; height: 60px">
+                    <i-lottie name="avatar/crane" v-model="state.item.avatar" width="65px" height="65px" style="z-index: 9"></i-lottie>
+                    <el-avatar :src="state.struct.json.avatar" :size="52" style="top: 7px; left: 2px; box-shadow: var(--el-box-shadow-light); position: absolute"></el-avatar>
                 </span>
-                <div class="d-flex flex-column justify-content-center ms-2">
-                    <span class="font-18 text-dark d-flex align-items-center">
-                        <span class="text-dark font-16 me-2 limit-1-line">{{ state.struct.json.title }}</span>
+                <div style="display: flex; flex-direction: column; justify-content: center; margin-left: 0.5rem">
+                    <span style="font-size: 18px; color: var(--el-text-color-primary); display: flex; align-items: center">
+                        <span style="color: var(--el-text-color-primary); font-size: 16px; margin-right: 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px">{{ state.struct.json.title }}</span>
                     </span>
-                    <small class="text-secondary limit-2-line">{{ state.struct.json.description || '这个人很懒，什么都没留下！' }}</small>
+                    <small style="color: var(--el-text-color-secondary); overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical">{{ state.struct.json.description || '这个人很懒，什么都没留下！' }}</small>
                 </div>
             </div>
-        </div>
-    </div>
+        </template>
+    </el-card>
 
     <el-dialog v-model="state.status.dialog" class="custom" draggable :close-on-click-modal="false">
         <template #header>
-            <strong class="flex-center">站 点 信 息 配 置</strong>
+            <strong style="display: flex; align-items: center; justify-content: center">站 点 信 息 配 置</strong>
         </template>
         <template #default>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="ICP备案码" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">ICP 备案码：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+            <el-row :gutter="20">
+                <el-col :span="12">
+                    <el-form-item label="ICP 备案码">
+                        <el-tooltip content="ICP备案码" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">ICP 备案码：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.json.copy.code" placeholder="ICP备案码"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="工信部网址，如：https://beian.miit.gov.cn" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">ICP 备案链接：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="ICP 备案链接">
+                        <el-tooltip content="工信部网址，如：https://beian.miit.gov.cn" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">ICP 备案链接：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.json.copy.link" placeholder="如：https://beian.miit.gov.cn"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="公安备案码" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">公安备案码：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="公安备案码">
+                        <el-tooltip content="公安备案码" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">公安备案码：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.json.police.code" placeholder="公安备案码"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="公安备案网址，如：https://www.beian.gov.cn" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">公安备案链接：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="公安备案链接">
+                        <el-tooltip content="公安备案网址，如：https://www.beian.gov.cn" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">公安备案链接：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.json.police.link" placeholder="如：https://www.beian.gov.cn"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="本站点的头像" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">站点头像：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="站点头像">
+                        <el-tooltip content="本站点的头像" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">站点头像：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.json.avatar" class="custom" placeholder="填写图片地址或点击上传">
                             <template #append>
                                 <el-button v-on:click="method.upload('avatar')" :loading="state.upload.avatar">
                                     <i-svg v-if="!state.upload.avatar" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                                    <span class="ms-1">上传</span>
+                                    <span style="margin-left: 0.25rem">上传</span>
                                 </el-button>
                             </template>
                         </el-input>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="本站点的小图标" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">favicon：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="favicon">
+                        <el-tooltip content="本站点的小图标" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">favicon：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.json.favicon" class="custom" placeholder="填写图片地址或点击上传">
                             <template #append>
                                 <el-button v-on:click="method.upload('favicon')" :loading="state.upload.favicon">
                                     <i-svg v-if="!state.upload.favicon" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                                    <span class="ms-1">上传</span>
+                                    <span style="margin-left: 0.25rem">上传</span>
                                 </el-button>
                             </template>
                         </el-input>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="站点标题，如：米哈游" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">站点标题：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="站点标题">
+                        <el-tooltip content="站点标题，如：米哈游" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">站点标题：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.json.title"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="网站关键词，主要用于SEO场景，有助于收录" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">关键词：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="关键词">
+                        <el-tooltip content="网站关键词，主要用于SEO场景，有助于收录" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">关键词：</span>
+                            </span>
+                        </el-tooltip>
                         <el-select v-model="state.item.keyword" :reserve-keyword="false" default-first-option collapse-tags-tooltip
-                            allow-create multiple filterable collapse-tags class="d-block custom font-13" placeholder="请输入站点关键词">
+                            allow-create multiple filterable collapse-tags style="display: block" class="custom" placeholder-class="font-13" placeholder="请输入站点关键词">
                             <el-option v-for="(item, index) in state.item.keyword" :key="index" :label="item" :value="item"></el-option>
                         </el-select>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="本网站运营的开始时间" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">运营时间：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-date-picker v-model="state.struct.json.date" type="date" format="YYYY-MM-DD" value-format="X" class="d-block w-100 custom" placeholder="请选择本站开设的时间">
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="运营时间">
+                        <el-tooltip content="本网站运营的开始时间" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">运营时间：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-date-picker v-model="state.struct.json.date" type="date" format="YYYY-MM-DD" value-format="X" style="display: block; width: 100%" class="custom" placeholder="请选择本站开设的时间">
                         </el-date-picker>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="网站描述，主要用于SEO场景，有助于收录" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">站点描述：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                    <el-form-item label="站点描述">
+                        <el-tooltip content="网站描述，主要用于SEO场景，有助于收录" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 0.25rem">站点描述：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.json.description" :autosize="{ minRows: 1, maxRows: 10 }" placeholder="站点描述！" type="textarea"></el-input>
-                    </div>
-                </div>
-            </div>
+                    </el-form-item>
+                </el-col>
+            </el-row>
         </template>
         <template #footer>
             <el-button v-on:click="state.status.dialog = false">取 消</el-button>
@@ -195,6 +175,7 @@ import cache from '{src}/utils/cache'
 import utils from '{src}/utils/utils'
 import axios from '{src}/utils/request'
 
+const emit = defineEmits(['refresh'])
 const { ctx, proxy } = getCurrentInstance()
 const state = reactive({
     item: {

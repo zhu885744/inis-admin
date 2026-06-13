@@ -61,7 +61,6 @@
 </template>
 
 <script setup>
-import { User, Lock } from '@element-plus/icons-vue'
 import cache from '{src}/utils/cache.js'
 import utils from '{src}/utils/utils.js'
 import axios from '{src}/utils/request.js'

@@ -8,11 +8,11 @@
         <template v-if="props.type === 'all'" #end>
             <el-table-column :fixed="right" label="操作" width="100" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.edit(scope.row)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -22,14 +22,14 @@
         <template v-if="props.type === 'remove'" #end>
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
-                    <span class="d-flex justify-content-end">
+                    <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.restore(scope.row.id)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="restore" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.edit(scope.row)" size="small" class="ms-0">
+                        <el-button v-on:click="method.edit(scope.row)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" class="ms-0">
+                        <el-button v-on:click="method.delete(scope.row.id, false)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
                         </el-button>
                     </span>
@@ -38,9 +38,9 @@
         </template>
 
         <template #i-name="{ scope = {} }">
-            <span v-on:dblclick="method.edit(scope)" class="d-flex align-items-center">
+            <span v-on:dblclick="method.edit(scope)" style="display: flex; align-items: center">
                 <el-tooltip :content="scope.name" :disabled="utils.is.empty(scope.name)" placement="top">
-                    <span class="d-flex align-items-center">
+                    <span style="display: flex; align-items: center">
                         <i-svg name="dot" :color="scope.root === 1 ? 'var(--bs-success)' : 'var(--bs-secondary)'" size="20px"></i-svg>
                         <span class="limit-1-line">{{ scope?.name }}</span>
                     </span>
@@ -49,12 +49,12 @@
         </template>
 
         <template #i-users="{ scope = {} }">
-            <div class="d-flex align-items-center">
+            <div style="display: flex; align-items: center">
                 <el-tooltip v-for="(item, index) in scope.result?.users?.slice(0, 5)" :key="item.id" :content="`@${item.nickname} ${item.account}`" placement="top">
-                    <el-avatar :src="item.avatar" size="small" :class="'avatar-shadow ms-n2 z-index-' + (10 - index)"></el-avatar>
+                    <el-avatar :src="item.avatar" size="small" :class="'avatar-shadow z-index-' + (10 - index)" :style="'margin-left: -8px'"></el-avatar>
                 </el-tooltip>
                 <el-tooltip v-if="scope.result?.users?.length > 12" :content="`有 ${scope.result?.users?.length} 人拥有该权限`" placement="top">
-                    <span class="z-index-0 bg-primary-lighten d-flex align-items-center justify-content-center font-white ms-n2 avatar-shadow" style="width: 24px; height: 24px; border-radius: 200px">+</span>
+                    <span :style="'z-index: 0; background: var(--el-color-primary-light-3); display: flex; align-items: center; justify-content: center; color: white; margin-left: -8px; width: 24px; height: 24px; border-radius: 200px'" class="avatar-shadow">+</span>
                 </el-tooltip>
             </div>
         </template>
@@ -84,141 +84,123 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 权 限 分 组</strong>
         </template>
         <template #default>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label required">
-                            <el-tooltip content="（必须）这个权限分组的名称叫什么？" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">名称：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+            <el-row :gutter="20">
+                <el-col :span="8">
+                    <el-form-item label="名称">
+                        <el-tooltip content="（必须）这个权限分组的名称叫什么？" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">名称：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.name"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="唯一的 key 值，方便区分权限分组" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">唯一识别码：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="唯一识别码">
+                        <el-tooltip content="唯一的 key 值，方便区分权限分组" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">唯一识别码：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.key"></el-input>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip placement="top">
-                                <template #content>
-                                    <span>（可选）为该分组的用户分配更高级的权限</span><br>
-                                    <span>● 默认：即便用户拥有了对应的权限，也只能操作自己的数据，适用于普通用户或会员</span><br>
-                                    <span>● 管理：该权限适用于有管理权限的用户，比如管理员和编辑员等，对别人的数据有操作权限</span><br>
-                                </template>
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">权限：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-select v-model="state.struct.root" placeholder="请选择权限" class="d-block custom font-13">
-                            <el-option v-for="item in state.select.root" :key="item.value" :label="item.label" :value="item.value" class="d-flex justify-content-between">
-                                <span class="font-13 d-flex align-items-center">
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="权限">
+                        <el-tooltip placement="top">
+                            <template #content>
+                                <span>（可选）为该分组的用户分配更高级的权限</span><br>
+                                <span>● 默认：即便用户拥有了对应的权限，也只能操作自己的数据，适用于普通用户或会员</span><br>
+                                <span>● 管理：该权限适用于有管理权限的用户，比如管理员和编辑员等，对别人的数据有操作权限</span><br>
+                            </template>
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">权限：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-select v-model="state.struct.root" placeholder="请选择权限" style="display: block; font-size: 13px" class="custom">
+                            <el-option v-for="item in state.select.root" :key="item.value" :label="item.label" :value="item.value" style="display: flex; justify-content: space-between">
+                                <span style="font-size: 13px; display: flex; align-items: center">
                                     <i-svg name="dot" :color="item.color" size="20px"></i-svg>
                                     {{ item.label }}
                                 </span>
-                                <small class="text-muted">{{ item.subtitle }}</small>
+                                <small>{{ item.subtitle }}</small>
                             </el-option>
                         </el-select>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="备注而已，页面上不会显示此项" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">备注：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                    <el-form-item label="备注">
+                        <el-tooltip content="备注而已，页面上不会显示此项" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">备注：</span>
+                            </span>
+                        </el-tooltip>
                         <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea"></el-input>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="添加用户权限" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">成员：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-select v-model="state.selected.users" multiple filterable default-first-option placeholder="请选择权限" class="d-block custom font-13 multiple">
+                    </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                    <el-form-item label="成员">
+                        <el-tooltip content="添加用户权限" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">成员：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-select v-model="state.selected.users" multiple filterable default-first-option placeholder="请选择权限" style="display: block; font-size: 13px" class="custom multiple">
                             <el-option v-for="item in state.select.users" :key="item.id" :label="item.nickname" :value="item.id">
-                                <span class="d-flex justify-content-between">
-                                    <span class="d-flex align-items-center">
+                                <span style="display: flex; justify-content: space-between">
+                                    <span style="display: flex; align-items: center">
                                         <el-avatar :src="item.avatar" size="small" class="avatar-shadow"></el-avatar>
-                                        <span class="font-14 ms-1">{{ item.nickname }}</span>
+                                        <span style="font-size: 14px; margin-left: 4px">{{ item.nickname }}</span>
                                     </span>
-                                    <small class="text-muted">{{ item.account }}</small>
+                                    <small>{{ item.account }}</small>
                                 </span>
                             </el-option>
                         </el-select>
-                    </div>
-                </div>
-                <div class="col-lg-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="为用户分配后台的页面访问权限" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">页面：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
-                        <el-select v-model="state.selected.pages" multiple filterable default-first-option placeholder="请选择权限" class="d-block custom font-13 multiple">
+                    </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                    <el-form-item label="页面">
+                        <el-tooltip content="为用户分配后台的页面访问权限" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">页面：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-select v-model="state.selected.pages" multiple filterable default-first-option placeholder="请选择权限" style="display: block; font-size: 13px" class="custom multiple">
                             <el-option v-for="item in state.select.pages" :key="item.hash" :label="item.name" :value="item.hash">
-                                <span class="font-13">
+                                <span style="font-size: 13px">
                                     <span v-if="!utils.is.empty(item.svg)" v-html="item.svg"></span>
                                     <i-svg color="rgb(var(--icon-color))" v-else-if="!utils.is.empty(item.icon)" :name="item.icon" :size="item.size"></i-svg>
                                     {{ item.name }}
                                 </span>
-                                <small class="text-muted float-end">{{ item.path }}</small>
+                                <small style="float: right">{{ item.path }}</small>
                             </el-option>
                         </el-select>
-                    </div>
-                </div>
-                <div class="col-lg-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label">
-                            <el-tooltip content="该分组下拥有的权限" placement="top">
-                                <span>
-                                    <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
-                                    <span class="ms-1">规则：</span>
-                                </span>
-                            </el-tooltip>
-                        </label>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                    <el-form-item label="规则">
+                        <el-tooltip content="该分组下拥有的权限" placement="top">
+                            <span>
+                                <i-svg color="rgb(var(--icon-color))" name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">规则：</span>
+                            </span>
+                        </el-tooltip>
                         <el-cascader placeholder="试试搜索：文章" :options="state.select.rules" :props="{ multiple: true }" filterable
-                            class="d-block custom multiple" v-model="state.rules.select" v-on:change="method.change">
+                            class="custom multiple" style="display: block" v-model="state.rules.select" v-on:change="method.change">
                             <template #default="{ node, data }">
                                 <span>{{ data.label }} </span>
                                 <span v-if="!node.isLeaf"> ({{ data.children.length }}) </span>
                             </template>
                         </el-cascader>
-                    </div>
-                </div>
-            </div>
+                    </el-form-item>
+                </el-col>
+            </el-row>
         </template>
         <template #footer>
             <el-button v-on:click="state.item.dialog = false">取 消</el-button>
@@ -283,10 +265,10 @@ const state  = reactive({
         url: '/api/auth-group/all',
         params: props.params,
         columns: [
-            { prop: 'name', label: '名称', width: 150, slot: true, fixed: left },
+            { prop: 'name', label: '名称', slot: true, fixed: left },
             { prop: 'key', label: '识别码', width: 80, slot: true, align: 'center' },
-            { prop: 'users', label: '成员', width: 180, slot: true },
-            { prop: 'remark' , label: '备注', width: 150, slot: true },
+            { prop: 'users', label: '成员', slot: true },
+            { prop: 'remark' , label: '备注', slot: true },
             { prop: 'update_time', label: '更新时间', width: 140, sortable: true },
             { prop: 'create_time', label: '创建时间', width: 140, sortable: true },
         ],
