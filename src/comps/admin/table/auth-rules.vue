@@ -85,49 +85,35 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 权 限 规 则</strong>
         </template>
         <template #default>
-            <el-form label-width="100px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="名称">
-                            <el-input v-model="state.struct.name" placeholder="请输入接口名称，如：【分组名】API名" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="费用">
-                            <el-input-number v-model="state.struct.cost" :min="0" style="width: 100%"></el-input-number>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="请求类型">
-                            <el-select v-model="state.struct.method" placeholder="请选择请求类型" style="width: 100%" class="custom">
-                                <el-option v-for="item in state.select.method" :key="item.value" :label="item.value" :value="item.label">
-                                    <span style="font-size: 13px" :style="'color: ' + method.color(item.value)">{{ item.value }}</span>
-                                    <small style="float: right">{{ item.label }} 请求</small>
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="API">
-                            <el-input v-model="state.struct.route" placeholder="请输入接口请求地址" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="接口类型">
-                            <el-select v-model="state.struct.type" placeholder="请选择接口类型" style="width: 100%" class="custom">
-                                <el-option v-for="item in state.select.type" :key="item.value" :label="item.label" :value="item.value">
-                                    <span>{{ item.label }}</span>
-                                    <small style="float: right">{{ item.value }}</small>
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="24">
-                        <el-form-item label="备注">
-                            <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="名称">
+                    <el-input v-model="state.struct.name" placeholder="请输入接口名称，如：【分组名】API名" style="width: 100%"></el-input>
+                </el-form-item>
+                <el-form-item label="费用">
+                    <el-input-number v-model="state.struct.cost" :min="0" style="width: 100%"></el-input-number>
+                </el-form-item>
+                <el-form-item label="请求类型">
+                    <el-select v-model="state.struct.method" placeholder="请选择请求类型" style="width: 100%" class="custom">
+                        <el-option v-for="item in state.select.method" :key="item.value" :label="item.value" :value="item.label">
+                            <span style="font-size: 13px" :style="'color: ' + method.color(item.value)">{{ item.value }}</span>
+                            <small style="float: right">{{ item.label }} 请求</small>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="API">
+                    <el-input v-model="state.struct.route" placeholder="请输入接口请求地址" style="width: 100%"></el-input>
+                </el-form-item>
+                <el-form-item label="接口类型">
+                    <el-select v-model="state.struct.type" placeholder="请选择接口类型" style="width: 100%" class="custom">
+                        <el-option v-for="item in state.select.type" :key="item.value" :label="item.label" :value="item.value">
+                            <span>{{ item.label }}</span>
+                            <small style="float: right">{{ item.value }}</small>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="备注">
+                    <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea" style="width: 100%"></el-input>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

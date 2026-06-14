@@ -19,7 +19,7 @@
                 </template>
             </el-table-column>
         </template>
-        <template v-if="props.type === 'remove'" #end>
+        <template v-if="props.type === 'remove'">
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
                     <span style="display: flex; justify-content: flex-end">
@@ -86,8 +86,9 @@
 import utils from '{src}/utils/utils.js'
 import axios from '{src}/utils/request.js'
 import ITable from '{src}/comps/custom/i-table.vue'
-import { computed, reactive, getCurrentInstance, onMounted, watch } from 'vue'
+import { computed, reactive, getCurrentInstance, onMounted, watch, toRaw } from 'vue'
 import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 const emit   = defineEmits(['refresh','update:init'])
@@ -95,6 +96,10 @@ const props  = defineProps({
     type: {
         type: String,
         default: 'all',
+    },
+    tableName: {
+        type: String,
+        default: 'pages'
     },
     params: {
         type: Object,
@@ -108,28 +113,17 @@ const props  = defineProps({
     }
 })
 
-// table - fixed
-const left = computed(() => {
-    let result = 'left'
-    if (utils.is.mobile()) result = false
-    return result
-})
-// table - fixed
-const right = computed(() => {
-    let result = 'right'
-    if (utils.is.mobile()) result = false
-    return result
-})
+// 移动端自适应左右固定
+const left = computed(() => utils.is.mobile() ? false : 'left')
+const right = computed(() => utils.is.mobile() ? false : 'right')
 
-const { ctx, proxy } = getCurrentInstance()
+const { proxy } = getCurrentInstance()
 const state  = reactive({
-    item: {
-        table: 'pages',
-    },
     struct: {},
     opts: {
-        url: '/api/pages/all',
-        params: props.params,
+        url: `/api/${props.tableName}/all`,
+        // 初始使用纯净默认参数，不继承历史where
+        params: { order: 'id asc' },
         columns: [
             { prop: 'title',  label: '标题', slot: true, fixed: left },
             { prop: 'key',    label: '唯一键' },
@@ -141,77 +135,73 @@ const state  = reactive({
 })
 
 const method = {
-    // 刷新数据
+    // 重载表格
     init: async () => {
-        // 重新加载数据
-        await proxy.$refs['i-table']['init']()
+        state.opts.params = { ...toRaw(props.params) }
+        await proxy.$refs['i-table'].init()
     },
-    // 编辑数据
+    // 重置表格：清空筛选，恢复默认参数，回到第一页
+    resetTable: async () => {
+        // 强制覆盖为纯净无筛选参数
+        state.opts.params = { order: 'id asc' }
+        await proxy.$refs['i-table'].reset()
+    },
     edit: struct => {
-        router.push({path: '/admin/pages/write/' + parseInt(struct.id)})
+        router.push({path: `/admin/${props.tableName}/write/${parseInt(struct.id)}`})
     },
-    // 真删 和 软删
     async delete(ids = [], isSoft = true) {
         if (utils.is.empty(ids)) return
-        // 拼接服务地址
-        const uri = `/api/${state.item.table}/${isSoft ? 'remove' : 'delete'}`
-        const { code, msg } = await axios.del(uri, { ids })
-        if (code !== 200) return ElMessage.error(msg)  // 使用Element Plus的Message
-        // 刷新回收站数据
+        const idArr = Array.isArray(ids) ? ids : [ids]
+        const uri = `/api/${props.tableName}/${isSoft ? 'remove' : 'delete'}`
+        const { code, msg } = await axios.del(uri, { ids: idArr })
+        if (code !== 200) return ElMessage.error(msg)
         emit('refresh', 'remove', 'check', 'audit')
-        // 重新加载数据
         await method.init()
     },
-    // 恢复数据
     async restore(ids = []) {
         if (utils.is.empty(ids)) return
-        const { code, msg } = await axios.put(`/api/${state.item.table}/restore`, { ids })
-        if (code !== 200) return ElMessage.error(msg)  // 使用Element Plus的Message
-        // 刷新全部数据
+        const idArr = Array.isArray(ids) ? ids : [ids]
+        const { code, msg } = await axios.put(`/api/${props.tableName}/restore`, { ids: idArr })
+        if (code !== 200) return ElMessage.error(msg)
         emit('refresh', 'all', 'check', 'audit')
-        // 重新加载数据
         await method.init()
     },
-    // 自动换行
     autoWrap(text = '', length = 40, symbol = '<br>') {
-        // 判断 text 是否为空
         if (utils.is.empty(text)) return text
-        // 每隔 length 个字符添加一个换行符
         return text.replace(new RegExp(`(.{${length}})`, 'g'), `$1${symbol}`)
     },
-    // 复制文本
     copy: (text = null, msg = '复制成功！') => {
         if (utils.is.empty(text)) return
         utils.set.copy.text(text)
-        if (!utils.is.empty(msg)) return ElMessage.success(msg)  // 使用Element Plus的Message
+        if (!utils.is.empty(msg)) ElMessage.success(msg)
     },
-    // 省略文本
     omit: (text = null, length = 10, omission = ' ... ', location = 'center') => {
         if (utils.is.empty(text)) return '空'
         return utils.string.omit(text, length, omission, location)
     },
-    // 格式化时间戳为YYYY-MM-DD HH:mm:ss（通用方法）
     formatTime: (timestamp) => {
-        if (!timestamp || timestamp === 0) return '无数据' // 针对创建/更新时间的空值处理
-        // 若时间戳是秒级，转换为毫秒级（根据后端返回的时间戳类型调整）
+        if (!timestamp || timestamp === 0) return '无数据'
         const time = timestamp.toString().length === 10 ? timestamp * 1000 : timestamp
         const date = new Date(time)
-        // 补零函数
         const pad = (num) => num.toString().padStart(2, '0')
         return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
     }
 }
 
+// 页面每次刷新挂载，强制重载表格，清空历史筛选
 onMounted(async () => {
-    if (props.init) await method.init()
+    await method.init()
 })
 
+// 父组件传入筛选参数变化时自动刷新
+watch(() => props.params, () => method.init(), { deep: true })
 watch(() => props.init, (val) => {
     if (val) method.init()
 })
 
-// 将子组件方法暴露给父组件
+// 对外暴露重载、重置方法给父页面
 defineExpose({
     init: method.init,
+    resetTable: method.resetTable
 })
 </script>

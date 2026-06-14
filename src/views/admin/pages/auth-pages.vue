@@ -16,7 +16,7 @@
                     <el-input v-model="state.item.search" style="width: 200px" autocomplete="new-password" type="text" placeholder="名称 | 路径 | 备注" />
                 </div>
                 <el-button v-on:click="method.refresh()">刷新</el-button>
-                <el-button v-on:click="method.add()" v-if="false">添加</el-button>
+                <el-button v-on:click="method.add()">添加</el-button>
             </el-col>
             <el-col :span="12" style="display: flex; justify-content: flex-end; z-index: -1">
                 <el-button disabled>
@@ -56,7 +56,7 @@ const { ctx, proxy } = getCurrentInstance()
 const state  = reactive({
     item: {
         timer : null,
-        title : '管理页面',
+        title : '后台页面管理',
         search: null,
         sort  : '排序',
         tabs  : 'all',

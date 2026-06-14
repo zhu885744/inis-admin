@@ -27,7 +27,6 @@
         <el-row :gutter="20" style="margin-top: 12px">
             <el-col :span="24">
                 <el-tabs v-model="state.item.tabs" v-on:tab-change="method.change" id="tabs-area">
-
                     <el-tab-pane name="all">
                         <template #label>
                             <span style="font-weight: bold; font-size: 12px">全部</span>
@@ -42,6 +41,17 @@
                         <table-ip-black :params="state.params.remove" v-model:init="state.tabs.remove" v-on:refresh="method.refresh" ref="remove" type="remove"></table-ip-black>
                     </el-tab-pane>
 
+                    <el-tab-pane name="setting">
+                        <template #label>
+                            <span style="font-weight: bold; font-size: 12px">设置</span>
+                        </template>
+                        <el-row :gutter="20">
+                            <el-col :span="8">
+                                <atom-qps-black ref="api-key"></atom-qps-black>
+                            </el-col>
+                        </el-row>
+                    </el-tab-pane>
+
                 </el-tabs>
             </el-col>
         </el-row>
@@ -51,6 +61,7 @@
 <script setup>
 import utils from '{src}/utils/utils'
 import TableIpBlack from '{src}/comps/admin/table/ip-black.vue'
+import AtomQpsBlack from '{src}/comps/admin/atom/qps-black.vue'
 
 const { ctx, proxy } = getCurrentInstance()
 

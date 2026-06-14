@@ -12,14 +12,14 @@
                         <el-button v-on:click="method.edit(scope.row)" size="small">
                             <i-svg color="rgb(var(--icon-color))" name="edit" size="16px"></i-svg>
                         </el-button>
-                        <!--<el-button v-on:click="method.delete(scope.row.id, true)" size="small" style="margin-left: 0">
+                        <el-button v-on:click="method.delete(scope.row.id, true)" size="small" style="margin-left: 0">
                             <i-svg color="rgb(var(--icon-color))" name="delete" size="21px"></i-svg>
-                        </el-button>-->
+                        </el-button>
                     </span>
                 </template>
             </el-table-column>
         </template>
-        <template v-if="props.type === 'remove'" #end>
+        <template v-if="props.type === 'remove'">
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
                     <span style="display: flex; justify-content: flex-end">
@@ -63,46 +63,32 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 管 理 页 面</strong>
         </template>
         <template #default>
-            <el-form label-width="100px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="6">
-                        <el-form-item label="名称">
-                            <el-input v-model="state.struct.name" placeholder="请输入页面名称" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="6">
-                        <el-form-item label="路径">
-                            <el-input v-model="state.struct.path" disabled placeholder="请输入页面路径" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="6">
-                        <el-form-item label="内置图标">
-                            <el-select v-model="state.struct.icon" placeholder="请选择内置图标" style="width: 100%" class="custom">
-                                <el-option v-for="item in state.select.icons" :key="item.value" :label="item.value" :value="item.label">
-                                    <span style="font-size: 13px">
-                                        <i-svg color="rgb(var(--icon-color))" :name="item.value" size="16px"></i-svg>
-                                    </span>
-                                    <small style="float: right">{{ item.label }}</small>
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="6">
-                        <el-form-item label="大小">
-                            <el-input v-model="state.struct.size" placeholder="如：16px" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="24">
-                        <el-form-item label="自定义图标 - SVG代码">
-                            <el-input v-model="state.struct.svg" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="请输入自定义SVG代码" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="24">
-                        <el-form-item label="备注">
-                            <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="备注一下" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="名称">
+                    <el-input v-model="state.struct.name" placeholder="请输入页面名称" style="width: 100%"></el-input>
+                </el-form-item>
+                <el-form-item label="路径">
+                    <el-input v-model="state.struct.path" :disabled="!utils.is.empty(state.struct.id)" placeholder="请输入页面路径" style="width: 100%"></el-input>
+                </el-form-item>
+                <el-form-item label="内置图标">
+                    <el-select v-model="state.struct.icon" placeholder="请选择内置图标" style="width: 100%" class="custom">
+                        <el-option v-for="item in state.select.icons" :key="item.value" :label="item.value" :value="item.label">
+                            <span style="font-size: 13px">
+                                <i-svg color="rgb(var(--icon-color))" :name="item.value" size="16px"></i-svg>
+                            </span>
+                            <small style="float: right">{{ item.label }}</small>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="图标大小">
+                    <el-input v-model="state.struct.size" placeholder="如：16px" style="width: 200px"></el-input>
+                </el-form-item>
+                <el-form-item label="自定义图标 - SVG代码">
+                    <el-input v-model="state.struct.svg" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="请输入自定义SVG代码" style="width: 100%"></el-input>
+                </el-form-item>
+                <el-form-item label="备注">
+                    <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="备注一下" style="width: 100%"></el-input>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

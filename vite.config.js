@@ -43,14 +43,13 @@ export default ({ mode }) => {
     }
 
     const libs = {
-        css: ['/bootstrap@5.2.3/dist/css/bootstrap.min.css'],
+        css: [''],
         js: [
             '/vue@3/dist/vue.global.js',
             '/vuex@4.0.0/dist/vuex.global.js',
             '/vue-router@4.1.6/dist/vue-router.global.js',
             '/axios/dist/axios.min.js',
-            '/@vueuse/shared',
-            '/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js'
+            '/@vueuse/shared'
         ],
     }
 

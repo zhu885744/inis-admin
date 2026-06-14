@@ -9,19 +9,6 @@
                 <el-form class="login-form" @submit.prevent="method.reset()">
                     <el-form-item>
                         <el-input
-                            v-model="state.struct.account"
-                            placeholder="请输入账号"
-                            size="large"
-                            clearable
-                        >
-                            <template #prefix>
-                                <el-icon><User /></el-icon>
-                            </template>
-                        </el-input>
-                    </el-form-item>
-
-                    <el-form-item>
-                        <el-input
                             v-model="state.struct.social"
                             placeholder="邮箱或手机号"
                             size="large"
@@ -118,7 +105,6 @@ const state = reactive({
     },
     struct: {
         social: null,
-        account: null,
         code: null,
     },
     password: {
@@ -130,26 +116,25 @@ const state = reactive({
 
 const method = {
     async reset() {
-        const { account, social, code } = state.struct
+        const { social, code } = state.struct
         const { value: pwd, verify: pwdVerify } = state.password
 
-        if (!account && !social) return ElMessage.warning('账号、邮箱或手机号至少填写一个')
+        if (!social) return ElMessage.warning('请填写邮箱或手机号')
         if (!pwd) return ElMessage.warning('请输入新密码')
         if (pwd.length < 6) return ElMessage.warning('密码长度至少6位')
         if (!pwdVerify) return ElMessage.warning('请再次输入密码')
         if (!code) return ElMessage.warning('请输入验证码')
         if (pwd !== pwdVerify) return ElMessage.warning('两次密码不一致')
 
-        if (social) {
-            const isPhone = /^1[3-9]\d{9}$/.test(social)
-            const isEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(social)
-            if (!isPhone && !isEmail) return ElMessage.warning('请填写正确的手机号或邮箱')
-        }
+        const isPhone = /^1[3-9]\d{9}$/.test(social)
+        const isEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(social)
+        if (!isPhone && !isEmail) return ElMessage.warning('请填写正确的手机号或邮箱')
 
         try {
             state.item.wait = true
             const { code: resCode, msg } = await axios.post('/api/comm/reset-password', {
-                ...state.struct,
+                social,
+                code,
                 password: pwd
             })
 
@@ -170,20 +155,15 @@ const method = {
     },
 
     async code() {
-        const { account, social } = state.struct
-        if (!account && !social) return ElMessage.warning('账号、邮箱或手机号至少填写一个')
+        const { social } = state.struct
+        if (!social) return ElMessage.warning('请填写邮箱或手机号')
 
-        if (social) {
-            const isPhone = /^1[3-9]\d{9}$/.test(social)
-            const isEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(social)
-            if (!isPhone && !isEmail) return ElMessage.warning('请填写正确的手机号或邮箱')
-        }
+        const isPhone = /^1[3-9]\d{9}$/.test(social)
+        const isEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(social)
+        if (!isPhone && !isEmail) return ElMessage.warning('请填写正确的手机号或邮箱')
 
         try {
-            const { code: resCode, msg } = await axios.post('/api/comm/reset-password', {
-                social,
-                account
-            })
+            const { code: resCode, msg } = await axios.post('/api/comm/reset-password', { social })
 
             if (!utils.in.array(resCode, [200, 201])) {
                 ElMessage.error(msg || '发送验证码失败')

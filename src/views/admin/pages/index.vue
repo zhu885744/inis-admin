@@ -12,7 +12,9 @@
               <div class="status-label">连接状态</div>
               <div class="status-value">{{ connected ? '已连接' : '未连接' }}</div>
             </div>
-            <el-button v-if="!connected" type="primary" size="small" @click="reconnect">重连</el-button>
+            <el-button v-if="!connected" type="primary" size="small" @click="reconnect" :disabled="isReconnecting">
+              {{ isReconnecting ? '重连中...' : '重连' }}
+            </el-button>
           </div>
         </el-col>
         <el-col :xs="24" :sm="12" :md="6">
@@ -303,7 +305,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import socket from '{src}/utils/socket'
 
 // 连接状态
@@ -311,6 +313,10 @@ const connected = ref(false)
 const onlineCount = ref(0)
 const refreshRate = ref('0')
 const systemStatus = ref('healthy')
+// 重连防抖锁
+const isReconnecting = ref(false)
+// 轮询定时器兜底
+let pollTimer = null
 
 // 解析后的数据
 const systemInfoParsed = ref({})
@@ -319,6 +325,8 @@ const cacheStatusParsed = ref({})
 const systemResourcesParsed = ref({})
 
 let lastUpdateTime = 0
+// 存储所有socket事件回调，用于组件销毁解绑
+const socketHandlers = {}
 
 // 计算属性
 const systemHealth = computed(() => {
@@ -376,30 +384,26 @@ const getProgressColor = (value) => {
 const handleStatus = (content) => {
   console.log('处理状态消息:', content)
 
-  // 检查是否是在线状态消息
+  // 在线人数更新
   if (content.online_count !== undefined) {
     onlineCount.value = content.online_count
     return
   }
-
   if (content.online_users !== undefined) {
     onlineCount.value = Array.isArray(content.online_users) ? content.online_users.length : 0
     return
   }
 
-  // 检查是否是系统状态消息（包含 info, database, cache, resource 字段）
+  // 系统监控数据
   if (content.info || content.database || content.cache || content.resource) {
     updateSystemStatus(content)
     return
   }
-
-  // 如果 content 本身是嵌套的 content（某些服务端返回格式）
   if (content.content && (content.content.info || content.content.database)) {
     if (content.content.online_count !== undefined) {
       onlineCount.value = content.content.online_count
     }
     updateSystemStatus(content.content)
-    return
   }
 }
 
@@ -421,132 +425,191 @@ const updateSystemStatus = (content) => {
   }
 }
 
-// 初始化 Socket 连接
-const initSocket = () => {
-  socket.connect()
-
-  socket.on('open', () => {
+// 绑定socket事件并保存回调，用于销毁解绑
+const bindSocketEvents = () => {
+  socketHandlers.open = () => {
     connected.value = true
+    isReconnecting.value = false
     console.log('WebSocket 连接已建立')
-  })
-
-  socket.on('connect', (data) => {
+    // WS恢复后关闭http兜底轮询
+    stopPoll()
+  }
+  socketHandlers.connect = (data) => {
     console.log('连接成功，客户端ID:', data?.id)
-  })
-
-  socket.on('status', handleStatus)
-
-  socket.on('broadcast', (data) => {
+  }
+  socketHandlers.status = handleStatus
+  socketHandlers.broadcast = (data) => {
     ElMessage.info(data?.content?.message || '收到广播消息')
-  })
-
-  socket.on('single', (data) => {
+  }
+  socketHandlers.single = (data) => {
     ElMessage.info(data?.content?.message || '收到单播消息')
-  })
-
-  socket.on('private', (data) => {
+  }
+  socketHandlers.private = (data) => {
     ElMessage.success(`收到私聊: ${data?.content?.message || ''}`)
-  })
-
-  socket.on('close', () => {
+  }
+  socketHandlers.close = () => {
     connected.value = false
     console.log('WebSocket 连接已关闭')
-  })
-
-  socket.on('error', (error) => {
+    // WS断开，开启http兜底轮询保证面板数据可用
+    startPoll()
+  }
+  socketHandlers.error = (error) => {
     console.error('WebSocket 错误:', error)
-  })
+    isReconnecting.value = false
+  }
 
-  if (socket.isConnected()) {
-    connected.value = true
+  socket.on('open', socketHandlers.open)
+  socket.on('connect', socketHandlers.connect)
+  socket.on('status', socketHandlers.status)
+  socket.on('broadcast', socketHandlers.broadcast)
+  socket.on('single', socketHandlers.single)
+  socket.on('private', socketHandlers.private)
+  socket.on('close', socketHandlers.close)
+  socket.on('error', socketHandlers.error)
+}
+
+// 解绑所有socket事件，防止内存泄漏、后台自动重连
+const unbindSocketEvents = () => {
+  Object.entries(socketHandlers).forEach(([event, fn]) => {
+    socket.off(event, fn)
+  })
+}
+
+// http兜底轮询（WS断连备用，避免监控面板空白）
+const startPoll = () => {
+  if (pollTimer) return
+  pollTimer = setInterval(async () => {
+    try {
+      const res = await fetch('/api/system/status')
+      const data = await res.json()
+      updateSystemStatus(data)
+      onlineCount.value = data.online_count ?? 0
+    } catch (e) {
+      console.debug('轮询获取监控数据失败', e)
+    }
+  }, 5000)
+}
+const stopPoll = () => {
+  if (pollTimer) {
+    clearInterval(pollTimer)
+    pollTimer = null
   }
 }
 
-// 手动重连
+// 初始化 Socket 连接
+const initSocket = () => {
+  if (isReconnecting.value) return
+  isReconnecting.value = true
+  bindSocketEvents()
+  socket.connect()
+  if (socket.isConnected()) {
+    connected.value = true
+    stopPoll()
+  } else {
+    startPoll()
+  }
+}
+
+// 手动重连（带防抖锁，防止重复点击）
 const reconnect = () => {
+  if (isReconnecting.value) return ElMessage.warning('正在重连中，请稍候')
+  // 先清理旧连接与事件
   socket.close()
-  initSocket()
+  unbindSocketEvents()
+  setTimeout(() => {
+    initSocket()
+  }, 300)
 }
 
 onMounted(() => {
   initSocket()
 })
 
+// 组件销毁：彻底清理连接、事件、轮询、重连定时器
 onBeforeUnmount(() => {
+  isReconnecting.value = true
+  stopPoll()
+  unbindSocketEvents()
   socket.close()
 })
 </script>
 
 <style lang="scss" scoped>
-// 基础间距变量
-$spacing-xs: 4px;
-$spacing-sm: 8px;
-$spacing-md: 12px;
-$spacing-lg: 16px;
-$spacing-xl: 24px;
+// 全局统一基础变量，柔和后台标准
+$radius-sm: 6px;
+$radius-md: 8px;
+$radius-lg: 10px;
+
+$gap-xs: 4px;
+$gap-sm: 8px;
+$gap-md: 12px;
+$gap-lg: 16px;
+$gap-xl: 24px;
+
+// 柔和阴影分层（轻量化，不厚重）
+$shadow-light: 0 1px 4px rgba(0, 0, 0, 0.04);
+$shadow-hover: 0 3px 10px rgba(0, 0, 0, 0.06);
 
 .mb-4 {
-  margin-bottom: $spacing-lg;
+  margin-bottom: $gap-lg;
 }
 
 .section-title {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
+  gap: $gap-sm;
   font-size: 16px;
   font-weight: 600;
   color: var(--el-text-color-primary);
-  margin-bottom: $spacing-md;
-  padding-left: $spacing-xs;
+  margin-bottom: $gap-md;
+  padding-left: $gap-xs;
 }
 
-// 状态栏
+// ========== 顶部状态栏优化（柔和低饱和渐变） ==========
 .status-bar {
-  margin-bottom: $spacing-xl;
+  margin-bottom: $gap-xl;
 }
 
 .status-item {
   display: flex;
   align-items: center;
-  gap: $spacing-md;
-  padding: $spacing-lg;
-  border-radius: 8px;
+  gap: $gap-md;
+  padding: $gap-lg;
+  border-radius: $radius-md;
   background: var(--el-bg-color);
-  border: 1px solid var(--el-border-color-light);
-  margin-bottom: $spacing-md;
-  transition: all 0.3s;
+  border: 1px solid var(--el-border-color-lighter);
+  margin-bottom: $gap-md;
+  transition: all 0.24s ease;
 
   &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: $shadow-hover;
+    border-color: var(--el-border-color-light);
   }
 
+  // 弱化渐变透明度，护眼不刺眼
   &.status-success {
-    background: linear-gradient(135deg, #67c23a15 0%, #67c23a08 100%);
-    border-color: #67c23a40;
+    background: linear-gradient(135deg, rgba(103, 194, 58, 0.08) 0%, rgba(103, 194, 58, 0.03) 100%);
+    border-color: rgba(103, 194, 58, 0.25);
     .status-icon { color: #67c23a; }
   }
-
   &.status-danger {
-    background: linear-gradient(135deg, #f56c6c15 0%, #f56c6c08 100%);
-    border-color: #f56c6c40;
+    background: linear-gradient(135deg, rgba(245, 108, 108, 0.08) 0%, rgba(245, 108, 108, 0.03) 100%);
+    border-color: rgba(245, 108, 108, 0.25);
     .status-icon { color: #f56c6c; }
   }
-
   &.status-warning {
-    background: linear-gradient(135deg, #e6a23c15 0%, #e6a23c08 100%);
-    border-color: #e6a23c40;
+    background: linear-gradient(135deg, rgba(230, 162, 60, 0.08) 0%, rgba(230, 162, 60, 0.03) 100%);
+    border-color: rgba(230, 162, 60, 0.25);
     .status-icon { color: #e6a23c; }
   }
-
   &.status-primary {
-    background: linear-gradient(135deg, #409eff15 0%, #409eff08 100%);
-    border-color: #409eff40;
+    background: linear-gradient(135deg, rgba(64, 158, 255, 0.08) 0%, rgba(64, 158, 255, 0.03) 100%);
+    border-color: rgba(64, 158, 255, 0.25);
     .status-icon { color: #409eff; }
   }
-
   &.status-info {
-    background: linear-gradient(135deg, #90939915 0%, #90939908 100%);
-    border-color: #90939940;
+    background: linear-gradient(135deg, rgba(144, 147, 153, 0.06) 0%, rgba(144, 147, 153, 0.02) 100%);
+    border-color: rgba(144, 147, 153, 0.2);
     .status-icon { color: #909399; }
   }
 }
@@ -554,135 +617,144 @@ $spacing-xl: 24px;
 .status-icon {
   flex-shrink: 0;
 }
-
 .status-content {
   flex: 1;
   min-width: 0;
 }
-
 .status-label {
   font-size: 12px;
   color: var(--el-text-color-secondary);
-  margin-bottom: $spacing-xs;
+  margin-bottom: $gap-xs;
+  opacity: 0.85;
 }
-
 .status-value {
   font-size: 14px;
   font-weight: 600;
   color: var(--el-text-color-primary);
 }
-
 .ml-auto {
   margin-left: auto;
 }
 
-// 卡片样式
+// ========== 全局卡片统一美化 ==========
 .dashboard-card {
   height: 100%;
+  border-radius: $radius-md;
+  transition: box-shadow 0.24s ease;
 
   :deep(.el-card__header) {
-    padding: $spacing-md $spacing-lg;
-    background: var(--el-fill-color-light);
-    margin-bottom: $spacing-md;
+    padding: $gap-md $gap-lg;
+    background: rgba(var(--el-fill-color-rgb), 0.4); // 淡化头部背景，不突兀
+    margin-bottom: $gap-md;
+    border-bottom: 1px solid var(--el-border-color-lighter);
   }
-
   :deep(.el-card__body) {
-    padding: $spacing-lg;
+    padding: $gap-lg;
   }
-
   :deep(.el-divider--horizontal) {
-    margin: $spacing-md 0;
+    margin: $gap-md 0;
+    opacity: 0.7;
   }
+}
+.dashboard-card:hover {
+  box-shadow: $shadow-hover;
 }
 
 .card-header {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
+  gap: $gap-sm;
   font-weight: 600;
   color: var(--el-text-color-primary);
+  font-size: 14px;
 }
 
-// 统计项
+// ========== 数据库统计小块 ==========
 .stat-item {
   text-align: center;
-  padding: $spacing-md $spacing-sm;
+  padding: $gap-md $gap-sm;
   background: var(--el-fill-color-light);
-  border-radius: 6px;
-  margin-bottom: $spacing-sm;
-  transition: all 0.3s;
+  border-radius: $radius-sm;
+  margin-bottom: $gap-sm;
+  transition: background 0.2s ease;
 
   &:hover {
     background: var(--el-fill-color);
   }
 }
-
 .stat-value {
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--el-color-primary);
   line-height: 1.2;
 }
-
 .stat-label {
   font-size: 12px;
   color: var(--el-text-color-secondary);
-  margin-top: $spacing-xs;
+  margin-top: $gap-xs;
+  opacity: 0.85;
 }
 
-// 缓存状态
+// ========== 缓存状态模块 ==========
 .cache-status-item {
   display: flex;
   align-items: center;
-  gap: $spacing-lg;
-  padding: $spacing-lg;
+  gap: $gap-lg;
+  padding: $gap-lg;
   background: var(--el-fill-color-light);
-  border-radius: 8px;
-  margin-bottom: $spacing-md;
-}
+  border-radius: $radius-md;
+  margin-bottom: $gap-md;
+  transition: background 0.2s ease;
 
+  &:hover {
+    background: var(--el-fill-color);
+  }
+}
 .cache-status-content {
   flex: 1;
 }
-
 .cache-status-label {
   font-size: 12px;
   color: var(--el-text-color-secondary);
-  margin-bottom: $spacing-xs;
+  margin-bottom: $gap-xs;
+  opacity: 0.85;
 }
-
 .cache-status-value {
   font-size: 14px;
   font-weight: 600;
   color: var(--el-text-color-primary);
 }
 
-// 网络统计
+// ========== 网络迷你统计块 ==========
 .mini-stat-item {
-  padding: $spacing-md;
+  padding: $gap-md;
   background: var(--el-fill-color-light);
-  border-radius: 6px;
-  margin-bottom: $spacing-sm;
-}
+  border-radius: $radius-sm;
+  margin-bottom: $gap-sm;
+  transition: background 0.2s ease;
 
+  &:hover {
+    background: var(--el-fill-color);
+  }
+}
 .mini-stat-label {
   font-size: 12px;
   color: var(--el-text-color-secondary);
   margin-bottom: 4px;
+  opacity: 0.85;
 }
-
 .mini-stat-value {
   font-size: 14px;
   font-weight: 600;
   color: var(--el-text-color-primary);
 }
 
-// 工具类
+// ========== 工具文字颜色类 ==========
 .text-success { color: #67c23a; }
 .text-danger { color: #f56c6c; }
 .text-warning { color: #e6a23c; }
 .text-primary { color: #409eff; }
-.text-muted { color: var(--el-text-color-secondary); }
+.text-muted { color: var(--el-text-color-secondary); opacity: 0.8; }
 
 .text-truncate {
   white-space: nowrap;
@@ -691,11 +763,14 @@ $spacing-xl: 24px;
   display: block;
 }
 
+// ========== 进度条美化，圆角柔和 ==========
 :deep(.el-progress-bar__outer) {
-  border-radius: 10px;
+  border-radius: $radius-lg;
+  height: 20px !important;
+  background: var(--el-fill-color-light);
 }
-
 :deep(.el-progress-bar__inner) {
-  border-radius: 10px;
+  border-radius: $radius-lg;
+  transition: width 0.3s ease;
 }
 </style>

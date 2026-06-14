@@ -126,7 +126,7 @@ const admin = {
     },{
         path: 'auth/pages',
         name: 'admin-auth-pages',
-        meta: { title: '管理页面' },
+        meta: { title: '后台页面管理' },
         component: () => import('{src}/views/admin/pages/auth-pages.vue'),
     },{
         path: 'api/keys',

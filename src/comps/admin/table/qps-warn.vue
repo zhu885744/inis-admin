@@ -37,15 +37,6 @@
             </el-tooltip>
         </template>
 
-        <template #i-route="{ scope = {} }">
-            <el-tooltip :content="`双击复制：[${scope.method}] ${scope.path}`" :disabled="utils.is.empty(scope.path)" placement="top">
-                <span v-on:dblclick="method.copy(`[${scope.method}] ${scope.path}`, '复制成功！')">
-                    <span :class="'text-' + method.color(scope.method)">[{{ scope?.method }}]</span>
-                    <span style="margin-left: 4px">{{ method.omit(scope?.path, 30, ' ...', 'end') }}</span>
-                </span>
-            </el-tooltip>
-        </template>
-
         <template #i-agent="{ scope = {} }">
             <el-tooltip :disabled="utils.is.empty(scope.agent)" placement="top">
                 <template #content>
@@ -105,7 +96,8 @@ const state  = reactive({
         params: props.params,
         columns: [
             { prop: 'ip', label: 'IP', width: 120, slot: true, fixed: left },
-            { prop: 'route', label: '路由', slot: true },
+            { prop: 'path', label: '路径', slot: true },
+            { prop: 'method', label: '方法', width: 80, align: 'center' },
             { prop: 'agent' , label: 'User-Agent', slot: true },
             { prop: 'update_time', label: '更新时间', width: 140, sortable: true },
             { prop: 'create_time', label: '创建时间', width: 140, sortable: true },

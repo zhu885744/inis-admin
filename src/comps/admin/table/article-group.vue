@@ -19,7 +19,7 @@
                 </template>
             </el-table-column>
         </template>
-        <template v-if="props.type === 'remove'" #end>
+        <template v-if="props.type === 'remove'">
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
                     <span style="display: flex; justify-content: flex-end">
@@ -62,47 +62,35 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 文 章 分 组</strong>
         </template>
         <template #default>
-            <el-form label-width="100px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="8">
-                        <el-form-item label="名称">
-                            <el-input v-model="state.struct.name" placeholder="请输入分组名称" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="唯一识别码">
-                            <el-input v-model="state.struct.key" placeholder="请输入唯一识别码" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="父级分组">
-                            <el-select v-model="state.struct.pid" filterable placeholder="请选择父级分组" style="width: 100%" class="custom">
-                                <el-option v-for="item in state.select.list" :key="item.value" :label="item.label"
-                                           :disabled="parseInt(state.struct.id) === parseInt(item.value)" :value="item.value">
-                                    <span style="font-size: 13px">{{ item.label }}</span>
-                                    <small style="float: right">{{ item.value }}</small>
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="24">
-                        <el-form-item label="头像">
-                            <el-input v-model="state.struct.avatar" class="custom" placeholder="填写图片地址或点击上传图片" style="width: 100%">
-                                <template #append>
-                                    <el-button v-on:click="method.upload('avatar')" :loading="state.item.upload">
-                                        <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                                        <span style="margin-left: 4px">上传</span>
-                                    </el-button>
-                                </template>
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="24">
-                        <el-form-item label="描述">
-                            <el-input v-model="state.struct.description" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="请输入分组描述信息" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="名称">
+                    <el-input v-model="state.struct.name" placeholder="请输入分组名称" style="width: 100%"></el-input>
+                </el-form-item>
+                <el-form-item label="唯一识别码">
+                    <el-input v-model="state.struct.key" placeholder="请输入唯一识别码" style="width: 100%"></el-input>
+                </el-form-item>
+                <el-form-item label="父级分组">
+                    <el-select v-model="state.struct.pid" filterable placeholder="请选择父级分组" style="width: 100%" class="custom">
+                        <el-option v-for="item in state.select.list" :key="item.value" :label="item.label"
+                                   :disabled="parseInt(state.struct.id) === parseInt(item.value)" :value="item.value">
+                            <span style="font-size: 13px">{{ item.label }}</span>
+                            <small style="float: right">{{ item.value }}</small>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="头像">
+                    <el-input v-model="state.struct.avatar" class="custom" placeholder="填写图片地址或点击上传图片" style="width: 100%">
+                        <template #append>
+                            <el-button v-on:click="method.upload('avatar')" :loading="state.item.upload">
+                                <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
+                                <span style="margin-left: 4px">上传</span>
+                            </el-button>
+                        </template>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="描述">
+                    <el-input v-model="state.struct.description" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="请输入分组描述信息" style="width: 100%"></el-input>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

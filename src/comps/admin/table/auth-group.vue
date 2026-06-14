@@ -84,85 +84,61 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 权 限 分 组</strong>
         </template>
         <template #default>
-            <el-form label-width="100px" label-position="left">
-            <el-row :gutter="20">
-                <el-col :lg="8">
-                    <el-form-item label="名称">
-                        <el-input v-model="state.struct.name" placeholder="请输入分组名称" style="width: 100%"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :lg="8">
-                    <el-form-item label="唯一识别码">
-                        <el-input v-model="state.struct.key" placeholder="请输入唯一识别码" style="width: 100%"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :lg="8">
-                    <el-form-item label="权限">
-                        <el-select v-model="state.struct.root" placeholder="请选择权限" style="width: 100%" class="custom">
-                            <el-option v-for="item in state.select.root" :key="item.value" :label="item.label" :value="item.value" style="display: flex; justify-content: space-between">
-                                <span style="font-size: 13px; display: flex; align-items: center">
-                                    <i-svg name="dot" :color="item.color" size="20px"></i-svg>
-                                    {{ item.label }}
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="名称">
+                    <el-input v-model="state.struct.name" placeholder="请输入分组名称" style="width: 100%"></el-input>
+                </el-form-item>
+                <el-form-item label="唯一识别码">
+                    <el-input v-model="state.struct.key" placeholder="请输入唯一识别码" style="width: 100%"></el-input>
+                </el-form-item>
+                <el-form-item label="权限">
+                    <el-select v-model="state.struct.root" placeholder="请选择权限" style="width: 100%" class="custom">
+                        <el-option v-for="item in state.select.root" :key="item.value" :label="item.label" :value="item.value" style="display: flex; justify-content: space-between">
+                            <span style="font-size: 13px; display: flex; align-items: center">
+                                <i-svg name="dot" :color="item.color" size="20px"></i-svg>
+                                {{ item.label }}
+                            </span>
+                            <small>{{ item.subtitle }}</small>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="备注">
+                    <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea" style="width: 100%"></el-input>
+                </el-form-item>
+                <el-form-item label="成员">
+                    <el-select v-model="state.selected.users" multiple filterable default-first-option placeholder="请选择成员" style="width: 100%" class="custom multiple">
+                        <el-option v-for="item in state.select.users" :key="item.id" :label="item.nickname" :value="item.id">
+                            <span style="display: flex; justify-content: space-between">
+                                <span style="display: flex; align-items: center">
+                                    <el-avatar :src="item.avatar" size="small" class="avatar-shadow"></el-avatar>
+                                    <span style="font-size: 14px; margin-left: 4px">{{ item.nickname }}</span>
                                 </span>
-                                <small>{{ item.subtitle }}</small>
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20">
-                <el-col :lg="24">
-                    <el-form-item label="备注">
-                        <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea" style="width: 100%"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20">
-                <el-col :lg="24">
-                    <el-form-item label="成员">
-                        <el-select v-model="state.selected.users" multiple filterable default-first-option placeholder="请选择成员" style="width: 100%" class="custom multiple">
-                            <el-option v-for="item in state.select.users" :key="item.id" :label="item.nickname" :value="item.id">
-                                <span style="display: flex; justify-content: space-between">
-                                    <span style="display: flex; align-items: center">
-                                        <el-avatar :src="item.avatar" size="small" class="avatar-shadow"></el-avatar>
-                                        <span style="font-size: 14px; margin-left: 4px">{{ item.nickname }}</span>
-                                    </span>
-                                    <small>{{ item.account }}</small>
-                                </span>
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20">
-                <el-col :lg="24">
-                    <el-form-item label="页面">
-                        <el-select v-model="state.selected.pages" multiple filterable default-first-option placeholder="请选择权限" style="width: 100%" class="custom multiple">
-                            <el-option v-for="item in state.select.pages" :key="item.hash" :label="item.name" :value="item.hash">
-                                <span style="font-size: 13px">
-                                    <span v-if="!utils.is.empty(item.svg)" v-html="item.svg"></span>
-                                    <i-svg color="rgb(var(--icon-color))" v-else-if="!utils.is.empty(item.icon)" :name="item.icon" :size="item.size"></i-svg>
-                                    {{ item.name }}
-                                </span>
-                                <small style="float: right">{{ item.path }}</small>
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20">
-                <el-col :lg="24">
-                    <el-form-item label="规则">
-                        <el-cascader placeholder="试试搜索：文章" :options="state.select.rules" :props="{ multiple: true }" filterable
-                            class="custom multiple" style="display: block; width: 100%" v-model="state.rules.select" v-on:change="method.change">
-                            <template #default="{ node, data }">
-                                <span>{{ data.label }} </span>
-                                <span v-if="!node.isLeaf"> ({{ data.children.length }}) </span>
-                            </template>
-                        </el-cascader>
-                    </el-form-item>
-                </el-col>
-            </el-row>
+                                <small>{{ item.account }}</small>
+                            </span>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="页面">
+                    <el-select v-model="state.selected.pages" multiple filterable default-first-option placeholder="请选择权限" style="width: 100%" class="custom multiple">
+                        <el-option v-for="item in state.select.pages" :key="item.hash" :label="item.name" :value="item.hash">
+                            <span style="font-size: 13px">
+                                <span v-if="!utils.is.empty(item.svg)" v-html="item.svg"></span>
+                                <i-svg color="rgb(var(--icon-color))" v-else-if="!utils.is.empty(item.icon)" :name="item.icon" :size="item.size"></i-svg>
+                                {{ item.name }}
+                            </span>
+                            <small style="float: right">{{ item.path }}</small>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="规则">
+                    <el-cascader placeholder="试试搜索：文章" :options="state.select.rules" :props="{ multiple: true }" filterable
+                        class="custom multiple" style="display: block; width: 100%" v-model="state.rules.select" v-on:change="method.change">
+                        <template #default="{ node, data }">
+                            <span>{{ data.label }} </span>
+                            <span v-if="!node.isLeaf"> ({{ data.children.length }}) </span>
+                        </template>
+                    </el-cascader>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

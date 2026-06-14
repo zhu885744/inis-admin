@@ -93,7 +93,6 @@ const state  = reactive({
     params: {
         all: {
             order: 'top desc, id desc',
-            where: []
         },
         check: {
             order: 'top desc, id desc',
@@ -105,7 +104,6 @@ const state  = reactive({
         },
         remove: {
             order: 'top desc, id desc',
-            where: [],
             onlyTrashed: true
         },
     },
@@ -146,12 +144,15 @@ const method = {
 }
 
 onMounted(async () => {
-
     const allow = ['all', 'check', 'audit', 'remove']
 
     let root = state.user?.result?.auth?.all ?? false
-    if (!root) {
-        for (let item of allow) state.params[item].where.push(['uid', '=', state.user?.id])
+    let userId = state.user?.id
+    if (!root && userId) {
+        for (let item of allow) {
+            if (!state.params[item].where) state.params[item].where = []
+            state.params[item].where.push(['uid', '=', userId])
+        }
     }
 
     // 使用 nextTick 确保 DOM 更新后再初始化

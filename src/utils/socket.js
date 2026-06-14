@@ -10,11 +10,14 @@ let heartbeatTimer = null
 let reconnectTimer = null
 // 事件监听器
 const listeners = {}
+// 阶梯重连延迟序列（逐步拉长，上限30s，和服务reconnect_timeout对齐）
+const reconnectDelayList = [1000, 3000, 8000, 15000, 30000]
+let delayIndex = 0
 
 // 配置
 const config = {
     reconnectInterval: globalThis?.inis?.socket?.reconnect_interval || 5000,
-    heartbeatInterval: globalThis?.inis?.socket?.heartbeat_interval || 10000,
+    heartbeatInterval: globalThis?.inis?.socket?.heartbeat_interval || 15000, // 拉长至15s，减少心跳压力
 }
 
 // 获取 socket URI
@@ -41,7 +44,8 @@ const getSocketUri = () => {
 
 // socket 连接
 const connect = (uri = null, params = {}) => {
-
+    // 重置重连阶梯计数（连接成功后清零）
+    delayIndex = 0
     // 处理服务端地址
     uri = !utils.is.empty(uri) ? uri : getSocketUri()
 
@@ -55,9 +59,9 @@ const connect = (uri = null, params = {}) => {
         }
     }
 
-    // 如果已存在连接，先关闭
+    // 如果已存在连接，先正常关闭
     if (socket) {
-        socket.close()
+        socket.close(1000, 'reconnect new link')
         socket = null
     }
 
@@ -91,19 +95,32 @@ const connect = (uri = null, params = {}) => {
 
     // 连接关闭
     socket.onclose = (event) => {
-        console.log('Socket 连接关闭')
+        console.log('Socket 连接关闭 code:', event.code, 'reason:', event.reason)
         // 停止心跳
         stopHeartbeat()
         // 触发事件
         emit('close', event)
-        // 自动重连
-        reconnect()
+        // 关键：正常关闭码1000 不自动重连，仅异常断开重连
+        if (event.code !== 1000) {
+            reconnect()
+        }
     }
 
     // 连接错误
     socket.onerror = (error) => {
         console.error('Socket 错误:', error)
         emit('error', error)
+    }
+
+    // 页面切后台/前台保活监听（仅绑定一次）
+    if (!document._wsVisibilityBind) {
+        document._wsVisibilityBind = true
+        document.addEventListener('visibilitychange', () => {
+            // 页面隐藏、后台运行时主动发一次心跳保活
+            if (document.hidden && socket && socket.readyState === WebSocket.OPEN) {
+                ping()
+            }
+        })
     }
 
     return socket
@@ -219,14 +236,17 @@ const stopHeartbeat = () => {
     }
 }
 
-// 重连
+// 阶梯退避重连（核心优化）
 const reconnect = () => {
     if (reconnectTimer) return
+    // 获取当前阶梯延迟，不超过最大值
+    const waitMs = reconnectDelayList[Math.min(delayIndex, reconnectDelayList.length - 1)]
+    delayIndex++
     reconnectTimer = setTimeout(() => {
-        console.log('尝试重连...')
+        console.log(`阶梯重连，等待${waitMs/1000}s后尝试连接`)
         reconnectTimer = null
         connect()
-    }, config.reconnectInterval)
+    }, waitMs)
 }
 
 // 事件监听
@@ -260,7 +280,7 @@ const off = (event, callback) => {
     }
 }
 
-// 关闭连接
+// 主动关闭连接（正常关闭码1000，不触发自动重连）
 const close = () => {
     stopHeartbeat()
     if (reconnectTimer) {
@@ -268,10 +288,11 @@ const close = () => {
         reconnectTimer = null
     }
     if (socket) {
-        socket.close()
+        socket.close(1000, 'user manual close')
         socket = null
     }
     clientId = null
+    delayIndex = 0
 }
 
 // 获取客户端ID

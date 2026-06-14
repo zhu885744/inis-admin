@@ -13,7 +13,7 @@
                     </template>
                 </el-dropdown>
                 <div style="margin-right: 4px">
-                    <el-input v-model="state.item.search" style="width: 200px" autocomplete="new-password" type="text" placeholder="IP | 路由 | User-Agent" />
+                    <el-input v-model="state.item.search" style="width: 200px" autocomplete="new-password" type="text" placeholder="IP | 路径 | User-Agent" />
                 </div>
                 <el-button v-on:click="method.refresh()">刷新</el-button>
             </el-col>
@@ -125,7 +125,6 @@ watch(() => state.item.search, (val) => {
             ['ip', `%${val}%`],
             ['path', `%${val}%`],
             ['agent', `%${val}%`],
-            ['remark', `%${val}%`],
             ['method', `${val?.toUpperCase()}`],
         ]
         else delete state.params[item].like

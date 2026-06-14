@@ -1,183 +1,163 @@
 <template>
     <div class="container-box" style="padding-left: 4px; padding-right: 4px;">
         <el-row :gutter="20">
+            <!-- 左侧编辑器区域 -->
             <el-col :span="18">
                 <el-card style="margin-bottom: 8px">
                     <div v-loading="utils.is.empty(state.struct.editor)" style="min-height: 485px">
                         <i-vditor ref="vditor" v-model="state.struct.content" :opts="{ height: 600 }"></i-vditor>
                     </div>
                     <template #footer>
-                        <el-button v-on:click="method.save()" :loading="state.item.wait" style="float: right">发布文章</el-button>
-                        <el-button v-on:click="method.saveDraft()" :loading="state.item.wait">保存草稿</el-button>
+                        <el-button @click="method.save()" :loading="state.item.wait" style="float: right">发布文章</el-button>
+                        <el-button @click="method.saveDraft()" :loading="state.item.wait">保存草稿</el-button>
                     </template>
                 </el-card>
             </el-col>
+
+            <!-- 右侧侧边栏 四个独立Card，全部默认展开无折叠 -->
             <el-col :span="6" v-loading="state.item.loading" id="page-header-title">
-                <el-collapse accordion v-model="state.item.active">
-                    <el-card style="margin-bottom: 8px">
-                        <div style="padding-left: 8px; padding-right: 8px; padding-top: 0; padding-bottom: 0">
-                            <el-collapse-item name="1">
-                                <template #title>
-                                    展示信息
-                                </template>
-                                <el-form-item style="margin-bottom: 12px">
-                                    <el-tooltip content="（必须）文章的标题" placement="top">
-                                        <span>
-                                            <i-svg name="hint" size="14px"></i-svg>
-                                            <span style="margin-left: 4px" class="required">标题：</span>
-                                        </span>
-                                    </el-tooltip>
-                                    <el-input v-model="state.struct.title" placeholder="文章标题"></el-input>
-                                </el-form-item>
-                                <el-form-item style="margin-bottom: 12px">
-                                    <el-tooltip content="文章的发布时间，留空则为当前时间" placement="top">
-                                        <span>
-                                            <i-svg name="hint" size="14px"></i-svg>
-                                            <span style="margin-left: 4px">发布时间：</span>
-                                        </span>
-                                    </el-tooltip>
-                                    <el-date-picker
-                                        v-model="state.struct.publishTime"
-                                        type="datetime"
-                                        placeholder="选择发布时间"
-                                        format="YYYY-MM-DD HH:mm:ss"
-                                        value-format="YYYY-MM-DD HH:mm:ss"
-                                        style="width: 100%"
-                                    />
-                                </el-form-item>
-                                <el-form-item v-if="store.comm.login.user.result.auth.all === true" style="margin-bottom: 12px">
-                                    <el-tooltip content="审核状态" placement="top">
-                                        <span>
-                                            <i-svg name="hint" size="14px"></i-svg>
-                                            <span style="margin-left: 4px">审核状态：</span>
-                                        </span>
-                                    </el-tooltip>
-                                    <el-select v-model="state.struct.audit" style="display: block; font-size: 13px" placeholder="请选择">
-                                        <el-option v-for="item in state.select.audit" :key="item.value" :label="item.label" :value="item.value">
-                                            <span style="font-size: 13px">{{ item.label }}</span>
-                                            <small style="color: #999; float: right">{{ item.value }}</small>
-                                        </el-option>
-                                    </el-select>
-                                </el-form-item>
-                                <el-form-item style="margin-bottom: 12px">
-                                    <el-tooltip content="文章的摘要" placement="top">
-                                        <span>
-                                            <i-svg name="hint" size="14px"></i-svg>
-                                            <span style="margin-left: 4px">摘要：</span>
-                                        </span>
-                                    </el-tooltip>
-                                    <el-input v-model="state.struct.abstract" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="简单的描述一下您的文章" type="textarea">
-                                    </el-input>
-                                </el-form-item>
-                            </el-collapse-item>
-                        </div>
-                    </el-card>
-                    <el-card style="margin-bottom: 8px">
-                        <div style="padding-left: 8px; padding-right: 8px; padding-top: 0; padding-bottom: 0">
-                            <el-collapse-item name="2">
-                                <template #title>
-                                    封面图
-                                </template>
-                                <el-tabs v-model="state.item.tabs" :stretch="true">
-                                    <el-tab-pane label="预览" name="preview">
-                                        <el-upload class="custom upload" action="/api/file/upload" :headers="method.headers()" :multiple="true" list-type="picture"
-                                            :on-remove="method.cover.remove" :on-success="method.cover.success"
-                                            :on-error="method.cover.error" :file-list="state.item.cover.preview">
-                                            <el-button type="primary" style="width: 100%">上 传</el-button>
-                                        </el-upload>
-                                    </el-tab-pane>
-                                    <el-tab-pane label="外链" name="links">
-                                        <el-input v-model="state.item.cover.links" v-on:change="method.cover.change" wrap="off"
-                                            :autosize="{ minRows: 3, maxRows: 10 }" placeholder="外链图片地址，一行一个" type="textarea">
-                                        </el-input>
-                                    </el-tab-pane>
-                                </el-tabs>
-                            </el-collapse-item>
-                        </div>
-                    </el-card>
-                    <el-card style="margin-bottom: 8px">
-                        <div style="padding-left: 8px; padding-right: 8px; padding-top: 0; padding-bottom: 0">
-                            <el-collapse-item name="3">
-                                <template #title>
-                                    置顶、分类、标签
-                                </template>
-                                <el-form-item style="margin-bottom: 12px">
-                                    <el-tooltip content="可同时选择多个分类" placement="top">
-                                        <span>
-                                            <i-svg name="hint" size="14px"></i-svg>
-                                            <span style="margin-left: 4px">置顶：</span>
-                                        </span>
-                                    </el-tooltip>
-                                    <el-select v-model="state.struct.top" style="display: block" placeholder="请选择" filterable>
-                                        <el-option v-for="item in state.select.top" :key="item.value" :label="item.label" :value="item.value">
-                                        </el-option>
-                                    </el-select>
-                                </el-form-item>
-                                <el-form-item style="margin-bottom: 12px">
-                                    <el-tooltip content="可同时选择多个分类" placement="top">
-                                        <span>
-                                            <i-svg name="hint" size="14px"></i-svg>
-                                            <span style="margin-left: 4px">分类：</span>
-                                        </span>
-                                    </el-tooltip>
-                                    <el-cascader :options="state.select.group" :props="{ multiple: true, checkStrictly: true }"
-                                         v-model="state.item.group" collapse-tags clearable filterable style="width: 100%">
-                                    </el-cascader>
-                                </el-form-item>
-                                <el-form-item>
-                                    <el-tooltip content="可同时选择多个标签" placement="top">
-                                        <span>
-                                            <i-svg name="hint" size="14px"></i-svg>
-                                            <span style="margin-left: 4px">标签：</span>
-                                        </span>
-                                    </el-tooltip>
-                                    <el-select v-model="state.item.tags" v-on:change="method.change.tags"
-                                        multiple collapse-tags filterable allow-create default-first-option style="display: block" placeholder="请选择">
-                                        <el-option v-for="item in state.select.tags" :key="item.value" :label="item.label" :value="item.value">
-                                        </el-option>
-                                    </el-select>
-                                </el-form-item>
-                            </el-collapse-item>
-                        </div>
-                    </el-card>
-                    <el-card>
-                        <div style="padding-left: 8px; padding-right: 8px; padding-top: 0; padding-bottom: 0">
-                            <el-collapse-item name="4">
-                                <template #title>
-                                    高级选项
-                                </template>
-                                <el-form-item style="margin-bottom: 12px">
-                                    <el-tooltip content="对当前文章的评论选项单独控制" placement="top">
-                                        <span>
-                                            <i-svg name="hint" size="14px"></i-svg>
-                                            <span style="margin-left: 4px">允许评论：</span>
-                                        </span>
-                                    </el-tooltip>
-                                    <el-select v-model="state.struct.json.comment.allow" style="display: block; font-size: 13px" placeholder="请选择">
-                                        <el-option v-for="item in state.select.comment.allow" :key="item.value" :label="item.label" :value="item.value">
-                                            <span style="font-size: 13px">{{ item.label }}</span>
-                                            <small style="color: #999; float: right">{{ item.value }}</small>
-                                        </el-option>
-                                    </el-select>
-                                </el-form-item>
-                                <el-form-item style="margin-bottom: 12px">
-                                    <el-tooltip content="对当前文章的评论选项单独控制" placement="top">
-                                        <span>
-                                            <i-svg name="hint" size="14px"></i-svg>
-                                            <span style="margin-left: 4px">显示评论：</span>
-                                        </span>
-                                    </el-tooltip>
-                                    <el-select v-model="state.struct.json.comment.show" style="display: block; font-size: 13px" placeholder="请选择">
-                                        <el-option v-for="item in state.select.comment.show" :key="item.value" :label="item.label" :value="item.value">
-                                            <span style="font-size: 13px">{{ item.label }}</span>
-                                            <small style="color: #999; float: right">{{ item.value }}</small>
-                                        </el-option>
-                                    </el-select>
-                                </el-form-item>
-                            </el-collapse-item>
-                        </div>
-                    </el-card>
-                </el-collapse>
+                <!-- 模块1：展示信息 -->
+                <el-card header="展示信息" style="margin-bottom: 10px">
+                    <el-form-item style="margin-bottom: 12px">
+                        <el-tooltip content="（必须）文章的标题" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px" class="required">标题：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-input v-model="state.struct.title" placeholder="文章标题"></el-input>
+                    </el-form-item>
+                    <el-form-item style="margin-bottom: 12px">
+                        <el-tooltip content="文章的发布时间，留空则为当前时间" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">发布时间：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-date-picker
+                            v-model="state.struct.publishTime"
+                            type="datetime"
+                            placeholder="选择发布时间"
+                            format="YYYY-MM-DD HH:mm:ss"
+                            value-format="YYYY-MM-DD HH:mm:ss"
+                            style="width: 100%"
+                        />
+                    </el-form-item>
+                    <el-form-item v-if="store.comm.login.user.result.auth.all === true" style="margin-bottom: 12px">
+                        <el-tooltip content="审核状态" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">审核状态：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-select v-model="state.struct.audit" style="display: block; font-size: 13px" placeholder="请选择">
+                            <el-option v-for="item in state.select.audit" :key="item.value" :label="item.label" :value="item.value">
+                                <span style="font-size: 13px">{{ item.label }}</span>
+                                <small style="color: #999; float: right">{{ item.value }}</small>
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item style="margin-bottom: 12px">
+                        <el-tooltip content="文章的摘要" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">摘要：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-input v-model="state.struct.abstract" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="简单的描述一下您的文章" type="textarea">
+                        </el-input>
+                    </el-form-item>
+                </el-card>
+
+                <!-- 模块2：封面图 -->
+                <el-card header="封面图" style="margin-bottom: 10px">
+                    <el-tabs v-model="state.item.tabs" :stretch="true">
+                        <el-tab-pane label="预览" name="preview">
+                            <el-upload class="custom upload" action="/api/file/upload" :headers="method.headers()" :multiple="true" list-type="picture"
+                                :on-remove="method.cover.remove" :on-success="method.cover.success"
+                                :on-error="method.cover.error" :file-list="state.item.cover.preview">
+                                <el-button type="primary" style="width: 100%">上 传</el-button>
+                            </el-upload>
+                        </el-tab-pane>
+                        <el-tab-pane label="外链" name="links">
+                            <el-input v-model="state.item.cover.links" @change="method.cover.change" wrap="off"
+                                :autosize="{ minRows: 3, maxRows: 10 }" placeholder="外链图片地址，一行一个" type="textarea">
+                            </el-input>
+                        </el-tab-pane>
+                    </el-tabs>
+                </el-card>
+
+                <!-- 模块3：置顶、分类、标签 -->
+                <el-card header="置顶、分类、标签" style="margin-bottom: 10px">
+                    <el-form-item style="margin-bottom: 12px">
+                        <el-tooltip content="可同时选择多个分类" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">置顶：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-select v-model="state.struct.top" style="display: block" placeholder="请选择" filterable>
+                            <el-option v-for="item in state.select.top" :key="item.value" :label="item.label" :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item style="margin-bottom: 12px">
+                        <el-tooltip content="可同时选择多个分类" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">分类：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-cascader :options="state.select.group" :props="{ multiple: true, checkStrictly: true }"
+                             v-model="state.item.group" collapse-tags clearable filterable style="width: 100%">
+                        </el-cascader>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-tooltip content="可同时选择多个标签" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">标签：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-select v-model="state.item.tags" @change="method.change.tags"
+                            multiple collapse-tags filterable allow-create default-first-option style="display: block" placeholder="请选择">
+                            <el-option v-for="item in state.select.tags" :key="item.value" :label="item.label" :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-card>
+
+                <!-- 模块4：高级选项 -->
+                <el-card header="高级选项">
+                    <el-form-item style="margin-bottom: 12px">
+                        <el-tooltip content="对当前文章的评论选项单独控制" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">允许评论：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-select v-model="state.struct.json.comment.allow" style="display: block; font-size: 13px" placeholder="请选择">
+                            <el-option v-for="item in state.select.comment.allow" :key="item.value" :label="item.label" :value="item.value">
+                                <span style="font-size: 13px">{{ item.label }}</span>
+                                <small style="color: #999; float: right">{{ item.value }}</small>
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item style="margin-bottom: 12px">
+                        <el-tooltip content="对当前文章的评论选项单独控制" placement="top">
+                            <span>
+                                <i-svg name="hint" size="14px"></i-svg>
+                                <span style="margin-left: 4px">显示评论：</span>
+                            </span>
+                        </el-tooltip>
+                        <el-select v-model="state.struct.json.comment.show" style="display: block; font-size: 13px" placeholder="请选择">
+                            <el-option v-for="item in state.select.comment.show" :key="item.value" :label="item.label" :value="item.value">
+                                <span style="font-size: 13px">{{ item.label }}</span>
+                                <small style="color: #999; float: right">{{ item.value }}</small>
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-card>
             </el-col>
         </el-row>
     </div>
@@ -202,7 +182,6 @@ const state  = reactive({
         id: null,
         tags: [],
         group: [],
-        active: ['1'],
         tabs: 'preview',
         // 封面数据
         cover: {
@@ -218,7 +197,7 @@ const state  = reactive({
         content: '',
         editor: 'vditor',
         publishTime: '',
-        json: { comment: { allow: 0, show: 0 } }
+        json: { comment: { allow: 1, show: 1 } }
     },
     select: {
         top: [{ value: 1, label: '置顶' }, { value: 0, label: '不置顶' }],
