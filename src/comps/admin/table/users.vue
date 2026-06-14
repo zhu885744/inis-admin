@@ -18,7 +18,7 @@
                 </template>
             </el-table-column>
         </template>
-        <template v-if="props.type === 'remove'" #end>
+        <template v-if="props.type === 'remove'">
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
                     <span style="display: flex; justify-content: flex-end">
@@ -102,97 +102,61 @@
 
     <el-dialog v-model="state.item.dialog" title="用户信息编辑" width="800px" class="custom" draggable :close-on-click-modal="false">
         <div style="padding: 10px 0;">
-            <el-form label-width="100px" label-position="left">
-            <el-row :gutter="20">
-                <el-col :lg="8">
-                    <el-form-item label="昵称">
-                        <el-input v-model="state.struct.nickname" placeholder="请输入用户昵称" style="width: 100%"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :lg="8">
-                    <el-form-item label="账号">
-                        <el-input v-model="state.struct.account" placeholder="请输入登录账号" style="width: 100%"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :lg="8">
-                    <el-form-item label="账号状态">
-                        <el-select v-model="state.struct.status" style="width: 100%" :disabled="state.struct.id === 1">
-                            <el-option label="正常" :value="0"></el-option>
-                            <el-option label="冻结" :value="1"></el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20">
-                <el-col :lg="24">
-                    <el-form-item label="头像">
-                        <el-input v-model="state.struct.avatar" class="custom" placeholder="图片地址/点击上传" style="width: 100%">
-                            <template #append>
-                                <el-button @click="method.upload('avatar')" :loading="state.item.upload" class="upload-btn">
-                                    <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
-                                    <span style="margin-left: 4px">上传</span>
-                                </el-button>
-                            </template>
-                        </el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20">
-                <el-col :lg="8">
-                    <el-form-item label="邮箱">
-                        <el-input v-model="state.struct.email" type="email" placeholder="请输入邮箱地址" style="width: 100%"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :lg="8">
-                    <el-form-item label="手机号">
-                        <el-input v-model="state.struct.phone" placeholder="请输入手机号码" style="width: 100%"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :lg="8">
-                    <el-form-item label="密码">
-                        <el-input v-model="state.struct.password" type="password" placeholder="为空不修改密码" style="width: 100%"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20">
-                <el-col :lg="8">
-                    <el-form-item label="权限">
-                        <el-select v-model="state.struct.result.auth.group.ids" multiple collapse-tags placeholder="请选择权限组" style="width: 100%">
-                            <el-option v-for="item in state.select.auth_group" :key="item.value" :label="item.label" :value="item.value">
-                                <span style="font-size: 13px">{{ item.label }}</span>
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-                <el-col :lg="8">
-                    <el-form-item label="性别">
-                        <el-select v-model="state.struct.gender" style="width: 100%" placeholder="请选择性别">
-                            <el-option label="保密" :value="null"></el-option>
-                            <el-option label="男" value="boy"></el-option>
-                            <el-option label="女" value="girl"></el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-                <el-col :lg="8">
-                    <el-form-item label="专属头衔">
-                        <el-input v-model="state.struct.title" placeholder="请输入专属头衔" style="width: 100%"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20">
-                <el-col :lg="24">
-                    <el-form-item label="个人简介">
-                        <el-input v-model="state.struct.description" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" placeholder="请输入个人简介" style="width: 100%"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20">
-                <el-col :lg="24">
-                    <el-form-item label="备注">
-                        <el-input v-model="state.struct.remark" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea" placeholder="请输入备注信息（仅内部可见）" style="width: 100%"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="昵称">
+                    <el-input v-model="state.struct.nickname" placeholder="请输入用户昵称"></el-input>
+                </el-form-item>
+                <el-form-item label="账号">
+                    <el-input v-model="state.struct.account" placeholder="请输入登录账号"></el-input>
+                </el-form-item>
+                <el-form-item label="账号状态">
+                    <el-select v-model="state.struct.status" :disabled="state.struct.id === 1">
+                        <el-option label="正常" :value="0"></el-option>
+                        <el-option label="冻结" :value="1"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="头像">
+                    <el-input v-model="state.struct.avatar" class="custom" placeholder="图片地址/点击上传">
+                        <template #append>
+                            <el-button @click="method.upload('avatar')" :loading="state.item.upload" class="upload-btn">
+                                <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="14px"></i-svg>
+                                <span style="margin-left: 4px">上传</span>
+                            </el-button>
+                        </template>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="邮箱">
+                    <el-input v-model="state.struct.email" type="email" placeholder="请输入邮箱地址"></el-input>
+                </el-form-item>
+                <el-form-item label="手机号">
+                    <el-input v-model="state.struct.phone" placeholder="请输入手机号码"></el-input>
+                </el-form-item>
+                <el-form-item label="密码">
+                    <el-input v-model="state.struct.password" type="password" placeholder="为空不修改密码"></el-input>
+                </el-form-item>
+                <el-form-item label="权限">
+                    <el-select v-model="state.struct.result.auth.group.ids" multiple collapse-tags placeholder="请选择权限组">
+                        <el-option v-for="item in state.select.auth_group" :key="item.value" :label="item.label" :value="item.value">
+                            <span style="font-size: 13px">{{ item.label }}</span>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="性别">
+                    <el-select v-model="state.struct.gender" placeholder="请选择性别">
+                        <el-option label="保密" :value="null"></el-option>
+                        <el-option label="男" value="boy"></el-option>
+                        <el-option label="女" value="girl"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="专属头衔">
+                    <el-input v-model="state.struct.title" placeholder="请输入专属头衔"></el-input>
+                </el-form-item>
+                <el-form-item label="个人简介">
+                    <el-input v-model="state.struct.description" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" placeholder="请输入个人简介"></el-input>
+                </el-form-item>
+                <el-form-item label="备注">
+                    <el-input v-model="state.struct.remark" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea" placeholder="请输入备注信息（仅内部可见）"></el-input>
+                </el-form-item>
             </el-form>
         </div>
 

@@ -1,72 +1,69 @@
 <template>
-
+    <!-- 后台静默检测版本更新，无需渲染 UI -->
 </template>
 
 <script setup>
-const { ctx, proxy } = getCurrentInstance()
-const state = reactive({
-    last: null,
-})
+const { proxy } = getCurrentInstance()
 
-onMounted(async () => {
-    // 仅在生产环境下执行
-    if (import.meta.env.PROD) await method.refresh()
-})
+// 上一次的脚本列表（用于对比是否更新）
+let lastScripts = null
 
-const method = {
-    // 刷新页面
-    refresh: () => {
-        setTimeout(async () => {
-            const check = await method.update()
-            if (check) {
-                ElNotification({
-                    type: 'success',
-                    title: '主题更新完成！',
-                    duration: 0,
-                    dangerouslyUseHTMLString: true,
-                    message: `<div class="notify-content">
-                        <span style="margin-right: 8px">刷新页面体验新功能？</span>
-                        <el-button onclick="location.reload()" type="outline" size="small" class="refresh-btn">刷 新</el-button>
-                    </so>`,
-                    position: 'bottom-right',
-                })
-            }
-            await method.refresh()
-        }, inis.lazy_time * 10 * 30)
-    },
-    // 正则获取页面中的所有script标签
-    html: async () => {
-        let result = []
-        let match  = null
-        // /\<script.*src=["'](?<src>[^"']+)/gm
-        const reg  = /<script.*src=["'](?<src>[^"']+)/gm
-        const html = await fetch('/?unix=' + Date.now()).then(res=>res.text())
-        reg.lastIndex = 0
-        while ((match = reg.exec(html)) !== null) {
-            result.push(match.groups.src)
+// 检查更新并通知用户
+async function checkUpdate() {
+    try {
+        const scripts = await fetchScripts()
+        
+        // 首次加载，记录初始状态
+        if (!lastScripts) {
+            lastScripts = scripts
+            schedule()
+            return
         }
-        return html
-    },
-    // 检查页面是否更新
-    update: async () => {
-        const scripts = await method.html()
-        if (!state.last) {
-            state.last = scripts
-            return false
+        
+        // 对比脚本数量或内容变化
+        const hasUpdate = lastScripts.length !== scripts.length 
+            || lastScripts.some((s, i) => s !== scripts[i])
+        
+        lastScripts = scripts
+        
+        if (hasUpdate) {
+            ElNotification({
+                type: 'success',
+                title: '系统更新完成！',
+                duration: 0,
+                dangerouslyUseHTMLString: true,
+                message: `<div class="notify-content">
+                    <span style="margin-right: 8px">检测到新版本，刷新页面体验新功能？</span>
+                    <el-button onclick="location.reload()" type="primary" size="small" class="refresh-btn">立即刷新</el-button>
+                </div>`,
+                position: 'bottom-right',
+            })
         }
-        let result = false
-        if (state.last.length !== scripts.length) {
-            result = true
-        }
-        for (let i = 0; i < state.last.length; i++) {
-            if (state.last[i] !== scripts[i]) {
-                result = true
-                break
-            }
-        }
-        state.last = scripts
-        return result
-    },
+    } catch (e) {
+        // 请求失败静默处理，下次继续尝试
+    }
+    schedule()
 }
 
+// 获取页面中所有 script 标签的 src 地址
+async function fetchScripts() {
+    const reg = /<script[^>]+src=["']([^"']+)["']/gi
+    const html = await fetch('/?_t=' + Date.now()).then(res => res.text())
+    const scripts = []
+    let match
+    while ((match = reg.exec(html)) !== null) {
+        scripts.push(match[1])
+    }
+    return scripts
+}
+
+// 定时调度检查
+function schedule() {
+    const delay = (globalThis.inis?.lazy_time ?? 500) * 10 * 30
+    setTimeout(checkUpdate, delay)
+}
+
+onMounted(() => {
+    if (import.meta.env.PROD) checkUpdate()
+})
 </script>
