@@ -43,14 +43,10 @@
             <strong class="flex-center">配置</strong>
         </template>
         <template #default>
-            <el-form label-width="100px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="最大值">
-                            <el-input-number v-model="state.struct.text" :min="5" style="width: 100%"></el-input-number>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="最大值">
+                    <el-input-number v-model="state.struct.text" :min="5"></el-input-number>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

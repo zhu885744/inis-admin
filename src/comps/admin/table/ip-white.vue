@@ -19,7 +19,7 @@
                 </template>
             </el-table-column>
         </template>
-        <template v-if="props.type === 'remove'" #end>
+        <template v-if="props.type === 'remove'">
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
                     <span style="display: flex; justify-content: flex-end">
@@ -65,19 +65,13 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} IP 白 名 单</strong>
         </template>
         <template #default>
-            <el-form label-width="100px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="24">
-                        <el-form-item label="IP">
-                            <el-input v-model="state.struct.ip" placeholder="例如：192.168.1.1" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="24">
-                        <el-form-item label="备注">
-                            <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下" type="textarea" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="IP">
+                    <el-input v-model="state.struct.ip" placeholder="例如：192.168.1.1"></el-input>
+                </el-form-item>
+                <el-form-item label="备注">
+                    <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下" type="textarea"></el-input>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

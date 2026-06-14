@@ -19,7 +19,7 @@
                 </template>
             </el-table-column>
         </template>
-        <template v-if="props.type === 'remove'" #end>
+        <template v-if="props.type === 'remove'">
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
                     <span style="display: flex; justify-content: flex-end">
@@ -70,50 +70,30 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 公 告</strong>
         </template>
         <template #default>
-            <el-form label-width="100px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="标题">
-                            <el-input v-model="state.struct.title" placeholder="请输入公告标题" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="类型">
-                            <el-input v-model="state.struct.type" placeholder="请输入公告类型" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="跳转链接">
-                            <el-input v-model="state.struct.url" placeholder="请输入跳转链接" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="跳转方式">
-                            <el-select v-model="state.struct.target" placeholder="请选择跳转方式" style="width: 100%" class="custom">
-                                <el-option v-for="item in state.select.target" :key="item.value" :label="item.value" :value="item.label">
-                                    <span style="font-size: 13px">{{ item.value }}</span>
-                                    <small style="float: right; color: var(--el-text-color-secondary)">{{ item.label }}</small>
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20">
-                    <el-col :lg="24">
-                        <el-form-item label="内容">
-                            <el-input v-model="state.struct.content" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="请输入公告内容" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20">
-                    <el-col :lg="24">
-                        <el-form-item label="备注">
-                            <el-input v-model="state.struct.remark" :autosize="{ minRows: 1, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="标题">
+                    <el-input v-model="state.struct.title" placeholder="请输入公告标题"></el-input>
+                </el-form-item>
+                <el-form-item label="类型">
+                    <el-input v-model="state.struct.type" placeholder="请输入公告类型"></el-input>
+                </el-form-item>
+                <el-form-item label="跳转链接">
+                    <el-input v-model="state.struct.url" placeholder="请输入跳转链接"></el-input>
+                </el-form-item>
+                <el-form-item label="跳转方式">
+                    <el-select v-model="state.struct.target" placeholder="请选择跳转方式" class="custom">
+                        <el-option v-for="item in state.select.target" :key="item.value" :label="item.value" :value="item.label">
+                            <span style="font-size: 13px">{{ item.value }}</span>
+                            <small style="float: right; color: var(--el-text-color-secondary)">{{ item.label }}</small>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="内容">
+                    <el-input v-model="state.struct.content" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="请输入公告内容"></el-input>
+                </el-form-item>
+                <el-form-item label="备注">
+                    <el-input v-model="state.struct.remark" :autosize="{ minRows: 1, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea"></el-input>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

@@ -41,19 +41,13 @@
             <strong style="display: flex; align-items: center; justify-content: center">配置本地存储</strong>
         </template>
         <template #default>
-            <el-form label-width="100px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="域名">
-                            <el-input v-model="state.struct.domain" placeholder="请输入域名"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="存储目录">
-                            <el-input v-model="state.struct.path" placeholder="storage"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="域名">
+                    <el-input v-model="state.struct.domain" placeholder="请输入域名"></el-input>
+                </el-form-item>
+                <el-form-item label="存储目录">
+                    <el-input v-model="state.struct.path" placeholder="storage"></el-input>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

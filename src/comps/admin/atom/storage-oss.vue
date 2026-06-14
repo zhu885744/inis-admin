@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <el-card v-loading="state.status.loading" style="margin-bottom: 12px">
         <template #header>
             <div class="card-header-content" style="display: flex; align-items: center; gap: 8px">
@@ -42,47 +42,29 @@
         </template>
         <template #default>
             <el-form label-width="120px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="AccessKey ID">
-                            <el-input v-model="state.struct.access_key_id" show-password placeholder="请输入 AccessKey ID"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="AccessKey Secret">
-                            <el-input v-model="state.struct.access_key_secret" show-password placeholder="请输入 AccessKey Secret"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20">
-                    <el-col :lg="8">
-                        <el-form-item label="Endpoint">
-                            <el-select v-model="state.struct.endpoint" placeholder="请选择所在地区" style="width: 100%">
-                                <el-option v-for="item in state.select.endpoint" :key="item.value" :label="item.label" :value="item.value">
-                                    <span>{{ item.label }}</span>
-                                    <small style="float: right; color: var(--el-text-color-secondary)">{{ item.value }}</small>
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="OSS Bucket">
-                            <el-input v-model="state.struct.bucket" placeholder="请输入 OSS Bucket"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="存储目录">
-                            <el-input v-model="state.struct.path" placeholder="inis"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="OSS 外网域名">
-                            <el-input v-model="state.struct.domain" placeholder="选填"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+                <el-form-item label="AccessKey ID">
+                    <el-input v-model="state.struct.access_key_id" show-password placeholder="请输入 AccessKey ID"></el-input>
+                </el-form-item>
+                <el-form-item label="AccessKey Secret">
+                    <el-input v-model="state.struct.access_key_secret" show-password placeholder="请输入 AccessKey Secret"></el-input>
+                </el-form-item>
+                <el-form-item label="Endpoint">
+                    <el-select v-model="state.struct.endpoint" placeholder="请选择所在地区">
+                        <el-option v-for="item in state.select.endpoint" :key="item.value" :label="item.label" :value="item.value">
+                            <span>{{ item.label }}</span>
+                            <small style="float: right; color: var(--el-text-color-secondary)">{{ item.value }}</small>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="OSS Bucket">
+                    <el-input v-model="state.struct.bucket" placeholder="请输入 OSS Bucket"></el-input>
+                </el-form-item>
+                <el-form-item label="存储目录">
+                    <el-input v-model="state.struct.path" placeholder="inis"></el-input>
+                </el-form-item>
+                <el-form-item label="OSS 外网域名">
+                    <el-input v-model="state.struct.domain" placeholder="选填"></el-input>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

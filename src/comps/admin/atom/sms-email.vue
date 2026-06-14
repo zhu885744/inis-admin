@@ -42,53 +42,31 @@
         </template>
         <template #default>
             <el-form label-width="120px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="邮件服务器地址">
-                            <el-input v-model="state.struct.host" placeholder="smtp.qq.com"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="邮件服务端口">
-                            <el-input-number v-model="state.struct.port" style="width: 100%" controls-position="right" :min="1"></el-input-number>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="邮件账号">
-                            <el-input v-model="state.struct.account" placeholder="xxx@qq.com"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="服务密码">
-                            <el-input v-model="state.struct.password" show-password placeholder="请输入服务密码"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="邮件昵称">
-                            <el-input v-model="state.struct.nickname" placeholder="请输入邮件昵称"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="邮件签名">
-                            <el-input v-model="state.struct.sign_name" placeholder="请输入邮件签名"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="接收者邮箱">
-                            <el-input v-model="state.struct.email" v-on:keydown.enter="method.test()" placeholder="请输入邮箱">
-                                <template #append>
-                                    <el-button v-on:click="method.test()" :loading="state.status.test">邮件服务测试</el-button>
-                                </template>
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+                <el-form-item label="邮件服务器地址">
+                    <el-input v-model="state.struct.host" placeholder="smtp.qq.com"></el-input>
+                </el-form-item>
+                <el-form-item label="邮件服务端口">
+                    <el-input-number v-model="state.struct.port" controls-position="right" :min="1"></el-input-number>
+                </el-form-item>
+                <el-form-item label="邮件账号">
+                    <el-input v-model="state.struct.account" placeholder="xxx@qq.com"></el-input>
+                </el-form-item>
+                <el-form-item label="服务密码">
+                    <el-input v-model="state.struct.password" show-password placeholder="请输入服务密码"></el-input>
+                </el-form-item>
+                <el-form-item label="邮件昵称">
+                    <el-input v-model="state.struct.nickname" placeholder="请输入邮件昵称"></el-input>
+                </el-form-item>
+                <el-form-item label="邮件签名">
+                    <el-input v-model="state.struct.sign_name" placeholder="请输入邮件签名"></el-input>
+                </el-form-item>
+                <el-form-item label="接收者邮箱">
+                    <el-input v-model="state.struct.email" v-on:keydown.enter="method.test()" placeholder="请输入邮箱">
+                        <template #append>
+                            <el-button v-on:click="method.test()" :loading="state.status.test">邮件服务测试</el-button>
+                        </template>
+                    </el-input>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

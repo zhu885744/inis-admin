@@ -42,58 +42,34 @@
         </template>
         <template #default>
             <el-form label-width="120px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="SecretId">
-                            <el-input v-model="state.struct.secret_id" show-password placeholder="请输入 SecretId"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="SecretKey">
-                            <el-input v-model="state.struct.secret_key" show-password placeholder="请输入 SecretKey"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="endpoint">
-                            <el-input v-model="state.struct.endpoint" placeholder="请输入 endpoint"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="appid">
-                            <el-input v-model="state.struct.sms_sdk_app_id" placeholder="请输入 appid"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20">
-                    <el-col :lg="8">
-                        <el-form-item label="短信签名">
-                            <el-input v-model="state.struct.sign_name" placeholder="请输入短信签名"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="验证码模板ID">
-                            <el-input v-model="state.struct.verify_code" placeholder="请输入验证码模板ID"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="区域">
-                            <el-input v-model="state.struct.region" placeholder="ap-guangzhou"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="接收者手机号">
-                            <el-input v-model="state.struct.phone" v-on:keydown.enter="method.test()" placeholder="请输入手机号">
-                                <template #append>
-                                    <el-button v-on:click="method.test()" :loading="state.status.test">腾讯云短信测试</el-button>
-                                </template>
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+                <el-form-item label="SecretId">
+                    <el-input v-model="state.struct.secret_id" show-password placeholder="请输入 SecretId"></el-input>
+                </el-form-item>
+                <el-form-item label="SecretKey">
+                    <el-input v-model="state.struct.secret_key" show-password placeholder="请输入 SecretKey"></el-input>
+                </el-form-item>
+                <el-form-item label="endpoint">
+                    <el-input v-model="state.struct.endpoint" placeholder="请输入 endpoint"></el-input>
+                </el-form-item>
+                <el-form-item label="appid">
+                    <el-input v-model="state.struct.sms_sdk_app_id" placeholder="请输入 appid"></el-input>
+                </el-form-item>
+                <el-form-item label="短信签名">
+                    <el-input v-model="state.struct.sign_name" placeholder="请输入短信签名"></el-input>
+                </el-form-item>
+                <el-form-item label="验证码模板ID">
+                    <el-input v-model="state.struct.verify_code" placeholder="请输入验证码模板ID"></el-input>
+                </el-form-item>
+                <el-form-item label="区域">
+                    <el-input v-model="state.struct.region" placeholder="ap-guangzhou"></el-input>
+                </el-form-item>
+                <el-form-item label="接收者手机号">
+                    <el-input v-model="state.struct.phone" v-on:keydown.enter="method.test()" placeholder="请输入手机号">
+                        <template #append>
+                            <el-button v-on:click="method.test()" :loading="state.status.test">腾讯云短信测试</el-button>
+                        </template>
+                    </el-input>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

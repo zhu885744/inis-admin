@@ -35,47 +35,37 @@
             <strong class="flex-center">页面配置</strong>
         </template>
         <template #default>
-            <el-form label-width="100px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="编辑器">
-                            <el-select v-model="state.cache.json.editor" style="width: 100%" disabled>
-                                <el-option value="vditor" label="Markdown">
-                                    <span>Markdown</span>
-                                    <small style="float: right">vditor</small>
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="审核">
-                            <el-select v-model="state.struct.json.audit" style="width: 100%" placeholder="请选择">
-                                <el-option v-for="item in state.select.audit" :key="item.value" :label="item.label" :value="item.value">
-                                    <span>{{ item.label }}</span>
-                                    <small style="float: right; color: var(--el-text-color-secondary)">{{ item.subtitle }}</small>
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="允许评论">
-                            <el-select v-model="state.struct.json.comment.allow" style="width: 100%" placeholder="请选择">
-                                <el-option v-for="item in state.select.comment.allow" :key="item.value" :label="item.label" :value="item.value">
-                                    <span>{{ item.label }}</span>
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="显示评论">
-                            <el-select v-model="state.struct.json.comment.show" style="width: 100%" placeholder="请选择">
-                                <el-option v-for="item in state.select.comment.show" :key="item.value" :label="item.label" :value="item.value">
-                                    <span>{{ item.label }}</span>
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="编辑器">
+                    <el-select v-model="state.cache.json.editor" disabled>
+                        <el-option value="vditor" label="Markdown">
+                            <span>Markdown</span>
+                            <small style="float: right">vditor</small>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="审核">
+                    <el-select v-model="state.struct.json.audit" placeholder="请选择">
+                        <el-option v-for="item in state.select.audit" :key="item.value" :label="item.label" :value="item.value">
+                            <span>{{ item.label }}</span>
+                            <small style="float: right; color: var(--el-text-color-secondary)">{{ item.subtitle }}</small>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="允许评论">
+                    <el-select v-model="state.struct.json.comment.allow" placeholder="请选择">
+                        <el-option v-for="item in state.select.comment.allow" :key="item.value" :label="item.label" :value="item.value">
+                            <span>{{ item.label }}</span>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="显示评论">
+                    <el-select v-model="state.struct.json.comment.show" placeholder="请选择">
+                        <el-option v-for="item in state.select.comment.show" :key="item.value" :label="item.label" :value="item.value">
+                            <span>{{ item.label }}</span>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

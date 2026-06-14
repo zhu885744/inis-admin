@@ -42,46 +42,28 @@
         </template>
         <template #default>
             <el-form label-width="120px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="AccessKey ID">
-                            <el-input v-model="state.struct.access_key_id" show-password placeholder="请输入 AccessKey ID"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="AccessKey Secret">
-                            <el-input v-model="state.struct.access_key_secret" show-password placeholder="请输入 AccessKey Secret"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20">
-                    <el-col :lg="8">
-                        <el-form-item label="endpoint">
-                            <el-input v-model="state.struct.endpoint" placeholder="dysmsapi.aliyuncs.com"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="短信签名">
-                            <el-input v-model="state.struct.sign_name" placeholder="请输入短信签名"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="验证码模板">
-                            <el-input v-model="state.struct.verify_code" placeholder="SMS_XXX02"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="接收者手机号">
-                            <el-input v-model="state.struct.phone" v-on:keydown.enter="method.test()" placeholder="请输入手机号">
-                                <template #append>
-                                    <el-button v-on:click="method.test()" :loading="state.status.test">阿里云短信测试</el-button>
-                                </template>
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+                <el-form-item label="AccessKey ID">
+                    <el-input v-model="state.struct.access_key_id" show-password placeholder="请输入 AccessKey ID"></el-input>
+                </el-form-item>
+                <el-form-item label="AccessKey Secret">
+                    <el-input v-model="state.struct.access_key_secret" show-password placeholder="请输入 AccessKey Secret"></el-input>
+                </el-form-item>
+                <el-form-item label="endpoint">
+                    <el-input v-model="state.struct.endpoint" placeholder="dysmsapi.aliyuncs.com"></el-input>
+                </el-form-item>
+                <el-form-item label="短信签名">
+                    <el-input v-model="state.struct.sign_name" placeholder="请输入短信签名"></el-input>
+                </el-form-item>
+                <el-form-item label="验证码模板">
+                    <el-input v-model="state.struct.verify_code" placeholder="SMS_XXX02"></el-input>
+                </el-form-item>
+                <el-form-item label="接收者手机号">
+                    <el-input v-model="state.struct.phone" v-on:keydown.enter="method.test()" placeholder="请输入手机号">
+                        <template #append>
+                            <el-button v-on:click="method.test()" :loading="state.status.test">阿里云短信测试</el-button>
+                        </template>
+                    </el-input>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

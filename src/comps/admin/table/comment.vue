@@ -19,7 +19,7 @@
                 </template>
             </el-table-column>
         </template>
-        <template v-if="props.type === 'remove'" #end>
+        <template v-if="props.type === 'remove'">
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
                     <span style="display: flex; justify-content: flex-end">
@@ -86,14 +86,10 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 评 论</strong>
         </template>
         <template #default>
-            <el-form label-width="100px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="24">
-                        <el-form-item label="内容">
-                            <el-input v-model="state.struct.content" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="请输入评论内容" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="内容">
+                    <el-input v-model="state.struct.content" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="请输入评论内容"></el-input>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

@@ -42,19 +42,13 @@
             <strong style="display: flex; align-items: center; justify-content: center">配置</strong>
         </template>
         <template #default>
-            <el-form label-width="100px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="全局限制">
-                            <el-input-number v-model="state.struct.json.global" :min="10" style="width: 100%"></el-input-number>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="单接口限制">
-                            <el-input-number v-model="state.struct.json.point" :min="5" style="width: 100%"></el-input-number>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="全局限制">
+                    <el-input-number v-model="state.struct.json.global" :min="10"></el-input-number>
+                </el-form-item>
+                <el-form-item label="单接口限制">
+                    <el-input-number v-model="state.struct.json.point" :min="5"></el-input-number>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

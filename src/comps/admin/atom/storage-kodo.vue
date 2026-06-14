@@ -42,42 +42,26 @@
         </template>
         <template #default>
             <el-form label-width="120px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="AccessKey">
-                            <el-input v-model="state.struct.access_key" show-password placeholder="请输入 AccessKey"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="SecretKey">
-                            <el-input v-model="state.struct.secret_key" show-password placeholder="请输入 SecretKey"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="Bucket">
-                            <el-input v-model="state.struct.bucket" placeholder="请输入 Bucket"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="Region">
-                            <el-select v-model="state.struct.region" placeholder="请选择所在地区" style="width: 100%">
-                                <el-option v-for="item in state.select.region" :key="item.value" :label="item.label" :value="item.value">
-                                    <span>{{ item.label }}</span>
-                                    <small style="float: right; color: var(--el-text-color-secondary)">{{ item.value }}</small>
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="外网域名">
-                            <el-input v-model="state.struct.domain" placeholder="请输入外网域名"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+                <el-form-item label="AccessKey">
+                    <el-input v-model="state.struct.access_key" show-password placeholder="请输入 AccessKey"></el-input>
+                </el-form-item>
+                <el-form-item label="SecretKey">
+                    <el-input v-model="state.struct.secret_key" show-password placeholder="请输入 SecretKey"></el-input>
+                </el-form-item>
+                <el-form-item label="Bucket">
+                    <el-input v-model="state.struct.bucket" placeholder="请输入 Bucket"></el-input>
+                </el-form-item>
+                <el-form-item label="Region">
+                    <el-select v-model="state.struct.region" placeholder="请选择所在地区">
+                        <el-option v-for="item in state.select.region" :key="item.value" :label="item.label" :value="item.value">
+                            <span>{{ item.label }}</span>
+                            <small style="float: right; color: var(--el-text-color-secondary)">{{ item.value }}</small>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="外网域名">
+                    <el-input v-model="state.struct.domain" placeholder="请输入外网域名"></el-input>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

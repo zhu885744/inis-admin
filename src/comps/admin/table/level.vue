@@ -19,7 +19,7 @@
                 </template>
             </el-table-column>
         </template>
-        <template v-if="props.type === 'remove'" #end>
+        <template v-if="props.type === 'remove'">
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
                     <span style="display: flex; justify-content: flex-end">
@@ -70,34 +70,22 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 等 级</strong>
         </template>
         <template #default>
-            <el-form label-width="100px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="8">
-                        <el-form-item label="名称">
-                            <el-input v-model="state.struct.name" placeholder="请输入等级名称" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="等级">
-                            <el-input-number v-model="state.struct.value" :min="0" style="width: 100%"></el-input-number>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="经验值">
-                            <el-input-number v-model="state.struct.exp" :min="0" style="width: 100%"></el-input-number>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="24">
-                        <el-form-item label="描述">
-                            <el-input v-model="state.struct.description" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="请输入等级描述信息" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="24">
-                        <el-form-item label="备注">
-                            <el-input v-model="state.struct.remark" :autosize="{ minRows: 4, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea" style="width: 100%"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="名称">
+                    <el-input v-model="state.struct.name" placeholder="请输入等级名称"></el-input>
+                </el-form-item>
+                <el-form-item label="等级">
+                    <el-input-number v-model="state.struct.value" :min="0"></el-input-number>
+                </el-form-item>
+                <el-form-item label="经验值">
+                    <el-input-number v-model="state.struct.exp" :min="0"></el-input-number>
+                </el-form-item>
+                <el-form-item label="描述">
+                    <el-input v-model="state.struct.description" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea" placeholder="请输入等级描述信息"></el-input>
+                </el-form-item>
+                <el-form-item label="备注">
+                    <el-input v-model="state.struct.remark" :autosize="{ minRows: 4, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea"></el-input>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

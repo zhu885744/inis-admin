@@ -19,7 +19,7 @@
                 </template>
             </el-table-column>
         </template>
-        <template v-if="props.type === 'remove'" #end>
+        <template v-if="props.type === 'remove'">
             <el-table-column :fixed="right" label="操作" width="160" class-name="text-end">
                 <template #default="scope">
                     <span style="display: flex; justify-content: flex-end">
@@ -83,65 +83,41 @@
             <strong class="flex-center">{{ utils.is.empty(state.struct.id) ? '添 加' : '编 辑' }} 轮 播</strong>
         </template>
         <template #default>
-            <el-form label-width="100px" label-position="left">
-            <el-row :gutter="20">
-                <el-col :lg="12">
-                    <el-form-item label="标题">
-                        <el-input v-model="state.struct.title" placeholder="为空不显示" style="width: 100%"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :lg="12">
-                    <el-form-item label="时间">
-                        <el-date-picker v-model="state.struct.time" type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间" style="width: 100%">
-                        </el-date-picker>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20">
-                <el-col :lg="12">
-                    <el-form-item label="跳转链接">
-                        <el-input v-model="state.struct.url" placeholder="如：https://inis.cn" style="width: 100%"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :lg="12">
-                    <el-form-item label="跳转方式">
-                        <el-select v-model="state.struct.target" placeholder="请选择方式" style="width: 100%" class="custom">
-                            <el-option v-for="item in state.select.target" :key="item.value" :label="item.value" :value="item.label">
-                                <span style="font-size: 13px">{{ item.value }}</span>
-                                <small style="float: right">{{ item.label }}</small>
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20">
-                <el-col :lg="24">
-                    <el-form-item label="图片地址">
-                        <el-input v-model="state.struct.image" class="custom" placeholder="填写图片地址或点击上传图片" style="width: 100%">
-                            <template #append>
-                                <el-button v-on:click="method.upload()" :loading="state.item.upload">
-                                    <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="15px"></i-svg>
-                                    <span style="margin-left: 4px">上传</span>
-                                </el-button>
-                            </template>
-                        </el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20">
-                <el-col :lg="24">
-                    <el-form-item label="内容">
-                        <el-input v-model="state.struct.content" :autosize="{ minRows: 1, maxRows: 10 }" type="textarea" placeholder="为空不显示" style="width: 100%"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20">
-                <el-col :lg="24">
-                    <el-form-item label="备注">
-                        <el-input v-model="state.struct.remark" :autosize="{ minRows: 1, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea" style="width: 100%"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="标题">
+                    <el-input v-model="state.struct.title" placeholder="为空不显示"></el-input>
+                </el-form-item>
+                <el-form-item label="时间">
+                    <el-date-picker v-model="state.struct.time" type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="跳转链接">
+                    <el-input v-model="state.struct.url" placeholder="如：https://inis.cn"></el-input>
+                </el-form-item>
+                <el-form-item label="跳转方式">
+                    <el-select v-model="state.struct.target" placeholder="请选择方式" class="custom">
+                        <el-option v-for="item in state.select.target" :key="item.value" :label="item.value" :value="item.label">
+                            <span style="font-size: 13px">{{ item.value }}</span>
+                            <small style="float: right">{{ item.label }}</small>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="图片地址">
+                    <el-input v-model="state.struct.image" class="custom" placeholder="填写图片地址或点击上传图片">
+                        <template #append>
+                            <el-button v-on:click="method.upload()" :loading="state.item.upload">
+                                <i-svg v-if="!state.item.upload" name="upload" color="rgb(var(--icon-color))" size="15px"></i-svg>
+                                <span style="margin-left: 4px">上传</span>
+                            </el-button>
+                        </template>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="内容">
+                    <el-input v-model="state.struct.content" :autosize="{ minRows: 1, maxRows: 10 }" type="textarea" placeholder="为空不显示"></el-input>
+                </el-form-item>
+                <el-form-item label="备注">
+                    <el-input v-model="state.struct.remark" :autosize="{ minRows: 1, maxRows: 10 }" placeholder="备注一下，避免忘记！" type="textarea"></el-input>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

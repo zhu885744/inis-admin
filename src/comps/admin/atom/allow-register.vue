@@ -41,28 +41,22 @@
             <strong>配置</strong>
         </template>
         <template #default>
-            <el-form label-width="100px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="注册">
-                            <el-select v-model="state.struct.value" placeholder="请选择权限" style="width: 100%">
-                                <el-option v-for="item in state.select.value" :key="item.value" :label="item.label" :value="item.value">
-                                    <span>{{ item.label }}</span>
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="分配权限">
-                            <el-select v-model="state.item.auth" multiple filterable collapse-tags placeholder="选择注册的默认权限" style="width: 100%">
-                                <el-option v-for="item in state.select.auth" :key="item.id" :label="item.name" :value="item.id">
-                                    <span>{{ item.name }}</span>
-                                    <small style="float: right; color: var(--el-text-color-secondary)">{{ item.key }}</small>
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="注册">
+                    <el-select v-model="state.struct.value" placeholder="请选择权限">
+                        <el-option v-for="item in state.select.value" :key="item.value" :label="item.label" :value="item.value">
+                            <span>{{ item.label }}</span>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="分配权限">
+                    <el-select v-model="state.item.auth" multiple filterable collapse-tags placeholder="选择注册的默认权限">
+                        <el-option v-for="item in state.select.auth" :key="item.id" :label="item.name" :value="item.id">
+                            <span>{{ item.name }}</span>
+                            <small style="float: right; color: var(--el-text-color-secondary)">{{ item.key }}</small>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

@@ -44,19 +44,13 @@
             <strong class="flex-center">配置</strong>
         </template>
         <template #default>
-            <el-form label-width="100px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="触发次数">
-                            <el-input-number v-model="state.struct.json.count" :min="1" style="width: 100%"></el-input-number>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="时间频率">
-                            <el-input v-model="state.struct.json.second" placeholder="60 * 60"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="触发次数">
+                    <el-input-number v-model="state.struct.json.count" :min="1"></el-input-number>
+                </el-form-item>
+                <el-form-item label="时间频率">
+                    <el-input v-model="state.struct.json.second" placeholder="60 * 60"></el-input>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

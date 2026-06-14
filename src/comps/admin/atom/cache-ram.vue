@@ -45,14 +45,10 @@
             <strong class="flex-center">配置 内存 缓存服务</strong>
         </template>
         <template #default>
-            <el-form label-width="100px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="过期时间">
-                            <el-input v-model="state.struct.expire" placeholder="2 * 60 * 60"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="过期时间">
+                    <el-input v-model="state.struct.expire" placeholder="2 * 60 * 60"></el-input>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

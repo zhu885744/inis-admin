@@ -41,33 +41,23 @@
             <strong class="flex-center">配置 JSON Web Token</strong>
         </template>
         <template #default>
-            <el-form label-width="100px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="12">
-                        <el-form-item label="签发者">
-                            <el-input v-model="state.struct.issuer" placeholder="请输入签发者"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="主题">
-                            <el-input v-model="state.struct.subject" placeholder="请输入主题"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="密钥">
-                            <el-input v-model="state.struct.key" placeholder="请输入密钥">
-                                <template #append>
-                                    <el-button v-on:click="method.rand()">随机</el-button>
-                                </template>
-                            </el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="12">
-                        <el-form-item label="过期时间">
-                            <el-input v-model="state.struct.expire" placeholder="7 * 24 * 60 * 60"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="签发者">
+                    <el-input v-model="state.struct.issuer" placeholder="请输入签发者"></el-input>
+                </el-form-item>
+                <el-form-item label="主题">
+                    <el-input v-model="state.struct.subject" placeholder="请输入主题"></el-input>
+                </el-form-item>
+                <el-form-item label="密钥">
+                    <el-input v-model="state.struct.key" placeholder="请输入密钥">
+                        <template #append>
+                            <el-button v-on:click="method.rand()">随机</el-button>
+                        </template>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="过期时间">
+                    <el-input v-model="state.struct.expire" placeholder="7 * 24 * 60 * 60"></el-input>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>

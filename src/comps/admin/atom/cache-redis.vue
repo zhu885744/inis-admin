@@ -43,43 +43,29 @@
             <strong class="flex-center">配置 Redis 缓存服务</strong>
         </template>
         <template #default>
-            <el-form label-width="100px" label-position="left">
-                <el-row :gutter="20">
-                    <el-col :lg="8">
-                        <el-form-item label="主机">
-                            <el-input v-model="state.struct.host" placeholder="localhost"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="端口">
-                            <el-input-number v-model="state.struct.port" :min="1" :max="65535" style="width: 100%"></el-input-number>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="数据库">
-                            <el-select v-model="state.struct.database" style="width: 100%">
-                                <el-option v-for="(_, index) in 16" :key="index" :label="index" :value="index">
-                                    <span>{{ index }}</span>
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="密码">
-                            <el-input v-model="state.struct.password" show-password placeholder="无密码为空"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="过期时间">
-                            <el-input v-model="state.struct.expire" placeholder="2 * 60 * 60"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :lg="8">
-                        <el-form-item label="前缀">
-                            <el-input v-model="state.struct.prefix" placeholder="inis:"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+            <el-form label-width="120px" label-position="left">
+                <el-form-item label="主机">
+                    <el-input v-model="state.struct.host" placeholder="localhost"></el-input>
+                </el-form-item>
+                <el-form-item label="端口">
+                    <el-input-number v-model="state.struct.port" :min="1" :max="65535"></el-input-number>
+                </el-form-item>
+                <el-form-item label="数据库">
+                    <el-select v-model="state.struct.database">
+                        <el-option v-for="(_, index) in 16" :key="index" :label="index" :value="index">
+                            <span>{{ index }}</span>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="密码">
+                    <el-input v-model="state.struct.password" show-password placeholder="无密码为空"></el-input>
+                </el-form-item>
+                <el-form-item label="过期时间">
+                    <el-input v-model="state.struct.expire" placeholder="2 * 60 * 60"></el-input>
+                </el-form-item>
+                <el-form-item label="前缀">
+                    <el-input v-model="state.struct.prefix" placeholder="inis:"></el-input>
+                </el-form-item>
             </el-form>
         </template>
         <template #footer>
