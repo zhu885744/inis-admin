@@ -5,6 +5,10 @@
                 <i-svg color="rgb(var(--icon-color))" name="audit" size="16px"></i-svg>
                 <span style="margin-left: 4px">批量审核</span>
             </el-button>
+            <el-button v-on:click="method.batchUnAudit()" type="warning" size="small" style="margin-left: 8px">
+                <i-svg color="rgb(var(--icon-color))" name="audit" size="16px"></i-svg>
+                <span style="margin-left: 4px">批量待审核</span>
+            </el-button>
         </div>
         <i-table :opts="state.opts" ref="i-table" @selection:change="method.selectionChange">
 
@@ -284,16 +288,25 @@ const method = {
         ElMessage.success('恢复成功')
     },
     // 审核友链
-    async audit(ids = []) {
+    async audit(ids = [], audit = 1) {
 
         if (utils.is.empty(ids)) return
 
-        const { code, msg } = await axios.put(`/api/${state.item.table}/update`, { 
-            ids, 
-            audit: 1 
-        })
+        state.item.wait = true
 
-        if (code !== 200) return ElMessage.error(msg)
+        // 根据 API 规范，update 接口需要单个 id
+        for (const id of ids) {
+            const { code, msg } = await axios.put(`/api/${state.item.table}/update`, {
+                id,
+                audit
+            })
+            if (code !== 200) {
+                state.item.wait = false
+                return ElMessage.error(msg)
+            }
+        }
+
+        state.item.wait = false
 
         // 刷新全部数据和审核数据
         emit('refresh', 'all')
@@ -301,13 +314,19 @@ const method = {
 
         // 重新加载数据
         await method.init()
-        ElMessage.success('审核成功')
+        ElMessage.success(audit === 1 ? '审核成功' : '已重置为待审核')
     },
     // 批量审核
     async batchAudit() {
         const ids = state.item.selection.map(item => item.id)
         if (utils.is.empty(ids)) return ElMessage.warning('请选择要审核的友链')
-        await method.audit(ids)
+        await method.audit(ids, 1)
+    },
+    // 批量改为待审核
+    async batchUnAudit() {
+        const ids = state.item.selection.map(item => item.id)
+        if (utils.is.empty(ids)) return ElMessage.warning('请选择要重置的友链')
+        await method.audit(ids, 0)
     },
     // 选择变化
     selectionChange(selection) {

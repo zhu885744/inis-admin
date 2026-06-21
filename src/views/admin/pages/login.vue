@@ -123,7 +123,7 @@ const method = {
                     return
                 }
 
-                cache.set('user-info', data.user, 10)
+                cache.set('user-info', data.user, 7 * 24 * 60)
                 utils.set.cookie(globalThis?.inis?.token_name || 'INIS_LOGIN_TOKEN', data.token, 7 * 24 * 60 * 60)
                 store.comm.login.finish = true
                 store.comm.login.user = data.user

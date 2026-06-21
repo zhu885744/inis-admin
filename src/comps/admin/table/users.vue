@@ -1,5 +1,20 @@
 <template>
-    <i-table :opts="state.opts" ref="i-table">
+    <div>
+        <div style="margin-bottom: 12px" v-if="state.item.selection.length > 0 && props.type === 'all'">
+            <el-button v-on:click="method.batchStatus(0)" type="success" size="small">
+                <i-svg color="rgb(var(--icon-color))" name="finish" size="16px"></i-svg>
+                <span style="margin-left: 4px">批量正常</span>
+            </el-button>
+            <el-button v-on:click="method.batchStatus(1)" type="warning" size="small" style="margin-left: 8px">
+                <i-svg color="rgb(var(--icon-color))" name="lock" size="16px"></i-svg>
+                <span style="margin-left: 4px">批量冻结</span>
+            </el-button>
+            <el-button v-on:click="method.batchDelete(true)" type="danger" size="small" style="margin-left: 8px">
+                <i-svg color="rgb(var(--icon-color))" name="delete" size="16px"></i-svg>
+                <span style="margin-left: 4px">批量删除</span>
+            </el-button>
+        </div>
+    <i-table :opts="state.opts" ref="i-table" @selection:change="method.selectionChange">
         <template #start>
             <el-table-column type="selection" width="55"></el-table-column>
         </template>
@@ -99,6 +114,7 @@
             </el-tag>
         </template>
     </i-table>
+    </div>
 
     <el-dialog v-model="state.item.dialog" title="用户信息编辑" width="800px" class="custom" draggable :close-on-click-modal="false">
         <div style="padding: 10px 0;">
@@ -212,6 +228,7 @@ const state  = reactive({
         dialog: false,
         upload: false,
         wait: false,
+        selection: [],
     },
     struct: {
         id: null, // 存储当前编辑用户的ID
@@ -359,16 +376,95 @@ const method = {
     // 恢复数据
     async restore(ids = []) {
         if (utils.is.empty(ids)) return
-        
+
         try {
             const { code, msg } = await axios.put(`/api/${state.item.table}/restore`, { ids })
             if (code !== 200) throw new Error(msg)
-            
+
             ElMessage.success('恢复成功！')
             emit('refresh', 'all')
             await method.init()
         } catch (error) {
             ElMessage.error(error.message || '恢复失败')
+        }
+    },
+    // 选择变化
+    selectionChange(selection) {
+        state.item.selection = selection
+    },
+    // 批量修改状态（冻结/正常）
+    async batchStatus(status = 0) {
+        // 过滤掉系统管理员（ID=1）
+        const items = state.item.selection.filter(item => item.id !== 1)
+
+        if (utils.is.empty(items)) {
+            return ElMessage.warning('请选择要操作的用户（系统管理员不可操作）')
+        }
+
+        state.item.wait = true
+        try {
+            // 根据 API 规范，status 接口需要单个 id + status
+            const failed = []
+            for (const item of items) {
+                // 同时传 data 和 params，确保兼容性
+                const payload = {
+                    id    : Number(item.id),
+                    status: Number(status),
+                }
+                const { code, msg } = await axios.put(`/api/${state.item.table}/status`, payload, {
+                    params: payload
+                })
+                if (code !== 200) failed.push({ id: item.id, msg })
+            }
+
+            state.item.wait = false
+
+            if (failed.length > 0) {
+                return ElMessage.error(`操作完成，失败 ${failed.length} 个：${failed[0].msg}`)
+            }
+
+            ElMessage.success(status === 0 ? '已批量设为正常' : '已批量冻结')
+            emit('refresh', 'all')
+            await method.init()
+        } catch (error) {
+            state.item.wait = false
+            ElMessage.error(error.message || '操作失败')
+        }
+    },
+    // 批量删除
+    async batchDelete(isSoft = true) {
+        // 过滤掉系统管理员（ID=1）
+        const ids = state.item.selection
+            .filter(item => item.id !== 1)
+            .map(item => item.id)
+
+        if (utils.is.empty(ids)) {
+            return ElMessage.warning('请选择要删除的用户（系统管理员不可删除）')
+        }
+
+        try {
+            await ElMessageBox.confirm(
+                `确定要${isSoft ? '软删除' : '永久删除'}选中的 ${ids.length} 个用户吗？`,
+                '提示',
+                { type: 'warning' }
+            )
+        } catch {
+            return
+        }
+
+        state.item.wait = true
+        try {
+            const uri = `/api/${state.item.table}/${isSoft ? 'remove' : 'delete'}`
+            const { code, msg } = await axios.del(uri, { ids })
+            state.item.wait = false
+            if (code !== 200) throw new Error(msg)
+
+            ElMessage.success(isSoft ? '批量软删除成功！' : '批量永久删除成功！')
+            emit('refresh', 'remove')
+            await method.init()
+        } catch (error) {
+            state.item.wait = false
+            ElMessage.error(error.message || '删除失败')
         }
     },
     // 上传

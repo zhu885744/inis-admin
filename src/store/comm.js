@@ -19,7 +19,7 @@ const checkToken = (state = {}) => {
 
         state.login.user   = data.user
         state.login.finish = true
-        cache.set(cacheName, data.user, 10)
+        cache.set(cacheName, data.user, 7 * 24 * 60)
     })
 }
 

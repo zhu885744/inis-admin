@@ -162,7 +162,7 @@ const method = {
             if (code !== 200) return ElMessage.error(msg)
 
             ElMessage.success(`注册成功！欢迎您，${state.struct.nickname}！`)
-            cache.set('user-info', data.user, 10)
+            cache.set('user-info', data.user, 7 * 24 * 60)
             utils.set.cookie(globalThis?.inis?.token_name || 'INIS_LOGIN_TOKEN', data.token, 7 * 24 * 60 * 60)
             store.comm.login.finish = true
             store.comm.login.user = data.user

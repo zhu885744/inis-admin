@@ -1,5 +1,22 @@
 <template>
-    <i-table :opts="state.opts" ref="i-table">
+    <div>
+        <div style="margin-bottom: 12px" v-if="state.item.selection.length > 0 && props.type === 'all'">
+            <el-button v-on:click="method.batchDelete(true)" type="danger" size="small">
+                <i-svg color="rgb(var(--icon-color))" name="delete" size="16px"></i-svg>
+                <span style="margin-left: 4px">批量删除</span>
+            </el-button>
+        </div>
+        <div style="margin-bottom: 12px" v-if="state.item.selection.length > 0 && props.type === 'remove'">
+            <el-button v-on:click="method.batchRestore()" type="primary" size="small">
+                <i-svg color="rgb(var(--icon-color))" name="restore" size="16px"></i-svg>
+                <span style="margin-left: 4px">批量恢复</span>
+            </el-button>
+            <el-button v-on:click="method.batchDelete(false)" type="danger" size="small" style="margin-left: 8px">
+                <i-svg color="rgb(var(--icon-color))" name="delete" size="16px"></i-svg>
+                <span style="margin-left: 4px">批量永久删除</span>
+            </el-button>
+        </div>
+    <i-table :opts="state.opts" ref="i-table" @selection:change="method.selectionChange">
 
         <template #start>
             <el-table-column type="selection" width="55"></el-table-column>
@@ -80,6 +97,7 @@
         </template>
 
     </i-table>
+    </div>
 
     <el-dialog v-model="state.item.dialog" class="custom" draggable :close-on-click-modal="false">
         <template #header>
@@ -142,6 +160,7 @@ const state  = reactive({
         table: 'comment',
         dialog: false,
         wait: false,
+        selection: [],
     },
     struct: {},
     opts: {
@@ -224,6 +243,59 @@ const method = {
         // 重新加载数据
         await method.init()
         ElMessage.success('恢复成功')  // 使用Element Plus的Message
+    },
+    // 选择变化
+    selectionChange(selection) {
+        state.item.selection = selection
+    },
+    // 批量删除
+    async batchDelete(isSoft = true) {
+        const ids = state.item.selection.map(item => item.id)
+        if (utils.is.empty(ids)) return ElMessage.warning('请选择要操作的评论')
+
+        try {
+            await ElMessageBox.confirm(
+                `确定要${isSoft ? '软删除' : '永久删除'}选中的 ${ids.length} 条评论吗？`,
+                '提示',
+                { type: 'warning' }
+            )
+        } catch {
+            return
+        }
+
+        state.item.wait = true
+        try {
+            const uri = `/api/${state.item.table}/${isSoft ? 'remove' : 'delete'}`
+            const { code, msg } = await axios.del(uri, { ids })
+            state.item.wait = false
+            if (code !== 200) throw new Error(msg)
+
+            ElMessage.success(isSoft ? '批量软删除成功！' : '批量永久删除成功！')
+            emit('refresh', 'remove')
+            await method.init()
+        } catch (error) {
+            state.item.wait = false
+            ElMessage.error(error.message || '删除失败')
+        }
+    },
+    // 批量恢复
+    async batchRestore() {
+        const ids = state.item.selection.map(item => item.id)
+        if (utils.is.empty(ids)) return ElMessage.warning('请选择要恢复的评论')
+
+        state.item.wait = true
+        try {
+            const { code, msg } = await axios.put(`/api/${state.item.table}/restore`, { ids })
+            state.item.wait = false
+            if (code !== 200) throw new Error(msg)
+
+            ElMessage.success('批量恢复成功！')
+            emit('refresh', 'all')
+            await method.init()
+        } catch (error) {
+            state.item.wait = false
+            ElMessage.error(error.message || '恢复失败')
+        }
     },
     // 打开新窗口
     window(url = null, target = '_blank'){

@@ -201,6 +201,14 @@ route.beforeEach(async (to, from, next) => {
 
     // 登录、注册、找回密码路由直接放行
     if (noAuthRoutes.includes(to.name)) {
+        // 根路径 / 在已登录状态下重定向到 /admin
+        if (to.name === 'login' && to.path === '/') {
+            const TOKEN_NAME = globalThis?.inis?.token_name || 'INIS_LOGIN_TOKEN'
+            if (utils.has.cookie(TOKEN_NAME)) {
+                next('/admin')
+                return
+            }
+        }
         next()
         return
     }
@@ -208,12 +216,16 @@ route.beforeEach(async (to, from, next) => {
     // 后台路由校验 - 未登录跳转到登录页
     if (to.path.indexOf('/admin') === 0) {
         const cacheName = 'check-token'
+        const TOKEN_NAME = globalThis?.inis?.token_name || 'INIS_LOGIN_TOKEN'
+
+        // 如果没有 token cookie，直接跳到登录页
+        if (!utils.has.cookie(TOKEN_NAME)) return invalid()
 
         // 校验登录状态
         if (!cache.has(cacheName)) {
             const { code } = await axios.post('/api/comm/check-token')
             if (code !== 200) return invalid()
-            // 缓存登录状态10分钟
+            // 缓存登录状态
             cache.set(cacheName, true, inis.cache)
         }
 
