@@ -59,4 +59,15 @@ const fetchVersion = async () => {
 .footer-divider {
     color: #d9d9d9;
 }
+
+@media (max-width: 768px) {
+    .footer-content {
+        font-size: 11px;
+        gap: 4px;
+    }
+
+    .footer-wrapper {
+        padding: 0 12px;
+    }
+}
 </style>

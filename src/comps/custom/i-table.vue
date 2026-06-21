@@ -253,8 +253,60 @@ defineExpose({
 }
 .total-count {
     float: left;
+    font-size: 12px;
 }
 .pagination-wrapper {
     float: right;
+}
+
+@media (max-width: 768px) {
+    :deep(.el-table) {
+        font-size: 12px;
+    }
+
+    :deep(.el-table__header),
+    :deep(.el-table__body) {
+        min-width: 640px;
+    }
+
+    :deep(.el-table__header-wrapper),
+    :deep(.el-table__body-wrapper) {
+        overflow-x: auto;
+    }
+
+    :deep(.el-table .el-table__cell) {
+        padding: 8px 6px;
+    }
+
+    :deep(.el-table .el-table__header .el-table__cell) {
+        padding: 10px 6px;
+    }
+
+    :deep(.el-pagination) {
+        font-size: 11px;
+    }
+
+    :deep(.el-pagination .el-pagination__sizes) {
+        display: none;
+    }
+
+    :deep(.el-pagination .el-pager li) {
+        padding: 0 6px;
+        min-width: 24px;
+        height: 24px;
+        line-height: 24px;
+    }
+
+    .table-footer {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    .pagination-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
 }
 </style>

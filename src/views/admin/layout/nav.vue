@@ -37,6 +37,12 @@
                     :default-active="activeMenu"
                     unique-opened
                 >
+                    <el-menu-item index="/admin" @click="handleNavClick(push('/admin'))">
+                        <el-icon :size="18" class="menu-icon">
+                            <component :is="componentMap['House']" />
+                        </el-icon>
+                        <span>首页</span>
+                    </el-menu-item>
                     <template v-for="(item, index) in state.menu" :key="index">
                         <el-sub-menu v-if="item.children?.length" :index="item.name">
                             <template #title>
@@ -59,6 +65,13 @@
                                 <span>{{ child.label }}</span>
                             </el-menu-item>
                         </el-sub-menu>
+                        <el-menu-item v-else :index="item.path" @click="handleNavClick(item.fn?.())">
+                            <span v-if="item.icon" class="nav-svg-icon" v-html="item.icon" />
+                            <el-icon :size="18" class="menu-icon" v-else>
+                                <component :is="getIcon(item)" />
+                            </el-icon>
+                            <span>{{ item.label }}</span>
+                        </el-menu-item>
                     </template>
                 </el-menu>
             </template>
@@ -97,6 +110,7 @@
 import { reactive, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { list as MenuList } from '{src}/utils/menu'
+import { push } from '{src}/utils/route'
 import { useCommStore } from '{src}/store/comm'
 const route = useRoute()
 const store = {

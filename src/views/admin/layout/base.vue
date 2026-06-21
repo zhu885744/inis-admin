@@ -124,6 +124,7 @@
         </el-container>
 
         <upgrade-page />
+        <nav-component />
     </el-container>
 </template>
 
@@ -133,6 +134,7 @@ import { useRoute } from 'vue-router'
 import { list as MenuList } from '{src}/utils/menu'
 import { push } from '{src}/utils/route'
 import upgradePage from '{src}/comps/upgrade/page.vue'
+import navComponent from '{src}/views/admin/layout/nav.vue'
 import { useCommStore } from '{src}/store/comm'
 const route = useRoute()
 const store = {
@@ -558,5 +560,35 @@ nextTick(() => {
 
 .sidebar-mini .main-footer {
     left: 64px;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .main-sidebar {
+        display: none;
+    }
+
+    .main-content-area {
+        margin-left: 0 !important;
+        padding-top: 56px;
+        padding-bottom: 48px;
+    }
+
+    .top-header {
+        display: none;
+    }
+
+    .main-footer {
+        left: 0 !important;
+    }
+
+    .content-wrapper {
+        padding: 12px;
+    }
+
+    .content-wrapper :deep(.page-container) {
+        padding: 12px;
+        border-radius: 4px;
+    }
 }
 </style>

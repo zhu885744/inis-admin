@@ -3,14 +3,12 @@
         <el-row :gutter="20">
             <!-- 左侧编辑器区域 -->
             <el-col :span="18">
-                <el-card style="margin-bottom: 8px">
-                    <div v-loading="utils.is.empty(state.struct.editor)" style="min-height: 485px">
-                        <i-vditor ref="vditor" v-model="state.struct.content" :opts="{ height: 600 }"></i-vditor>
-                    </div>
-                    <template #footer>
-                        <el-button @click="method.save()" :loading="state.item.wait" style="float: right">发布文章</el-button>
-                        <el-button @click="method.saveDraft()" :loading="state.item.wait">保存草稿</el-button>
-                    </template>
+                <div v-loading="utils.is.empty(state.struct.editor)" style="min-height: 485px">
+                    <i-vditor ref="vditor" v-model="state.struct.content" :opts="{ height: 600 }"></i-vditor>
+                </div>
+                <el-card style="margin-bottom: 10px">
+                    <el-button @click="method.save()" :loading="state.item.wait" style="float: right">发布文章</el-button>
+                    <el-button @click="method.saveDraft()" :loading="state.item.wait">保存草稿</el-button>
                 </el-card>
             </el-col>
 

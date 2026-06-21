@@ -127,3 +127,31 @@ watch(() => state.item.search, (val) => {
     state.item.timer = setTimeout(() => method.refresh(...allow), globalThis.inis?.lazy_time ?? 500)
 })
 </script>
+
+<style scoped>
+@media (max-width: 768px) {
+    .container-box :deep(.el-row) {
+        flex-direction: column;
+    }
+
+    .container-box :deep(.el-col) {
+        width: 100% !important;
+        justify-content: flex-start !important;
+        margin-bottom: 8px;
+    }
+
+    .container-box :deep(.el-input) {
+        width: 100% !important;
+    }
+
+    .container-box :deep(.el-button) {
+        font-size: 12px;
+        padding: 6px 12px;
+        margin-bottom: 4px;
+    }
+
+    .container-box :deep(.el-dropdown) {
+        margin-right: 0 !important;
+    }
+}
+</style>

@@ -12,7 +12,7 @@ import axios from '{src}/utils/request'
 const { ctx, proxy } = getCurrentInstance()
 
 const state  = reactive({
-    item: Vditor,
+    item: null,
     content: '### 默认',
     progress: {
         value: 0,
@@ -38,6 +38,9 @@ const method = {
             },
             resize: {
                 enable: true,           // 支持主窗口大小拖拽
+            },
+            fullscreen: {
+                index: 9999,            // 全屏层级
             },
             preview: {
                 hljs: {
@@ -177,3 +180,25 @@ defineExpose({
     setValue: (markdown) => state.item?.setValue(markdown),
 })
 </script>
+
+<style scoped>
+@media (max-width: 768px) {
+    :deep(.vditor) {
+        font-size: 14px;
+    }
+
+    :deep(.vditor-toolbar) {
+        flex-wrap: wrap;
+        gap: 2px;
+    }
+
+    :deep(.vditor-toolbar button) {
+        padding: 4px 6px;
+        font-size: 12px;
+    }
+
+    :deep(.vditor-resize) {
+        display: none;
+    }
+}
+</style>
