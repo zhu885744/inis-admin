@@ -4,19 +4,6 @@ import utils from '{src}/utils/utils'
 import axios from '{src}/utils/request'
 import { useCommStore } from '{src}/store/comm'
 
-// 安装引导
-const install = {
-    name: 'install',
-    path: '/install',
-    component: () => import('{src}/views/install/layout/base.vue'),
-    meta: { title: '安装引导' },
-    children: [{
-        path: '/',
-        name: 'install-index',
-        meta: { title: '安装引导' },
-    }],
-}
-
 // 登录、注册、找回密码路由（无需登录）
 const auth = {
     path: '/',
@@ -153,10 +140,15 @@ const admin = {
         name: 'admin-qps-warn',
         meta: { title: 'QPS预警' },
         component: () => import('{src}/views/admin/pages/qps-warn.vue'),
+    },{
+        path: 'moments',
+        name: 'admin-moments',
+        meta: { title: '动态管理' },
+        component: () => import('{src}/views/admin/pages/moments.vue'),
     }],
 }
 
-const routes = [ auth, install, admin, {
+const routes = [ auth, admin, {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: () => import('{src}/views/error.vue'),
@@ -170,7 +162,7 @@ const route = createRouter({
 })
 
 // 不需要登录验证的路由
-const noAuthRoutes = ['login', 'register', 'reset-password', 'install', 'install-index', 'not-found']
+const noAuthRoutes = ['login', 'register', 'reset-password', 'not-found']
 
 // 路由守卫
 route.beforeEach(async (to, from, next) => {
@@ -186,17 +178,6 @@ route.beforeEach(async (to, from, next) => {
             utils.clear.cookie(globalThis?.inis?.token_name || 'INIS_LOGIN_TOKEN')
         }
         next(params)
-    }
-
-    // 安装引导路由校验
-    if (to.path.indexOf('/install') === 0) {
-        const { code, msg } = await axios.get('/dev/install/check')
-        if (code !== 200) {
-            next('/')
-            return notyf.error(msg)
-        }
-        next()
-        return
     }
 
     // 登录、注册、找回密码路由直接放行
@@ -215,19 +196,18 @@ route.beforeEach(async (to, from, next) => {
 
     // 后台路由校验 - 未登录跳转到登录页
     if (to.path.indexOf('/admin') === 0) {
-        const cacheName = 'check-token'
         const TOKEN_NAME = globalThis?.inis?.token_name || 'INIS_LOGIN_TOKEN'
 
-        // 如果没有 token cookie，直接跳到登录页
         if (!utils.has.cookie(TOKEN_NAME)) return invalid()
 
-        // 校验登录状态
-        if (!cache.has(cacheName)) {
-            const { code } = await axios.post('/api/comm/check-token')
-            if (code !== 200) return invalid()
-            // 缓存登录状态
-            cache.set(cacheName, true, inis.cache)
+        if (cache.has('user-info')) {
+            useCommStore().nav.title = to.meta.title
+            next()
+            return
         }
+
+        const { code } = await axios.post('/api/comm/check-token')
+        if (code !== 200) return invalid()
 
         useCommStore().nav.title = to.meta.title
         next()

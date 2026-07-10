@@ -46,7 +46,7 @@
 | `id` | int | 否 | 评论ID |
 | `pid` | int | 否 | 父评论ID |
 | `bind_id` | int | 否 | 绑定资源ID |
-| `bind_type` | string | 否 | 绑定类型（article/page） |
+| `bind_type` | string | 否 | 绑定类型（article/page/moments） |
 | `field` | string | 否 | 返回字段，逗号分隔 |
 | `where` | json | 否 | 条件查询 |
 | `like` | json | 否 | 模糊查询 |
@@ -84,7 +84,7 @@
 | `limit` | int | 否 | 每页数量 |
 | `order` | string | 否 | 排序字段，默认 `create_time desc` |
 | `bind_id` | int | 否 | 绑定资源ID |
-| `bind_type` | string | 否 | 绑定类型（article/page） |
+| `bind_type` | string | 否 | 绑定类型（article/page/moments） |
 | `field` | string | 否 | 返回字段，逗号分隔 |
 | `where` | json | 否 | 条件查询 |
 | `like` | json | 否 | 模糊查询 |
@@ -522,7 +522,7 @@
 ## 特殊说明
 
 ### 1. 评论配置检查
-- 创建评论前会检查文章/页面的评论配置
+- 创建评论前会检查文章/页面/动态的评论配置
 - 如果评论功能被禁用，会拒绝创建
 
 ### 2. 速率限制
@@ -544,9 +544,16 @@
 
 ### 6. 邮件通知
 - 支持配置邮件通知功能
-- 评论会通知文章/页面作者
+- 评论会通知文章/页面/动态作者
 - 回复评论会通知被回复的用户
 
 ### 7. 评论树结构
 - `flat` 接口返回嵌套的评论树结构
 - 支持递归获取所有层级的回复
+
+### 8. 敏感数据脱敏
+
+- 非管理员用户查询时，评论者的 IP 和 User-Agent 会自动脱敏
+- 管理员用户可查看完整的 IP 和 User-Agent
+- IP 脱敏规则：保留前两段，后两段替换为 `*`（如 `192.168.*.*`）
+- User-Agent 脱敏规则：超过 50 字符时截断，末尾添加 `...`

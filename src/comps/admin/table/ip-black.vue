@@ -83,6 +83,37 @@
                 <el-form-item label="IP">
                     <el-input v-model="state.struct.ip" placeholder="例如：192.168.1.1"></el-input>
                 </el-form-item>
+                <el-form-item label="封禁等级">
+                    <el-select v-model="state.struct.level" placeholder="请选择封禁等级" style="width: 100%" :disabled="state.struct.is_permanent">
+                        <el-option label="1级 (1小时)" :value="1"></el-option>
+                        <el-option label="2级 (24小时)" :value="2"></el-option>
+                        <el-option label="3级 (7天)" :value="3"></el-option>
+                        <el-option label="4级 (永久)" :value="4"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="永久封禁">
+                    <el-switch v-model="state.struct.is_permanent"></el-switch>
+                    <span style="margin-left: 10px; color: var(--text-color-2); font-size: 13px;">开启后忽略封禁等级和时长</span>
+                </el-form-item>
+                <el-form-item label="封禁时长">
+                    <el-input-number v-model="state.struct.duration" :min="1" :disabled="state.struct.is_permanent" placeholder="自定义封禁时长（小时）" style="width: 100%"></el-input-number>
+                    <span style="color: var(--text-color-2); font-size: 13px;">留空则根据等级自动计算，优先级高于等级</span>
+                </el-form-item>
+                <el-form-item label="解封时间">
+                    <el-date-picker
+                        v-model="state.expireTimeDate"
+                        type="datetime"
+                        placeholder="选择解封时间"
+                        style="width: 100%"
+                        :disabled="state.struct.is_permanent"
+                        value-format="x"
+                        @change="method.onExpireTimeChange">
+                    </el-date-picker>
+                    <span style="color: var(--text-color-2); font-size: 13px;">留空则根据封禁时长自动计算</span>
+                </el-form-item>
+                <el-form-item label="封禁原因">
+                    <el-input v-model="state.struct.cause" placeholder="例如：违规访问、恶意攻击等"></el-input>
+                </el-form-item>
                 <el-form-item label="备注">
                     <el-input v-model="state.struct.remark" :autosize="{ minRows: 3, maxRows: 10 }" placeholder="备注一下" type="textarea"></el-input>
                 </el-form-item>
@@ -139,8 +170,15 @@ const state  = reactive({
         wait: false,
     },
     struct: {
-        ip: null
+        ip: null,
+        level: 1,
+        is_permanent: false,
+        duration: null,
+        expire_time: null,
+        cause: null,
+        remark: null,
     },
+    expireTimeDate: null,
     opts: {
         url: '/api/ip-black/all',
         params: props.params,
@@ -191,15 +229,41 @@ const method = {
         if (duration < 168) return `${Math.round(duration / 24)} 天`
         return `${Math.round(duration / 168)} 周`
     },
+    // 解封时间变化处理
+    onExpireTimeChange: (val) => {
+        if (val) {
+            state.struct.expire_time = parseInt(val)
+        } else {
+            state.struct.expire_time = null
+        }
+    },
     // 保存数据
     save: async (params = state.struct || {}) => {
 
         if (utils.is.empty(params))    return ElMessage.warning('你在想什么？什么都不填！')  // 使用ElMessage
         if (utils.is.empty(params.ip)) return ElMessage.warning('IP地址不能为空！')  // 使用ElMessage
 
+        const submitData = { ...params }
+
+        if (utils.is.empty(submitData.level)) {
+            delete submitData.level
+        }
+        if (utils.is.empty(submitData.duration)) {
+            delete submitData.duration
+        }
+        if (utils.is.empty(submitData.expire_time)) {
+            delete submitData.expire_time
+        }
+        if (utils.is.empty(submitData.cause)) {
+            delete submitData.cause
+        }
+        if (utils.is.empty(submitData.remark)) {
+            delete submitData.remark
+        }
+
         state.item.wait     = true
 
-        const { code, msg } = await axios.post(`/api/${state.item.table}/save`, params)
+        const { code, msg } = await axios.post(`/api/${state.item.table}/save`, submitData)
 
         state.item.wait     = false
 
@@ -213,7 +277,12 @@ const method = {
     },
     // 编辑数据
     edit: struct => {
-        state.struct = struct
+        state.struct = { ...struct }
+        if (struct.expire_time) {
+            state.expireTimeDate = String(struct.expire_time)
+        } else {
+            state.expireTimeDate = null
+        }
         state.item.dialog = true
     },
     // 显示盒子
@@ -286,8 +355,19 @@ watch(() => props.init, (val) => {
 
 // 监听对话框状态
 watch(() => state.item.dialog, (value) => {
-    // 关闭对话框时清空数据
-    if (!value) state.struct = {}
+    // 关闭对话框时重置数据
+    if (!value) {
+        state.struct = {
+            ip: null,
+            level: 1,
+            is_permanent: false,
+            duration: null,
+            expire_time: null,
+            cause: null,
+            remark: null,
+        }
+        state.expireTimeDate = null
+    }
 })
 
 // 将子组件方法暴露给父组件

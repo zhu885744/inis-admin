@@ -89,11 +89,18 @@
         </template>
 
         <template #i-source="{ scope = {} }">
-            <el-tooltip :content="method.autoWrap(scope?.result?.article?.title)" :disabled="utils.is.empty(scope?.result?.article?.title)" placement="top">
-                <span v-if="!utils.is.empty(scope?.result?.article?.title)" class="limit-1-line">
-                    {{ scope?.result?.article?.title || '-' }}
+            <el-tooltip :content="method.getSourceTitle(scope)" :disabled="utils.is.empty(method.getSourceTitle(scope))" placement="top">
+                <span v-if="!utils.is.empty(method.getSourceTitle(scope))" class="limit-1-line">
+                    {{ method.getSourceTitle(scope) || '-' }}
                 </span>
+                <span v-else>-</span>
             </el-tooltip>
+        </template>
+
+        <template #i-type="{ scope = {} }">
+            <el-tag :type="method.getTypeTag(scope.bind_type)" size="small">
+                {{ method.getTypeName(scope.bind_type) }}
+            </el-tag>
         </template>
 
     </i-table>
@@ -169,7 +176,8 @@ const state  = reactive({
         columns: [
             { prop: 'user', label: '用户', slot: true, fixed: left },
             { prop: 'content', label: '内容', slot: true },
-            { prop: 'source' , label: '源文章', slot: true },
+            { prop: 'type', label: '类型', width: 100, slot: true, align: 'center' },
+            { prop: 'source' , label: '源内容', slot: true },
             { prop: 'update_time', label: '更新时间', width: 140, sortable: true },
             { prop: 'create_time', label: '创建时间', width: 140, sortable: true },
         ],
@@ -330,6 +338,39 @@ const method = {
     omit  : (text = null, length = 10, omission = ' ... ', location = 'center') => {
         if (utils.is.empty(text)) return '空'
         return utils.string.omit(text, length, omission, location)
+    },
+    // 获取类型名称
+    getTypeName: (bindType = '') => {
+        const types = {
+            article: '文章',
+            page: '页面',
+            moments: '动态',
+        }
+        return types[bindType] || '未知'
+    },
+    // 获取类型标签样式
+    getTypeTag: (bindType = '') => {
+        const tags = {
+            article: 'success',
+            page: 'warning',
+            moments: 'primary',
+        }
+        return tags[bindType] || 'info'
+    },
+    // 获取源内容标题
+    getSourceTitle: (scope = {}) => {
+        const bindType = scope.bind_type || ''
+        const result = scope.result || {}
+        switch (bindType) {
+            case 'article':
+                return result.article?.title || ''
+            case 'page':
+                return result.page?.title || ''
+            case 'moments':
+                return result.moments?.content ? method.omit(result.moments.content, 30) : ''
+            default:
+                return ''
+        }
     },
 }
 
