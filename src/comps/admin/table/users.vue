@@ -478,15 +478,16 @@ const method = {
                 if (!input.files.length) return
                 
                 const params = new FormData()
-                params.append('file', input.files[0])
+                params.append('files', input.files[0])
+                params.append('target_type', 'user_avatar')
                 
                 state.item.upload = true
-                const { code, msg, data } = await axios.post('/api/file/upload', params)
+                const { code, msg, data } = await axios.post('/api/attachment/batch', params)
                 state.item.upload = false
                 
                 if (code !== 200) throw new Error(msg)
                 
-                state.struct[field] = data.path
+                state.struct[field] = data.results[0]?.full_url || ''
                 ElMessage.info('上传成功！')
             })
             

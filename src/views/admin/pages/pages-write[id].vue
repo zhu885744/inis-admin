@@ -3,7 +3,7 @@
         <el-row :gutter="20">
             <el-col :span="18">
                 <div v-loading="utils.is.empty(state.struct.editor)" style="min-height: 485px">
-                    <i-vditor ref="vditor" v-model="state.struct.content" :opts="{ height: 600 }"></i-vditor>
+                    <i-md-editor ref="mdEditor" v-model="state.struct.content" :height="600"></i-md-editor>
                 </div>
                 <el-card style="margin-bottom: 10px">
                     <el-button @click="method.save()" :loading="state.item.wait" style="float: right">发布页面</el-button>
@@ -125,7 +125,7 @@
 import cache from '{src}/utils/cache'
 import utils from '{src}/utils/utils'
 import axios from '{src}/utils/request'
-import IVditor from '{src}/comps/custom/i-vditor.vue'
+import IMdEditor from '{src}/comps/custom/i-md-editor.vue'
 import { useCommStore } from '{src}/store/comm'
 
 const { ctx, proxy } = getCurrentInstance()
@@ -181,7 +181,7 @@ const method = {
         }
         await method.getTags()
         if (!utils.is.empty(state.item.id)) await method.getPage(state.item.id)
-        else state.struct.editor = 'vditor'
+        else state.struct.editor = 'md'
     },
     // 获取文章标签
     getTags: async () => {
@@ -230,8 +230,7 @@ const method = {
     },
     // 保存
     save: async () => {
-        // 获取Vditor内容
-        state.struct.content = proxy.$refs['vditor'].getValue()
+        // 获取编辑器内容（v-model 已自动绑定）
 
         // 正则匹配 html 纯文本内容 - 去除换行符
         const reg = /<[^>]+>/g
@@ -274,8 +273,7 @@ const method = {
     },
     // 保存草稿
     saveDraft: async () => {
-        // 获取Vditor内容
-        state.struct.content = proxy.$refs['vditor'].getValue()
+        // 获取编辑器内容（v-model 已自动绑定）
 
         if (utils.is.empty(state.struct?.title)) return ElMessage.warning('你可能忘记写标题了')
 

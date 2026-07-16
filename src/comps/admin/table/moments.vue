@@ -73,16 +73,16 @@
             </template>
 
             <template #i-images="{ scope = {} }">
-                <div style="display: flex; flex-wrap: wrap; gap: 4px">
+                <div style="display: flex; flex-wrap: wrap; gap: 4px; max-height: 88px; overflow: hidden; align-content: flex-start">
                     <el-image 
-                        v-for="(img, index) in method.getImages(scope.images)" 
+                        v-for="(img, index) in method.getImages(scope.images).slice(0, 6)" 
                         :key="index"
                         :src="img" 
-                        :preview-src-list="method.getImages(scope.images)"
-                        style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px"
+                        @click.stop="method.previewImage(img, method.getImages(scope.images))"
+                        style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; cursor: pointer"
                     />
-                    <span v-if="method.getImages(scope.images).length > 3" style="line-height: 40px; font-size: 12px">
-                        +{{ method.getImages(scope.images).length - 3 }}
+                    <span v-if="method.getImages(scope.images).length > 6" style="line-height: 40px; font-size: 12px">
+                        +{{ method.getImages(scope.images).length - 6 }}
                     </span>
                 </div>
             </template>
@@ -132,15 +132,16 @@
                     <el-tabs v-model="dialog.tabs" :stretch="true">
                         <el-tab-pane label="预览" name="preview">
                             <el-upload 
-                                class="custom upload" 
-                                action="/api/file/upload" 
-                                :headers="method.headers()" 
-                                :multiple="true" 
-                                list-type="picture"
-                                :on-remove="method.images.remove" 
-                                :on-success="method.images.success"
-                                :on-error="method.images.error" 
-                                :file-list="dialog.images.preview">
+                            class="custom upload" 
+                            action="/api/attachment/batch" 
+                            :headers="method.headers()" 
+                            :multiple="true" 
+                            list-type="picture"
+                            :on-remove="method.images.remove" 
+                            :on-success="method.images.success"
+                            :on-error="method.images.error" 
+                            :file-list="dialog.images.preview"
+                            :data="{ target_type: 'comment' }">
                                 <el-button type="primary" style="width: 100%">上传图片</el-button>
                             </el-upload>
                         </el-tab-pane>
@@ -187,6 +188,14 @@
                 <el-button type="primary" @click="method.save">保存</el-button>
             </template>
         </el-dialog>
+
+        <el-image-viewer 
+            v-if="state.viewer.show" 
+            :url-list="state.viewer.list" 
+            :initial-index="state.viewer.index"
+            @close="state.viewer.show = false"
+            append-to-body
+        />
     </div>
 </template>
 
@@ -196,6 +205,7 @@ import axios from '{src}/utils/request.js'
 import cache from '{src}/utils/cache.js'
 import ITable from '{src}/comps/custom/i-table.vue'
 import { computed, reactive, getCurrentInstance, onMounted, watch, toRaw } from 'vue'
+import { ElImageViewer } from 'element-plus'
 
 const emit  = defineEmits(['refresh','update:init'])
 const props = defineProps({
@@ -225,6 +235,11 @@ const right = computed(() => utils.is.mobile() ? false : 'right')
 const { proxy } = getCurrentInstance()
 const state  = reactive({
     struct: {},
+    viewer: {
+        show: false,
+        list: [],
+        index: 0
+    },
     opts: {
         url: `/api/${props.tableName}/all`,
         params: toRaw(props.params),
@@ -305,11 +320,13 @@ const method = {
         },
         success: (response) => {
             if (response.code === 200) {
-                dialog.images.preview.push({
-                    uid: Date.now(),
-                    name: response.data.name || 'image',
-                    status: 'success',
-                    url: response.data.url
+                response.data.results.forEach(result => {
+                    dialog.images.preview.push({
+                        uid: Date.now(),
+                        name: result.original_name || 'image',
+                        status: 'success',
+                        url: result.full_url
+                    })
                 })
                 dialog.images.links = dialog.images.preview.map(item => item.url).join('\n')
             } else {
@@ -369,6 +386,12 @@ const method = {
     getImages: (images) => {
         if (utils.is.empty(images)) return []
         return images.split(',').filter(img => !utils.is.empty(img))
+    },
+    previewImage: (url, list) => {
+        const index = list.indexOf(url)
+        state.viewer.list = list
+        state.viewer.index = index >= 0 ? index : 0
+        state.viewer.show = true
     },
     omit: (text = null, length = 10, omission = ' ... ', location = 'center') => {
         if (utils.is.empty(text)) return '空'

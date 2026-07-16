@@ -222,18 +222,19 @@ const method = {
         input.addEventListener('change', async () => {
             // 创建一个 formData
             const params = new FormData
-            params.append('file', input.files[0])
+            params.append('files', input.files[0])
+            params.append('target_type', 'tags')
 
             state.item.upload         = true
 
             // 上传图片
-            const { code, msg, data } = await axios.post('/api/file/upload', params)
+            const { code, msg, data } = await axios.post('/api/attachment/batch', params)
 
             state.item.upload         = false
 
             if (code !== 200) return ElMessage.error(msg)  // 使用Element Plus的Message
             // 设置图片
-            state.struct[field] = data.path
+            state.struct[field] = data.results[0]?.full_url || ''
             // 清空 input
             input.value = ''
             ElMessage.success('上传成功！')  // 使用Element Plus的Message

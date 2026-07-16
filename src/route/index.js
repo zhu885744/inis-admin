@@ -145,6 +145,11 @@ const admin = {
         name: 'admin-moments',
         meta: { title: '动态管理' },
         component: () => import('{src}/views/admin/pages/moments.vue'),
+    },{
+        path: 'attachment',
+        name: 'admin-attachment',
+        meta: { title: '附件管理' },
+        component: () => import('{src}/views/admin/pages/attachment.vue'),
     }],
 }
 

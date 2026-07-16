@@ -4,7 +4,7 @@
             <!-- 左侧编辑器区域 -->
             <el-col :span="18">
                 <div v-loading="utils.is.empty(state.struct.editor)" style="min-height: 485px">
-                    <i-vditor ref="vditor" v-model="state.struct.content" :opts="{ height: 600 }"></i-vditor>
+                    <i-md-editor ref="mdEditor" v-model="state.struct.content" :height="600"></i-md-editor>
                 </div>
                 <el-card style="margin-bottom: 10px">
                     <el-button @click="method.save()" :loading="state.item.wait" style="float: right">发布文章</el-button>
@@ -71,9 +71,10 @@
                 <el-card header="封面图" style="margin-bottom: 10px">
                     <el-tabs v-model="state.item.tabs" :stretch="true">
                         <el-tab-pane label="预览" name="preview">
-                            <el-upload class="custom upload" action="/api/file/upload" :headers="method.headers()" :multiple="true" list-type="picture"
+                            <el-upload class="custom upload" action="/api/attachment/batch" :headers="method.headers()" :multiple="true" list-type="picture"
                                 :on-remove="method.cover.remove" :on-success="method.cover.success"
-                                :on-error="method.cover.error" :file-list="state.item.cover.preview">
+                                :on-error="method.cover.error" :file-list="state.item.cover.preview"
+                                :data="{ target_type: 'article' }">
                                 <el-button type="primary" style="width: 100%">上 传</el-button>
                             </el-upload>
                         </el-tab-pane>
@@ -165,7 +166,7 @@
 import cache from '{src}/utils/cache'
 import utils from '{src}/utils/utils'
 import axios from '{src}/utils/request'
-import IVditor from '{src}/comps/custom/i-vditor.vue'
+import IMdEditor from '{src}/comps/custom/i-md-editor.vue'
 import { useCommStore } from '{src}/store/comm'
 
 const { ctx, proxy } = getCurrentInstance()
@@ -237,7 +238,7 @@ const method = {
         await method.getTags()
         if (!utils.is.empty(state.item.id))  await method.getArticle(state.item.id)
         else {
-            state.struct.editor = 'vditor'
+            state.struct.editor = 'md'
         }
     },
     // 获取文章信息
@@ -257,7 +258,7 @@ const method = {
             state.struct.publishTime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
         }
         // 强制使用 Vditor
-        state.struct.editor = 'vditor'
+        state.struct.editor = 'md'
 
         // 封面图 - 字符串转数组 - name 正则出文件名部分
         if (!utils.is.empty(data.covers)) {
@@ -298,8 +299,7 @@ const method = {
     // 保存
     save: async () => {
 
-        // 获取 Vditor 内容
-        state.struct.content = proxy.$refs['vditor'].getValue()
+        // 获取编辑器内容（v-model 已自动绑定）
 
         // 正则匹配纯文本内容 - 去除换行符
         const reg = /<[^>]+>/g
@@ -351,8 +351,7 @@ const method = {
     },
     // 保存草稿
     saveDraft: async () => {
-        // 获取 Vditor 内容
-        state.struct.content = proxy.$refs['vditor'].getValue()
+        // 获取编辑器内容（v-model 已自动绑定）
 
         if (utils.is.empty(state.struct?.title)) return ElMessage.warning('你可能忘记写标题了')
 
@@ -434,8 +433,9 @@ const method = {
                 // 判断是否存在 response
                 if (list[key].response) {
                     const { data } = list[key].response
-                    if (!data?.path) continue
-                    list[key] = { name: data.path.replace(/.*\//, ''), url: data.path }
+                    if (!data?.results?.[0]?.full_url) continue
+                    const result = data.results[0]
+                    list[key] = { name: result.original_name, url: result.full_url }
                 }
             }
             state.item.cover.preview = list
