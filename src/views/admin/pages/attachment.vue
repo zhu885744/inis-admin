@@ -121,6 +121,7 @@
                 action="/api/attachment/batch"
                 :show-file-list="true"
                 :auto-upload="true"
+                :before-upload="method.beforeUpload"
                 :on-success="method.uploadSuccess"
                 :on-error="method.uploadError"
                 :on-change="method.uploadChange"
@@ -211,6 +212,19 @@ const method = {
         if (name === 'config') {
             await method.loadConfig()
         }
+    },
+    beforeUpload: async (file) => {
+        const { code, data } = await axios.post('/api/attachment/checkType', { file_names: [file.name] })
+        if (code !== 200) {
+            ElMessage.error('文件类型检查失败')
+            return false
+        }
+        const result = data.results?.[0]
+        if (!result?.is_allowed) {
+            ElMessage.error(result?.message || '不允许上传该类型的文件')
+            return false
+        }
+        return true
     },
     uploadChange: (file, fileList) => {
         if (file.status === 'ready') {

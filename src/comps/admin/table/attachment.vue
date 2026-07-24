@@ -41,14 +41,11 @@
                 <template #default="scope">
                     <span style="display: flex; justify-content: flex-end">
                         <el-button v-on:click="method.info(scope.row)" size="small" title="查看信息">
-                            <i-svg name="info" color="rgb(var(--icon-color))" size="16px"></i-svg>
+                            <span style="font-size: 11px">查看信息</span>
                         </el-button>
                         <el-button v-on:click="method.restore(scope.row.id)" size="small" style="margin-left: 0" title="恢复">
                             <i-svg name="restore" color="rgb(var(--icon-color))" size="16px"></i-svg>
                             <span style="font-size: 11px">恢复</span>
-                        </el-button>
-                        <el-button v-on:click="method.preview(scope.row)" size="small" style="margin-left: 0" title="预览">
-                            <i-svg name="image" color="rgb(var(--icon-color))" size="16px"></i-svg>
                         </el-button>
                         <el-button v-on:click="method.forceDelete(scope.row.id)" size="small" style="margin-left: 0" title="彻底删除（不可恢复）">
                             <i-svg name="delete" color="rgb(var(--icon-color))" size="16px"></i-svg>

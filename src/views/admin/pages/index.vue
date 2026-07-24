@@ -125,6 +125,116 @@
       </el-col>
     </el-row>
 
+    <!-- 数据统计 -->
+    <div class="section-title">
+      <el-icon><TrendCharts /></el-icon>
+      <span>数据统计</span>
+    </div>
+
+    <el-row :gutter="16" class="mb-4">
+      <!-- 用户统计 -->
+      <el-col :xs="24" :sm="8">
+        <el-card shadow="hover" class="dashboard-card">
+          <template #header>
+            <div class="card-header">
+              <el-icon><User /></el-icon>
+              <span>用户统计</span>
+            </div>
+          </template>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-num">{{ userStats.total }}</div>
+              <div class="stat-name">用户总数</div>
+            </div>
+            <div class="stat-box stat-success">
+              <div class="stat-num">{{ userStats.active }}</div>
+              <div class="stat-name">活跃用户</div>
+            </div>
+            <div class="stat-box stat-primary">
+              <div class="stat-num">{{ userStats.normal }}</div>
+              <div class="stat-name">正常状态</div>
+            </div>
+            <div class="stat-box stat-danger">
+              <div class="stat-num">{{ userStats.frozen }}</div>
+              <div class="stat-name">冻结用户</div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+
+      <!-- 文章统计 -->
+      <el-col :xs="24" :sm="8">
+        <el-card shadow="hover" class="dashboard-card">
+          <template #header>
+            <div class="card-header">
+              <el-icon><Document /></el-icon>
+              <span>文章统计</span>
+            </div>
+          </template>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-num">{{ articleStats.total }}</div>
+              <div class="stat-name">文章总数</div>
+            </div>
+            <div class="stat-box stat-warning">
+              <div class="stat-num">{{ articleStats.draft }}</div>
+              <div class="stat-name">草稿</div>
+            </div>
+            <div class="stat-box stat-success">
+              <div class="stat-num">{{ articleStats.published }}</div>
+              <div class="stat-name">已发布</div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+
+      <!-- 动态统计 -->
+      <el-col :xs="24" :sm="8">
+        <el-card shadow="hover" class="dashboard-card">
+          <template #header>
+            <div class="card-header">
+              <el-icon><ChatDotSquare /></el-icon>
+              <span>动态统计</span>
+            </div>
+          </template>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-num">{{ momentStats.total }}</div>
+              <div class="stat-name">动态总数</div>
+            </div>
+            <div class="stat-box stat-warning">
+              <div class="stat-num">{{ momentStats.draft }}</div>
+              <div class="stat-name">草稿</div>
+            </div>
+            <div class="stat-box stat-success">
+              <div class="stat-num">{{ momentStats.published }}</div>
+              <div class="stat-name">已发布</div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+
+    <el-row :gutter="16" class="mb-4">
+      <!-- 附件统计 -->
+      <el-col :xs="24" :sm="8">
+        <el-card shadow="hover" class="dashboard-card">
+          <template #header>
+            <div class="card-header">
+              <el-icon><FolderOpened /></el-icon>
+              <span>附件统计</span>
+            </div>
+          </template>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-num">{{ attachmentCount }}</div>
+              <div class="stat-name">附件总数</div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+
     <!-- 缓存状态 -->
     <el-card shadow="hover" class="mb-4">
       <template #header>
@@ -351,13 +461,45 @@ const systemHealthText = computed(() => {
 const databaseCounts = computed(() => {
   const counts = databaseStatusParsed.value?.counts || {}
   return [
-    { label: '用户', value: counts.users || 0 },
-    { label: '文章', value: counts.articles || 0 },
+    { label: '用户', value: counts.users?.total || counts.users || 0 },
+    { label: '文章', value: counts.articles?.total || counts.articles || 0 },
     { label: '评论', value: counts.comments || 0 },
     { label: '页面', value: counts.pages || 0 },
     { label: '标签', value: counts.tags || 0 },
     { label: '友链', value: counts.links || 0 }
   ]
+})
+
+const userStats = computed(() => {
+  const users = databaseStatusParsed.value?.counts?.users || {}
+  return {
+    total: users.total || 0,
+    active: users.active || 0,
+    normal: users.normal || users.status?.['0'] || 0,
+    frozen: users.frozen || users.status?.['1'] || 0
+  }
+})
+
+const articleStats = computed(() => {
+  const articles = databaseStatusParsed.value?.counts?.articles || {}
+  return {
+    total: articles.total || 0,
+    draft: articles.draft || articles.status?.['0'] || 0,
+    published: articles.published || articles.status?.['1'] || 0
+  }
+})
+
+const momentStats = computed(() => {
+  const moments = databaseStatusParsed.value?.counts?.moments || {}
+  return {
+    total: moments.total || 0,
+    draft: moments.draft || moments.status?.['0'] || 0,
+    published: moments.published || moments.status?.['1'] || 0
+  }
+})
+
+const attachmentCount = computed(() => {
+  return databaseStatusParsed.value?.counts?.attachments || 0
 })
 
 const networkStats = computed(() => {
@@ -689,6 +831,60 @@ $shadow-hover: 0 3px 10px rgba(0, 0, 0, 0.06);
   line-height: 1.2;
 }
 .stat-label {
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+  margin-top: $gap-xs;
+  opacity: 0.85;
+}
+
+// ========== 数据统计网格 ==========
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: $gap-md;
+}
+
+.stat-box {
+  text-align: center;
+  padding: $gap-lg $gap-sm;
+  background: var(--el-fill-color-light);
+  border-radius: $radius-md;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--el-fill-color);
+    transform: translateY(-2px);
+  }
+
+  &.stat-success {
+    background: linear-gradient(135deg, rgba(103, 194, 58, 0.1) 0%, rgba(103, 194, 58, 0.05) 100%);
+    .stat-num { color: #67c23a; }
+  }
+
+  &.stat-danger {
+    background: linear-gradient(135deg, rgba(245, 108, 108, 0.1) 0%, rgba(245, 108, 108, 0.05) 100%);
+    .stat-num { color: #f56c6c; }
+  }
+
+  &.stat-warning {
+    background: linear-gradient(135deg, rgba(230, 162, 60, 0.1) 0%, rgba(230, 162, 60, 0.05) 100%);
+    .stat-num { color: #e6a23c; }
+  }
+
+  &.stat-primary {
+    background: linear-gradient(135deg, rgba(64, 158, 255, 0.1) 0%, rgba(64, 158, 255, 0.05) 100%);
+    .stat-num { color: #409eff; }
+  }
+}
+
+.stat-num {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--el-color-primary);
+  line-height: 1.2;
+}
+
+.stat-name {
   font-size: 12px;
   color: var(--el-text-color-secondary);
   margin-top: $gap-xs;

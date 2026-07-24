@@ -137,6 +137,7 @@
                             :headers="method.headers()" 
                             :multiple="true" 
                             list-type="picture"
+                            :before-upload="method.beforeUpload"
                             :on-remove="method.images.remove" 
                             :on-success="method.images.success"
                             :on-error="method.images.error" 
@@ -312,6 +313,19 @@ const method = {
         dialog.tabs = 'preview'
         dialog.images.preview = []
         dialog.images.links = ''
+    },
+    beforeUpload: async (file) => {
+        const { code, data } = await axios.post('/api/attachment/checkType', { file_names: [file.name] })
+        if (code !== 200) {
+            ElMessage.error('文件类型检查失败')
+            return false
+        }
+        const result = data.results?.[0]
+        if (!result?.is_allowed) {
+            ElMessage.error(result?.message || '不允许上传该类型的文件')
+            return false
+        }
+        return true
     },
     images: {
         remove: (file, fileList) => {

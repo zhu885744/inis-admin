@@ -129,6 +129,9 @@
                     :placeholder="placeholder"
                     @keydown="handleKeydown"
                     @input="handleInput"
+                    @paste="handlePaste"
+                    @dragover.prevent
+                    @drop="handleDrop"
                 ></textarea>
                 <div class="md-line-numbers" v-if="showLineNumbers">
                     <span v-for="n in lineCount" :key="n">{{ n }}</span>
@@ -154,14 +157,9 @@
                 <el-form-item label="方式一：上传图片">
                     <el-upload
                         class="upload-demo"
-                        action="/api/attachment/batch"
-                        :headers="uploadHeaders"
                         :show-file-list="false"
                         :before-upload="beforeUpload"
-                        :on-progress="handleUploadProgress"
-                        :on-success="handleUploadSuccess"
-                        :on-error="handleUploadError"
-                        :data="{ target_type: 'article' }"
+                        :http-request="customUpload"
                     >
                         <el-button type="primary" :disabled="uploadingImage">
                             <el-icon><Upload /></el-icon> {{ uploadingImage ? '上传中...' : '选择图片上传' }}
@@ -189,8 +187,11 @@
 
 <script setup>
 import { ref, reactive, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ElMessage } from 'element-plus'
+import { EditPen, Edit, Delete, Message, Document, DocumentCopy, List, Check, CaretRight, Link, Picture, Grid, Minus, ChatDotSquare, RefreshLeft, RefreshRight, View, ScaleToOriginal, FullScreen, Upload } from '@element-plus/icons-vue'
 import request from '{src}/utils/request'
 import utils from '{src}/utils/utils'
+import MarkdownIt from 'markdown-it'
 
 const props = defineProps({
     modelValue: {
@@ -218,18 +219,21 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const textareaRef = ref(null)
-
 const showImageModal = ref(false)
 const imageUrl = ref('')
 const previewImage = ref('')
 const uploadingImage = ref(false)
-
 const isFullscreen = ref(false)
 const showLineNumbers = ref(props.lineNumbers)
-
 const editorHeight = ref(500)
 const containerRef = ref(null)
 let resizeObserver = null
+
+const md = new MarkdownIt({
+    html: true,
+    linkify: true,
+    typographer: true
+})
 
 const state = reactive({
     content: '',
@@ -259,21 +263,6 @@ const computedHeight = computed(() => {
     return editorHeight.value
 })
 
-const uploadHeaders = computed(() => {
-    const headers = {}
-    if (!utils.is.empty(globalThis?.inis?.api?.key)) {
-        headers['i-api-key'] = globalThis?.inis?.api?.key
-    }
-    const TOKEN_NAME = globalThis?.inis?.token_name || 'INIS_LOGIN_TOKEN'
-    if (utils.has.cookie(TOKEN_NAME)) {
-        const token = utils.get.cookie(TOKEN_NAME)
-        if (!utils.is.empty(token)) {
-            headers.Authorization = token
-        }
-    }
-    return headers
-})
-
 const handleResize = () => {
     if (!containerRef.value || isFullscreen.value) return
     
@@ -296,130 +285,17 @@ watch(() => props.modelValue, (newVal) => {
     }
 }, { immediate: true })
 
-const parseMarkdown = (text) => {
-    if (!text) return ''
-
-    let html = text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-
-    const codeBlocks = []
-    html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (match, lang, code) => {
-        const placeholder = `\x00CODEBLOCK_${codeBlocks.length}\x00`
-        codeBlocks.push({ lang, code: code.trim() })
-        return placeholder
-    })
-
-    html = html.replace(/`([^`]+)`/g, '<code>$1</code>')
-
-    html = html.replace(/^#### (.*$)/gm, '<h4>$1</h4>')
-    html = html.replace(/^### (.*$)/gm, '<h3>$1</h3>')
-    html = html.replace(/^## (.*$)/gm, '<h2>$1</h2>')
-    html = html.replace(/^# (.*$)/gm, '<h1>$1</h1>')
-
-    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-    html = html.replace(/__([^_]+)__/g, '<strong>$1</strong>')
-
-    html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>')
-    html = html.replace(/\_([^_]+)\_/g, '<em>$1</em>')
-
-    html = html.replace(/\+([^+]+)\+/g, '<u>$1</u>')
-
-    html = html.replace(/~~([^~]+)~~/g, '<del>$1</del>')
-
-    html = html.replace(/^&gt; \|(.*)$/gm, '<blockquote><p>$1</p></blockquote>')
-    html = html.replace(/^&gt; (.*)$/gm, '<blockquote><p>$1</p></blockquote>')
-
-    html = html.replace(/^- \[x\] (.*$)/gm, '<li class="task-list-item"><label><input type="checkbox" checked disabled> $1</label></li>')
-    html = html.replace(/^- \[ \] (.*$)/gm, '<li class="task-list-item"><label><input type="checkbox" disabled> $1</label></li>')
-
-    html = html.replace(/^\? \[([^\]]+)\] (.*$)/gm, '<details><summary>$1</summary><p>$2</p></details>')
-
-    html = html.replace(/^[\-\*] (.*$)/gm, '<li class="ul-item">$1</li>')
-    html = html.replace(/^\d+\. (.*$)/gm, '<li class="ol-item">$1</li>')
-    
-    html = html.replace(/(<li class="ul-item">[\s\S]*?<\/li>)(\n<li class="ul-item">[\s\S]*?<\/li>)+/g, '<ul>$&</ul>')
-    html = html.replace(/class="ul-item"/g, '')
-    html = html.replace(/(<li class="ol-item">[\s\S]*?<\/li>)(\n<li class="ol-item">[\s\S]*?<\/li>)+/g, '<ol>$&</ol>')
-    html = html.replace(/class="ol-item"/g, '')
-
-    html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="md-image">')
-
-    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
-
-    html = html.replace(/^---$/gm, '<hr>')
-    html = html.replace(/^\*\*\*$/gm, '<hr>')
-
-    const emojiMap = {
-        ':smile:': '😊',
-        ':heart:': '❤️',
-        ':fire:': '🔥',
-        ':rocket:': '🚀',
-        ':star:': '⭐',
-        ':check:': '✅',
-        ':warning:': '⚠️',
-        ':info:': 'ℹ️'
-    }
-    html = html.replace(/:([a-z_]+):/g, (match, key) => emojiMap[match] || match)
-
-    const tableRegex = /(\|.+\|\n?)+/g
-    html = html.replace(tableRegex, (match) => {
-        let tableHtml = match
-            .trim()
-            .replace(/^\|[\s\-]+\|$/gm, '')
-            .replace(/^\|(.+)\|$/gm, (rowMatch, content) => {
-                const cells = content.split('|').map(cell => cell.trim())
-                const isHeader = cells.every(cell => cell === '' || /^-+$/.test(cell))
-                if (isHeader) return ''
-                const cellTags = cells.map(cell => `<td>${cell}</td>`).join('')
-                return `<tr>${cellTags}</tr>`
-            })
-            .replace(/\n\n+/g, '\n')
-            .trim()
-        
-        if (!tableHtml) return match
-        
-        return `<table class="md-table"><tbody>${tableHtml}</tbody></table>`
-    })
-
-    html = html.replace(/\n\n/g, '</p><p>')
-    html = '<p>' + html + '</p>'
-    html = html.replace(/<p><\/p>/g, '')
-    
-    const blockTags = ['h1', 'h2', 'h3', 'h4', 'ul', 'ol', 'blockquote', 'pre', 'table', 'hr', 'details']
-    blockTags.forEach(tag => {
-        html = html.replace(new RegExp(`<p>\\s*<${tag}>`, 'g'), `<${tag}>`)
-        html = html.replace(new RegExp(`</${tag}>\\s*</p>`, 'g'), `</${tag}>`)
-    })
-    
-    html = html.replace(/<li>\s*<p>(.+?)<\/p>\s*<\/li>/g, '<li>$1</li>')
-    
-    html = html.replace(/<table[\s\S]*?<\/table>/g, (match) => {
-        return match.replace(/\n/g, '<!--NEWLINE-->')
-    })
-    html = html.replace(/<pre[\s\S]*?<\/pre>/g, (match) => {
-        return match.replace(/\n/g, '<!--NEWLINE-->')
-    })
-    html = html.replace(/\n/g, '')
-    html = html.replace(/<!--NEWLINE-->/g, '\n')
-    
-    html = html.replace(/\x00CODEBLOCK_(\d+)\x00/g, (match, index) => {
-        const block = codeBlocks[parseInt(index)]
-        const langClass = block.lang ? ` class="language-${block.lang}"` : ''
-        return `<pre><code${langClass}>${block.code}</code></pre>`
-    })
-
-    return html
-}
-
-const renderedContent = computed(() => parseMarkdown(state.content))
+const renderedContent = computed(() => {
+    if (!state.content) return ''
+    return md.render(state.content)
+})
 
 const handleInput = () => {
     emit('update:modelValue', state.content)
-    saveHistory()
+    debouncedSaveHistory()
 }
 
+let saveHistoryTimer = null
 const saveHistory = () => {
     if (state.historyIndex < state.history.length - 1) {
         state.history = state.history.slice(0, state.historyIndex + 1)
@@ -430,6 +306,13 @@ const saveHistory = () => {
         state.history.shift()
         state.historyIndex--
     }
+}
+
+const debouncedSaveHistory = () => {
+    if (saveHistoryTimer) {
+        clearTimeout(saveHistoryTimer)
+    }
+    saveHistoryTimer = setTimeout(saveHistory, 500)
 }
 
 const handleKeydown = (e) => {
@@ -492,8 +375,8 @@ const insertFormat = (type) => {
             cursorOffset = selectedText ? insertText.length : 1
             break
         case 'underline':
-            insertText = `+${selectedText || '下划线文本'}+`
-            cursorOffset = selectedText ? insertText.length : 1
+            insertText = `<u>${selectedText || '下划线文本'}</u>`
+            cursorOffset = selectedText ? insertText.length : 3
             break
         case 'strikethrough':
             insertText = `~~${selectedText || '删除线文本'}~~`
@@ -540,7 +423,7 @@ const insertFormat = (type) => {
             cursorOffset = insertText.length
             break
         case 'toggle':
-            insertText = `? [${selectedText || '标题'}] ${selectedText || '内容'}`
+            insertText = `<details>\n<summary>${selectedText || '标题'}</summary>\n${selectedText || '内容'}\n</details>`
             cursorOffset = insertText.length
             break
         case 'link':
@@ -622,7 +505,7 @@ const redo = () => {
     }
 }
 
-const beforeUpload = (file) => {
+const beforeUpload = async (file) => {
     if (!file.type.startsWith('image/')) {
         ElMessage.error('请选择图片文件')
         return false
@@ -633,45 +516,61 @@ const beforeUpload = (file) => {
         return false
     }
 
+    const { code, data } = await request.post('/api/attachment/checkType', { file_names: [file.name] })
+    if (code !== 200) {
+        ElMessage.error('文件类型检查失败')
+        return false
+    }
+    const result = data.results?.[0]
+    if (!result?.is_allowed) {
+        ElMessage.error(result?.message || '不允许上传该类型的文件')
+        return false
+    }
+
     uploadingImage.value = true
     state.progress.show = true
     return true
 }
 
-const handleUploadProgress = (event, file, fileList) => {
-    state.progress.value = Math.round((event.loaded / event.total) * 100)
-}
-
-const handleUploadSuccess = (response, file, fileList) => {
-    const { code, msg, data } = response
+const customUpload = async (options) => {
+    const { file, onProgress, onSuccess, onError } = options
     
-    if (code !== 200) {
-        ElMessage.error(msg)
+    try {
+        const params = new FormData()
+        params.append('files', file)
+        params.append('target_type', 'article')
+
+        const { code, msg, data } = await request.post('/api/attachment/batch', params, {
+            onUploadProgress: (event) => {
+                const percent = Math.round((event.loaded / event.total) * 100)
+                state.progress.value = percent
+                onProgress({ percent })
+            }
+        })
+
+        if (code !== 200) {
+            throw new Error(msg)
+        }
+
+        const result = data.results?.[0]
+        if (!result?.full_url) {
+            throw new Error('上传失败，未获取到图片链接')
+        }
+
+        previewImage.value = result.full_url
+        const imageMarkdown = `![${file.name}](${result.full_url})`
+        insertText(imageMarkdown)
+        ElMessage.success('图片上传成功')
+        showImageModal.value = false
+        resetImageModal()
+        onSuccess(result)
+    } catch (error) {
+        ElMessage.error(error.message || '上传失败')
+        onError(error)
+    } finally {
         uploadingImage.value = false
         state.progress.show = false
-        return
     }
-
-    const result = data.results?.[0]
-    if (!result?.full_url) {
-        ElMessage.error('上传失败，未获取到图片链接')
-        uploadingImage.value = false
-        state.progress.show = false
-        return
-    }
-    const { full_url } = result
-    previewImage.value = full_url
-    const imageMarkdown = `![${file.name}](${full_url})`
-    insertText(imageMarkdown)
-    ElMessage.success('图片上传成功')
-    showImageModal.value = false
-    resetImageModal()
-}
-
-const handleUploadError = (error, file, fileList) => {
-    ElMessage.error(error.message || '上传失败')
-    uploadingImage.value = false
-    state.progress.show = false
 }
 
 const insertImageFromUrl = () => {
@@ -699,6 +598,105 @@ const resetImageModal = () => {
     previewImage.value = ''
     uploadingImage.value = false
     state.progress.show = false
+}
+
+const handlePaste = async (e) => {
+    const items = e.clipboardData?.items
+    if (!items) return
+
+    for (const item of items) {
+        if (item.type.startsWith('image/')) {
+            e.preventDefault()
+            const file = item.getAsFile()
+            if (!file) continue
+
+            const isValid = await beforeUpload(file)
+            if (!isValid) continue
+
+            uploadingImage.value = true
+            state.progress.show = true
+
+            try {
+                const params = new FormData()
+                params.append('files', file)
+                params.append('target_type', 'article')
+
+                const { code, msg, data } = await request.post('/api/attachment/batch', params, {
+                    onUploadProgress: (event) => {
+                        state.progress.value = Math.round((event.loaded / event.total) * 100)
+                    }
+                })
+
+                if (code !== 200) {
+                    throw new Error(msg)
+                }
+
+                const result = data.results?.[0]
+                if (!result?.full_url) {
+                    throw new Error('上传失败')
+                }
+
+                const imageMarkdown = `![${file.name}](${result.full_url})`
+                insertText(imageMarkdown)
+                ElMessage.success('图片粘贴上传成功')
+            } catch (error) {
+                ElMessage.error(error.message || '粘贴上传失败')
+            } finally {
+                uploadingImage.value = false
+                state.progress.show = false
+            }
+        }
+    }
+}
+
+const handleDrop = async (e) => {
+    const files = e.dataTransfer?.files
+    if (!files || files.length === 0) return
+
+    e.preventDefault()
+
+    for (const file of files) {
+        if (!file.type.startsWith('image/')) {
+            ElMessage.warning(`${file.name} 不是图片文件，已跳过`)
+            continue
+        }
+
+        const isValid = await beforeUpload(file)
+        if (!isValid) continue
+
+        uploadingImage.value = true
+        state.progress.show = true
+
+        try {
+            const params = new FormData()
+            params.append('files', file)
+            params.append('target_type', 'article')
+
+            const { code, msg, data } = await request.post('/api/attachment/batch', params, {
+                onUploadProgress: (event) => {
+                    state.progress.value = Math.round((event.loaded / event.total) * 100)
+                }
+            })
+
+            if (code !== 200) {
+                throw new Error(msg)
+            }
+
+            const result = data.results?.[0]
+            if (!result?.full_url) {
+                throw new Error('上传失败')
+            }
+
+            const imageMarkdown = `![${file.name}](${result.full_url})`
+            insertText(imageMarkdown)
+            ElMessage.success(`${file.name} 上传成功`)
+        } catch (error) {
+            ElMessage.error(`${file.name} 上传失败: ${error.message}`)
+        } finally {
+            uploadingImage.value = false
+            state.progress.show = false
+        }
+    }
 }
 
 const toggleFullscreen = () => {
@@ -758,6 +756,10 @@ onUnmounted(() => {
     
     if (resizeObserver) {
         resizeObserver.disconnect()
+    }
+    
+    if (saveHistoryTimer) {
+        clearTimeout(saveHistoryTimer)
     }
     
     if (isFullscreen.value) {
@@ -980,21 +982,7 @@ onUnmounted(() => {
     background: var(--el-fill-color);
 }
 
-.md-preview-area :deep(.article-content .task-list-item) {
-    list-style: none;
-}
-
-.md-preview-area :deep(.article-content .task-list-item label) {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-}
-
-.md-preview-area :deep(.article-content .task-list-item input[type="checkbox"]) {
-    margin: 0;
-}
-
-.md-preview-area :deep(.article-content img.md-image) {
+.md-preview-area :deep(.article-content img) {
     max-width: 100%;
     height: auto;
     border-radius: 4px;

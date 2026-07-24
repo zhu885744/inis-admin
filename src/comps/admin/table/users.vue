@@ -249,10 +249,11 @@ const state  = reactive({
         url: '/api/users/all',
         params: props.params,
         columns: [
+            { prop: 'id', label: 'ID', width: 80, align: 'center' },
             { prop: 'nickname',label: '昵称', width: 130, slot: true, fixed: left },
             { prop: 'account', label: '账号', width: 130, slot: true },
             { prop: 'email',   label: '邮箱', slot: true },
-            { prop: 'phone',   label: '电话', slot: true },
+            { prop: 'phone',   label: '手机号', slot: true },
             { prop: 'status',  label: '状态', width: 100, slot: true },
             { prop: 'remark' , label: '备注', slot: true },
             { prop: 'login_time', label: '最近登录', width: 140, sortable: true, slot: true },
@@ -476,9 +477,21 @@ const method = {
             
             input.addEventListener('change', async () => {
                 if (!input.files.length) return
+
+                const file = input.files[0]
+                const { code: checkCode, data: checkData } = await axios.post('/api/attachment/checkType', { file_names: [file.name] })
+                if (checkCode !== 200) {
+                    ElMessage.error('文件类型检查失败')
+                    return
+                }
+                const result = checkData.results?.[0]
+                if (!result?.is_allowed) {
+                    ElMessage.error(result?.message || '不允许上传该类型的文件')
+                    return
+                }
                 
                 const params = new FormData()
-                params.append('files', input.files[0])
+                params.append('files', file)
                 params.append('target_type', 'user_avatar')
                 
                 state.item.upload = true

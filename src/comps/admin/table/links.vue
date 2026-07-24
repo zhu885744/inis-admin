@@ -193,7 +193,8 @@ const state  = reactive({
         url: '/api/links/all',
         params: props.params,
         columns: [
-            { prop: 'nickname', label: '昵称', slot: true, fixed: left },
+            { prop: 'uid', label: '用户ID', width: 80, align: 'center' },
+            { prop: 'nickname', label: '昵称', slot: true, fixed: 'left' },
             { prop: 'url', label: '链接', slot: true },
             { prop: 'description' , label: '描述', slot: true },
             { prop: 'audit', label: '审核状态', width: 100, slot: true },
@@ -342,9 +343,21 @@ const method = {
 
         // 监听 input 的 change 事件
         input.addEventListener('change', async () => {
+            const file = input.files[0]
+            const { code: checkCode, data: checkData } = await axios.post('/api/attachment/checkType', { file_names: [file.name] })
+            if (checkCode !== 200) {
+                ElMessage.error('文件类型检查失败')
+                return
+            }
+            const result = checkData.results?.[0]
+            if (!result?.is_allowed) {
+                ElMessage.error(result?.message || '不允许上传该类型的文件')
+                return
+            }
+
             // 创建一个 formData
             const params = new FormData
-            params.append('files', input.files[0])
+            params.append('files', file)
             params.append('target_type', 'links')
 
             state.item.upload         = true

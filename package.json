@@ -11,6 +11,7 @@
   "dependencies": {
     "@babel/core": "^7.22.19",
     "@babel/preset-env": "^7.22.15",
+    "@element-plus/icons-vue": "^2.3.2",
     "@fancyapps/ui": "^5.0.22",
     "@popperjs/core": "^2.11.8",
     "@rollup/plugin-babel": "^6.0.3",
@@ -20,7 +21,6 @@
     "colorthief": "^2.4.0",
     "crypto-js": "^4.1.1",
     "echarts": "^5.4.3",
-    "@element-plus/icons-vue": "^2.3.1",
     "element-plus": "^2.14.2",
     "highlight.js": "^11.9.0",
     "js-base64": "^3.7.3",

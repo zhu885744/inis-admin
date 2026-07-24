@@ -72,7 +72,7 @@
                     <el-tabs v-model="state.item.tabs" :stretch="true">
                         <el-tab-pane label="预览" name="preview">
                             <el-upload class="custom upload" action="/api/attachment/batch" :headers="method.headers()" :multiple="true" list-type="picture"
-                                :on-remove="method.cover.remove" :on-success="method.cover.success"
+                                :before-upload="method.beforeUpload" :on-remove="method.cover.remove" :on-success="method.cover.success"
                                 :on-error="method.cover.error" :file-list="state.item.cover.preview"
                                 :data="{ target_type: 'article' }">
                                 <el-button type="primary" style="width: 100%">上 传</el-button>
@@ -417,6 +417,19 @@ const method = {
             }
             return result
         }
+    },
+    beforeUpload: async (file) => {
+        const { code, data } = await axios.post('/api/attachment/checkType', { file_names: [file.name] })
+        if (code !== 200) {
+            ElMessage.error('文件类型检查失败')
+            return false
+        }
+        const result = data.results?.[0]
+        if (!result?.is_allowed) {
+            ElMessage.error(result?.message || '不允许上传该类型的文件')
+            return false
+        }
+        return true
     },
     cover: {
         // 移除封面图
