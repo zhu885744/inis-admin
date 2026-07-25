@@ -108,6 +108,14 @@
                             <el-col :span="8">
                                 <atom-article ref="article" v-on:refresh="method.refresh"></atom-article>
                             </el-col>
+                            <el-col :span="8">
+                                <atom-comment ref="comment" v-on:refresh="method.refresh"></atom-comment>
+                            </el-col>
+                        </el-row>
+                        <el-row :gutter="20" style="margin-top: 12px">
+                            <el-col :span="8">
+                                <atom-exp-rules ref="exp-rules" v-on:refresh="method.refresh"></atom-exp-rules>
+                            </el-col>
                         </el-row>
                     </el-tab-pane>
 
@@ -148,6 +156,8 @@ import AtomStorageCos from '{src}/comps/admin/atom/storage-cos.vue'
 import AtomStorageKodo from '{src}/comps/admin/atom/storage-kodo.vue'
 import AtomPage from '{src}/comps/admin/atom/page.vue'
 import AtomArticle from '{src}/comps/admin/atom/article.vue'
+import AtomComment from '{src}/comps/admin/atom/comment.vue'
+import AtomExpRules from '{src}/comps/admin/atom/exp-rules.vue'
 import AtomUpgrade from '{src}/comps/admin/atom/upgrade.vue'
 
 const { ctx, proxy } = getCurrentInstance()
@@ -161,7 +171,7 @@ const state  = reactive({
     },
     refresh: {
         inis    : ['device-bind','upgrade'],
-        other   : ['page','article'],
+        other   : ['page','article','comment','exp-rules'],
         optimize: ['cache-redis','cache-file','cache-ram'],
         sms     : ['sms-email','sms-aliyun','sms-aliyun-verify','sms-tencent'],
         storage : ['storage-local','storage-oss','storage-cos','storage-kodo'],
