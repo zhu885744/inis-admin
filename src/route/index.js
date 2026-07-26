@@ -150,6 +150,16 @@ const admin = {
         name: 'admin-attachment',
         meta: { title: '附件管理' },
         component: () => import('{src}/views/admin/pages/attachment.vue'),
+    },{
+        path: 'exp',
+        name: 'admin-exp',
+        meta: { title: '经验管理' },
+        component: () => import('{src}/views/admin/pages/exp.vue'),
+    },{
+        path: 'message',
+        name: 'admin-message',
+        meta: { title: '消息通知' },
+        component: () => import('{src}/views/admin/pages/message.vue'),
     }],
 }
 
